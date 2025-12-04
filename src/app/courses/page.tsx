@@ -3,7 +3,7 @@ import Header from "@/components/Header";
 
 export default function Courses() {
   return (
-    <div className="m-10">
+    <div className="m-5">
       <header>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <Header />
