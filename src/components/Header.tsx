@@ -3,8 +3,8 @@ import Image from "next/image"
 
 export default function Header() {
   return(
-    <div className="mx-0 flex md:flex-row flex-col justify-between ">
-      <div className="flex">
+    <div className="flex md:flex-row flex-col justify-between ">
+      <div className="flex cursor-pointer">
         <Image src="/logo/Logo.svg" alt="SkillFusion Logo" width={150} height={60} className="m-1"/>
         <h1 className="flex font-display-title items-center font-bold text-4xl text-primary-red mx-2 ">SkillFusion</h1>
       </div>
