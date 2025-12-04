@@ -11,7 +11,7 @@ export default function Courses({image, title, date, description}: ICoursesCardP
   return (
     <div className="max-w-300 max-h-500 ">
       <main className="py-10 px-5 bg-background-charte sm:items-start">
-        <div className="min-h-100 h-105 w-100 flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30">
+        <div className="min-h-100 h-105 w-60 md:w-100 flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30">
           <Image src={image} alt={title} width={400} height={120} />
           <div>
             <h3 className="font-display-title font-bold text-primary-text mx-1">{title}</h3>

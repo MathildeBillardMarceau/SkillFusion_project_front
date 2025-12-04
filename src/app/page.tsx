@@ -4,14 +4,14 @@ import Header from "@/components/Header";
 
 export default function Courses() {
   return (
-    <div className="m-2">
+    <div className="m-10 ">
       <header>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <Header />
       </header>
       <main className=" bg-[#F4ECE2]">
         <div className="flex flex-col">
-              <div className="mt-15 ml-25">
+              <div className="mt-auto md:mt-15">
                 <FilterHome />
               </div>
 

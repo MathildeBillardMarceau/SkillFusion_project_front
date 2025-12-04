@@ -6,6 +6,7 @@
 }
 
 @theme {
+  --breakpoint-md: 830px;
   --color-primary-text: #3c2e2a;
   --color-secondary-text: #a78a7f;
   --color-background-charte: #f4ece2;
