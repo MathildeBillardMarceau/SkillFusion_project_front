@@ -32,7 +32,7 @@ export const coursesData = [
     image: "/images/mur_beton.jpg",
     title: "Recouvrir son mur de béton ciré",
     date: "02 juin 2025",
-    description: "Le béton ciré est un revêtement décoratif qui apporte une touche moderne et industrielle à votre intérieur..."
+    description: "Le béton ciré est un revêtement décoratif qui apporte une touche..."
   },
   {
     id: "6",
