@@ -1,26 +1,17 @@
 import CoursesCard from "@/components/CoursesCard";
-
+import Header from "@/components/Header";
+import { coursesData } from "@/data/coursesData";
 
 export default function Courses() {
   return (
     <div className="m-10">
+      <header>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <Header />
+      </header>
       <main className=" bg-[#F4ECE2]">
-        <div className="flex flex-row flex-wrap justify-between">Listes des cours
-          <CoursesCard 
-            title="Poser une étagère" 
-            date="19 Mai 2025" 
-            description="Les étagères contre les murs sont des éléments souvent rencontrés..." 
-          />
-                    <CoursesCard 
-            title="Peindre mon plafond" 
-            date="01 Avril 2025" 
-            description="Une belle hauteur sous plafond c'est super, jusqu'à ce qu'il faille le..." 
-          />
-                    <CoursesCard 
-            title="Changer son robinet d'arrivé d'eau" 
-            date="31 Octobre 2025" 
-            description="Pour pouvoir intervenir sur son réseau domestique, il est pratique de..." 
-          />
+        <div className="flex flex-row flex-wrap justify-center ">
+          {coursesData.map((course)=>(< CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
         </div>
       </main>
     </div>
