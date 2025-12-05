@@ -16,7 +16,7 @@ export default function Courses() {
                 <FilterHome />
               </div>
 
-        <div className="flex flex-row flex-wrap justify-center ">
+        <div className="flex flex-row flex-wrap justify-center">
           {coursesData.slice(3).map((course)=>(< CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
         </div>
         </div>
