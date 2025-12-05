@@ -1,6 +1,7 @@
 import CoursesCard from "@/components/CoursesCard";
 import FilterHome from "@/components/FilterHome";
 import Header from "@/components/Header";
+import { coursesData } from "@/data/coursesData";
 
 export default function Courses() {
   return (
@@ -15,26 +16,9 @@ export default function Courses() {
                 <FilterHome />
               </div>
 
-              <div className="flex flex-row flex-wrap justify-center ">
-                <CoursesCard
-                  image="/images/niveau-a-bulle.jpg"
-                  title="Poser une étagère" 
-                  date="19 Mai 2025" 
-                  description="Les étagères contre les murs sont des éléments souvent rencontrés..." 
-                />
-                <CoursesCard
-                  image="/images/peinture.jpg"
-                  title="Peindre mon plafond" 
-                  date="01 Avril 2025" 
-                  description="Une belle hauteur sous plafond c'est super, jusqu'à ce qu'il faille le..." 
-                />
-                <CoursesCard 
-                  image="/images/plomberie.jpg"
-                  title="Changer son robinet d'arrivé d'eau" 
-                  date="31 Octobre 2025" 
-                  description="Pour pouvoir intervenir sur son réseau domestique, il est pratique de..." 
-                />
-              </div>
+        <div className="flex flex-row flex-wrap justify-center ">
+          {coursesData.slice(3).map((course)=>(< CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
+        </div>
         </div>
       </main>
     </div>
