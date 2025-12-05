@@ -10,7 +10,11 @@ export default function Courses() {
   const [showLogin, setShowLogin] = useState(false);
   return (
     <div className="m-10 ">
+      <div className={`bg-[#F4ECE2] transition-all duration-300 ${
+        showLogin ? "blur-sm" : ""
+      }`}>
       <header>
+        
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <Header onLoginclick={() => setShowLogin(true)}/>
       </header>
@@ -24,10 +28,11 @@ export default function Courses() {
           {coursesData.slice(3).map((course)=>(< CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
         </div>
         </div>
-      <div className="flex justify-content absolute top-0 right-0 left-0 bottom-0  items-center">
+      </main>
+      </div>
+      <div>
       {showLogin && <LoginPopIn adresseMail="" motDePasse="" onClose={() => setShowLogin(false)} />}
       </div>
-      </main>
     </div>
   );
 }
