@@ -11,16 +11,16 @@ export default function Courses() {
     <div className="m-10">
       <header>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <Header onLoginclick={() => setShowLogin(true)}/>
+      <Header onLoginclick={() => setShowLogin(true)}  />
       </header>
-      <main className=" bg-[#F4ECE2]">
+      <main className=" bg-[#F4ECE2] relative">
         <div className="flex flex-row flex-wrap justify-center ">
           {coursesData.map((course)=>(< CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
         </div>
-      </main>
-      <div>
+      <div className="absolute top-0 right-0 left-0 bottom-0 flex items-center">
       {showLogin && <LoginPopIn adresseMail="" motDePasse="" onClose={() => setShowLogin(false)} />}
       </div>
+      </main>
     </div>
   );
 }

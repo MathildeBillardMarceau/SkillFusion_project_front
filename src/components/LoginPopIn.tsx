@@ -11,6 +11,10 @@ export default async function LoginPopIn({ adresseMail, motDePasse, onClose }: I
 
 
   return(
+    <div className="flex justify-center items-center z-50 fixed inset-0">
+    <div className="min-h-90 h-100 w-150 md:w-100">
+      <p></p>
+    </div>
     <div className="min-h-90 h-90 w-60 md:w-100 flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30 bg-primary-red">
       <div className="flex self-end">
         <button className="m-2 cursor-pointer" onClick={onClose}>
@@ -33,6 +37,10 @@ export default async function LoginPopIn({ adresseMail, motDePasse, onClose }: I
         <button type="submit" className=" self-end w-30 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer ">Se connecter</button>
       </form>
       </div>
+    </div>
+    <div className="min-h-90 h-90 w-150 md:w-100">
+      <p></p>
+    </div>
     </div>
   )
 }
