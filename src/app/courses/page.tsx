@@ -2,9 +2,11 @@
 import CoursesCard from "@/components/CoursesCard";
 import Header from "@/components/Header";
 import { useGraphQL } from "@/hooks/useGraphQL";
+import LoginPopIn from "@/components/LoginPopIn";
+import { useState } from "react";
 
 export default function Courses() {
-
+  const [showLogin, setShowLogin] = useState(false);
   const {
     data: CoursesData,
     loading,
