@@ -30,9 +30,12 @@ export default function Courses() {
 
   return (
     <div className="m-10">
+      <div className={`bg-[#F4ECE2] transition-all duration-300 ${
+        showLogin ? "blur-sm" : ""
+      }`}>
       <header>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <Header />
+      <Header onLoginclick={() => setShowLogin(true)}  />
       </header>
       <main className=" bg-[#F4ECE2]">
 
@@ -41,6 +44,11 @@ export default function Courses() {
           < CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
         </div>
       </main>
+      </div>
+      <div >
+      {showLogin && 
+        <LoginPopIn adresseMail="" motDePasse="" onClose={() => setShowLogin(false)} />}
+      </div>
     </div>
   );
 }
