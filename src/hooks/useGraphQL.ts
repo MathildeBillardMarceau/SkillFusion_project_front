@@ -11,10 +11,11 @@ export function useGraphQL<T>(query: string, variables?: any) {
       setLoading(true);
 
       try {
+        // on fetch le endpoint graphQL
         const res = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API_URL}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query, variables }),
+          body: JSON.stringify({ query, variables }), // en lui envoyant la query + variables
           cache: "no-store",
         });
 
@@ -34,6 +35,7 @@ export function useGraphQL<T>(query: string, variables?: any) {
     fetchData();
   }, [query, JSON.stringify(variables)]);
 
+  // on renvoir data, loading et error
   return { data, loading, error };
 }
 

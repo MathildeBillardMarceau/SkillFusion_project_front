@@ -1,21 +1,18 @@
 "use client";
-import type { CourseType } from "@/@types";
-import { useGraphQL } from "@/hooks/useGraphQL";
-import { useParams } from "next/navigation";
 
-export type CourseBySlug = {
-  courseBySlug: CourseType;
-};
+import type { CourseType } from "@/@types";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function CoursePage() {
   // récupération du param
   const { slug } = useParams();
   console.log("params.slug", slug);
 
-  // SANS LE HOOK
   // récupération des datas
-  // const [courseData, setCourseData] = useState<CourseType | null>(null);
-  /* useEffect(() => {
+  const [courseData, setCourseData] = useState<CourseType | null>(null);
+
+  useEffect(() => {
     const fetchData = async () => {
       // query graphQLs
       const query = `#graphql
@@ -49,32 +46,14 @@ export default function CoursePage() {
       // récupération et stockade de la data
       setCourseData(data.courseBySlug);
     });
-  }, [slug]); */
-
-  const { data, loading, error } = useGraphQL<CourseBySlug>(
-    `#graphql
-  query ($slug: String!) {
-    courseBySlug(slug: $slug) { 
-      id 
-      title 
-    }
-  }
-`,
-    { slug },
-  );
+  }, [slug]);
 
   if (!slug) return <>Aucun cours ici</>;
 
   return (
     <main>
-      {loading ? (
-        <>Loading...</>
-      ) : (
-        <>
-          <h1>Page du cours {data?.courseBySlug.title}</h1>
-          <div>détails du cours</div>
-        </>
-      )}
+      <h1>Page du cours {courseData?.title}</h1>
+      <div>détails du cours</div>
     </main>
   );
 }
