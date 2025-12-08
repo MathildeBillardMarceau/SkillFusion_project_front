@@ -1,8 +1,33 @@
+"use client";
 import CoursesCard from "@/components/CoursesCard";
 import Header from "@/components/Header";
-import { coursesData } from "@/data/coursesData";
+import { useGraphQL } from "@/hooks/useGraphQL";
 
 export default function Courses() {
+
+  const {
+    data: CoursesData,
+    loading,
+    error,
+  } = useGraphQL(
+    `#graphql
+    query {
+      courses {
+          id
+          title
+          slug
+          image
+          createdAt
+          description
+      }
+    }
+  `,
+    {},
+  );
+
+  if (error) return <p>Error: {error}</p>;
+  if (!CoursesData?.courses) return <p>No courses</p>;
+
   return (
     <div className="m-10">
       <header>
@@ -10,8 +35,10 @@ export default function Courses() {
       <Header />
       </header>
       <main className=" bg-[#F4ECE2]">
-        <div className="flex flex-row flex-wrap justify-center ">
-          {coursesData.map((course)=>(< CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
+
+          <div className="flex flex-row flex-wrap justify-center ">
+          {CoursesData.courses.map((course: CourseType) => (
+          < CoursesCard key={course.id} image={course.image} title={course.title} date={course.date} description={course.description} />))}
         </div>
       </main>
     </div>
