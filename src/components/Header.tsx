@@ -22,13 +22,13 @@ export default function Header({ onLoginclick}: HeaderProps) {
       </div>
       <div className="flex justify-center md:justify-end ">
         <Link href="/courses">
-          <button type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"> listes des cours </button>
+          <button type="button" className=" h-15  md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"> listes des cours </button>
         </Link>
         { isAuthenticated ? (          
-          <button onClick={onLoginclick} type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> {user.firstName} </button>
+          <button onClick={onLoginclick} type="button" className=" h-15 md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> {user.firstName} </button>
         ) :  
         <Link href="#">          
-        <button onClick={onLoginclick} type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> Se connecter </button>
+        <button onClick={onLoginclick} type="button" className="h-15 md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> Se connecter </button>
         </Link>
         }
       </div>
