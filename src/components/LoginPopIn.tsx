@@ -7,7 +7,7 @@ interface ILoginPopInProps {
   onClose: () => void;
 }
 
-export default async function LoginPopIn({ adresseMail, motDePasse, onClose }: ILoginPopInProps) {
+export default function LoginPopIn({ adresseMail, motDePasse, onClose }: ILoginPopInProps) {
 
 
   return(
