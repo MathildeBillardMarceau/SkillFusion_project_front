@@ -1,7 +1,8 @@
 "use client";
+import { useAuthStore } from "@/app/store/auth";
 import Image from "next/image";
 import { useState } from "react";
-import { useAuthStore } from "@/app/store/auth";
+
 
 
 interface ILoginPopInProps {
@@ -15,13 +16,50 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");     
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const User = { email, password};
-  
-      login(email, password);
+    try{
+      const response = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_API_URL!, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: `
+            mutation LoginUser($input: LoginUserInput!) {
+              loginUser(input: $input) {
+                user {
+                  id
+                  email
+                }
+              }
+            }
+          `,
+          variables: {input: {email, password}},
+        }),
+      });
+      const result = await response.json();
 
-      onClose();
+      if (result.errors) {
+        alert("Login failed: " + result.errors[0].message);
+        return;
+      }
+
+      const token = result.data.login.token;    
+
+    if (!token) {
+      alert("Login failed: No token received");
+      return;
+    }
+    login(email, password, token);
+
+    onClose();
+
+    } catch (error) {     
+      console.error("Error during login:", error);
+      return;
+    }
+
   };
 
   return(
