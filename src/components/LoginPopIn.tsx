@@ -31,7 +31,10 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
                 user {
                   id
                   email
+                  firstName
+                  lastName
                 }
+                accessToken
               }
             }
           `,
@@ -45,14 +48,13 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
         return;
       }
 
-      const token = result.data.login.token;    
+      const { user, accessToken } = result.data.loginUser;    
 
-    if (!token) {
+    if (!accessToken) {
       alert("Login failed: No token received");
       return;
     }
-    login(email, password, token);
-
+    login(user, accessToken);
     onClose();
 
     } catch (error) {     

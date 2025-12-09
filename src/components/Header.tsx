@@ -10,6 +10,7 @@ interface HeaderProps {
 export default function Header({ onLoginclick}: HeaderProps) {
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore((state) => state.user);
 
   return(
     <div className="flex md:flex-row flex-col justify-center md:justify-between">
@@ -24,7 +25,7 @@ export default function Header({ onLoginclick}: HeaderProps) {
           <button type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"> listes des cours </button>
         </Link>
         { isAuthenticated ? (          
-          <button onClick={onLoginclick} type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> Mon profil </button>
+          <button onClick={onLoginclick} type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> {user.firstName} </button>
         ) :  
         <Link href="#">          
         <button onClick={onLoginclick} type="button" className="md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> Se connecter </button>
