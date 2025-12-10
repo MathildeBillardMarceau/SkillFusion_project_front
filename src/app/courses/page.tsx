@@ -1,11 +1,14 @@
 "use client";
+import { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
 import Header from "@/components/Header";
 import LoginPopIn from "@/components/LoginPopIn";
+import ProfilPopIn from "@/components/ProfilPopIn";
 import { useGraphQL } from "@/hooks/useGraphQL";
 import { useState } from "react";
 
 export default function Courses() {
+  const [ showProfil, setShowProfil] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const {
     data: CoursesData,
@@ -32,11 +35,11 @@ export default function Courses() {
   return (
     <div className="m-10">
       <div className={`bg-[#F4ECE2] transition-all duration-300 ${
-        showLogin ? "blur-sm" : ""
+        showLogin || showProfil ? "blur-sm" : ""
       }`}>
       <header>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <Header onLoginclick={() => setShowLogin(true)}  />
+        <meta name="viewport" content="width=device-width, initial-scale=< set1.0" />
+      <Header onLoginclick={() => setShowLogin(true)} onProfilclick={() => setShowProfil(true)} />
       </header>
       <main className=" bg-[#F4ECE2]">
 
@@ -45,6 +48,10 @@ export default function Courses() {
             < CoursesCard key={course.id} image={course.image} title={course.title} date={course.createdAt} description={course.description} />))}
         </div>
       </main>
+      </div>
+      <div>
+      {showProfil && 
+        <ProfilPopIn onClose={() => setShowProfil(false)} />}
       </div>
       <div >
       {showLogin && 
