@@ -3,6 +3,7 @@ import { useAuthStore } from "@/app/store/auth";
 import Image from "next/image";
 import Link from "next/link";
 
+
 interface HeaderProps {
   onLoginclick: () => void;
   onProfilclick?: () => void;

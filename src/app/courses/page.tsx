@@ -1,4 +1,5 @@
 "use client";
+import { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
 import Header from "@/components/Header";
 import LoginPopIn from "@/components/LoginPopIn";
@@ -34,7 +35,7 @@ export default function Courses() {
   return (
     <div className="m-10">
       <div className={`bg-[#F4ECE2] transition-all duration-300 ${
-        showLogin ? "blur-sm" : ""
+        showLogin || showProfil ? "blur-sm" : ""
       }`}>
       <header>
         <meta name="viewport" content="width=device-width, initial-scale=< set1.0" />
@@ -48,10 +49,11 @@ export default function Courses() {
         </div>
       </main>
       </div>
-      <div >
+      <div>
       {showProfil && 
         <ProfilPopIn onClose={() => setShowProfil(false)} />}
-
+      </div>
+      <div >
       {showLogin && 
         <LoginPopIn onClose={() => setShowLogin(false)} />}
       </div>

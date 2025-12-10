@@ -14,6 +14,8 @@ export default function ProfilPopIn({ onClose }: IProfilPopInProps) {
   const [showProfile, setShowProfile] = useState(true);
 
   return (
+        <div className="flex justify-center items-center z-50 fixed inset-0">
+ 
         <div className="flex justify-center h-60 w-45 md:min-w-25 md:max-h-70 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer">
           <div className="flex flex-col justify-center items-center">
           <button className="cursor-pointer">
@@ -34,6 +36,7 @@ export default function ProfilPopIn({ onClose }: IProfilPopInProps) {
           </div>
           </div>
             </div>
+        </div>
         </div>
   )
 };
