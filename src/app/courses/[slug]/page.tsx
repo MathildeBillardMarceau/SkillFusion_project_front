@@ -1,4 +1,5 @@
 "use client";
+
 import type { CourseType } from "@/@types";
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import Image from "next/image";
@@ -79,10 +80,11 @@ export default function CoursePage() {
 	useEffect(() => {
 		console.log("params.slug", slug);
 		if (!slug) return;
-		fetchData({ slug });
+		fetchData({ variables: { slug } });
 	}, [slug, fetchData]);
 
-	if (!slug || !data) return <>Aucun cours ici</>;
+	if (!slug) return <>Aucun cours ici</>;
+	if (!data) return <></>;
 
 	const { title, image } = data.courseBySlug;
 
@@ -94,7 +96,7 @@ export default function CoursePage() {
 				<>
 					<h1>Page du cours {title}</h1>
 					<div>détails du cours</div>
-					<Image src={image} width={200} height={200} alt="" />
+					{image && <Image src={image} width={200} height={200} alt="" />}
 				</>
 			)}
 		</main>
