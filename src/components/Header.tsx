@@ -5,9 +5,10 @@ import Link from "next/link";
 
 interface HeaderProps {
   onLoginclick: () => void;
+  onProfilclick?: () => void;
 }
 
-export default function Header({ onLoginclick}: HeaderProps) {
+export default function Header({ onLoginclick, onProfilclick }: HeaderProps) {
 
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore((state) => state.user);
@@ -25,7 +26,7 @@ export default function Header({ onLoginclick}: HeaderProps) {
           <button type="button" className=" h-15  md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"> listes des cours </button>
         </Link>
         { isAuthenticated ? (          
-          <button onClick={onLoginclick} type="button" className=" h-15 md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> {user.firstName} </button>
+          <button onClick={onProfilclick} type="button" className=" h-15 md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> {user.firstName} </button>
         ) :  
         <Link href="#">          
         <button onClick={onLoginclick} type="button" className="h-15 md:min-w-45 md:max-h-15 m-2.5 p-2.5 border-2 font-bold rounded-md border-primary-red bg-primary-red text-background-charte cursor-pointer"> Se connecter </button>

@@ -2,10 +2,12 @@
 import CoursesCard from "@/components/CoursesCard";
 import Header from "@/components/Header";
 import LoginPopIn from "@/components/LoginPopIn";
+import ProfilPopIn from "@/components/ProfilPopIn";
 import { useGraphQL } from "@/hooks/useGraphQL";
 import { useState } from "react";
 
 export default function Courses() {
+  const [ showProfil, setShowProfil] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const {
     data: CoursesData,
@@ -35,8 +37,8 @@ export default function Courses() {
         showLogin ? "blur-sm" : ""
       }`}>
       <header>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <Header onLoginclick={() => setShowLogin(true)}  />
+        <meta name="viewport" content="width=device-width, initial-scale=< set1.0" />
+      <Header onLoginclick={() => setShowLogin(true)} onProfilclick={() => setShowProfil(true)} />
       </header>
       <main className=" bg-[#F4ECE2]">
 
@@ -47,6 +49,9 @@ export default function Courses() {
       </main>
       </div>
       <div >
+      {showProfil && 
+        <ProfilPopIn onClose={() => setShowProfil(false)} />}
+
       {showLogin && 
         <LoginPopIn onClose={() => setShowLogin(false)} />}
       </div>
