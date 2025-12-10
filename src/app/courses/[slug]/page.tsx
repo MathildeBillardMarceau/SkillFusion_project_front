@@ -1,6 +1,7 @@
 "use client";
 // le useState (nécéssaire pour le showlogin)
 import Image from "next/image";
+import Link from "next/link";
 // le popin pour se connecter
 import { useState } from "react";
 // directive nécéssaire pour utiliser useState
@@ -13,6 +14,9 @@ export default function SingleCourse() {
   const [showLogin, setShowLogin] = useState(false);
   // on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
   const [checkedChapter, setCheckedChapter] = useState(false);
+  // permet de définir les chapitres déjà cochés (mockup marche sur 1 uniquement)
+  const [currentChapter, setCurrentChapter] = useState(false);
+  // permet d'afficher le chapitre en cours (mockup marche sur 3 uniquement)
   return (
     // début de la fonction qui return le contenu de la page
     <div className="m-10 ">
@@ -100,12 +104,23 @@ export default function SingleCourse() {
                     className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
                   />
                 </li>
-                <li className="flex flex-row justify-between font-bold  border-primary-red border-t-2 border-b-2 p-2 bg-primary-red/30">
-                  Etape 3{" "}
-                  <input
-                    type="checkbox"
-                    className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
-                  />
+                <li>
+                  <Link
+                    href={`http://localhost:3000/courses/erty`}
+                    className={`flex flex-row justify-between font-bold p-2 ${
+                      currentChapter
+                        ? "border-primary-red border-t-2 border-b-2  bg-primary-red/30"
+                        : ""
+                    } `}
+                    onClick={() => setCurrentChapter(!currentChapter)}
+                  >
+                    {" "}
+                    <span>Etape 3</span>
+                    <input
+                      type="checkbox"
+                      className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
+                    />
+                  </Link>
                 </li>
                 <li className="flex flex-row justify-between p-2">
                   Etape 1{" "}
