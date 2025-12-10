@@ -1,16 +1,31 @@
 import Image from "next/image";
 import { useState } from "react";
+import { LuUpload } from "react-icons/lu";
 
 export default function MediaPreviewer({
 	onFileSelected,
 	allowedTypes = "image/*,video/*",
+	maxSize = 500 * 1024 * 1024, // 500Mo
 }) {
 	const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+	const [error, setError] = useState("");
 
 	async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
 		if (!file) return;
+
+		// vérifier la taille max
+		if (file.size > maxSize) {
+			setError(
+				`le fichier dépasse la taille maximale autorisée (${(maxSize / (1024 * 1024)).toFixed(0)} Mo)`,
+			);
+			e.currentTarget.value = "";
+			setFileToUpload(null);
+			setPreviewUrl(null);
+			return;
+		}
+		setError("");
 
 		setFileToUpload(file);
 		onFileSelected(file);
@@ -21,15 +36,28 @@ export default function MediaPreviewer({
 	}
 
 	return (
-		<div>
-			<input type="file" accept={allowedTypes} onChange={handleFileChange} />
+		<div className="relative w-full h-full  flex items-center justify-center">
+			{error && <p className="text-red-950">{error}</p>}
+			<LuUpload className="absolute text-gray-400 text-7xl" />
 			{previewUrl && fileToUpload?.type.startsWith("image/") && (
-				<Image src={previewUrl} alt="" width={100} height={100} />
+				<Image
+					src={previewUrl}
+					alt=""
+					width={100}
+					height={100}
+					className="h-full w-auto"
+				/>
 			)}
 			{previewUrl && fileToUpload?.type.startsWith("video/") && (
 				// biome-ignore lint/a11y/useMediaCaption: c'est pour l'upload, pas de besoin d'accessibilité à ce niveau
 				<video src={previewUrl} width={100} height={100} />
 			)}
+			<input
+				type="file"
+				accept={allowedTypes}
+				onChange={handleFileChange}
+				className="absolute bottom-0  h-full w-full opacity-0"
+			/>
 		</div>
 	);
 }

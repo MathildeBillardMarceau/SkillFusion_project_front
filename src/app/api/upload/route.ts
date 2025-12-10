@@ -19,33 +19,66 @@ const ALLOWED_TYPES = [
 ];
 
 export async function POST(req: Request) {
-	const formData = await req.formData();
-	const file = formData.get("file") as File;
+	try {
+		const formData = await req.formData();
+		const file = formData.get("file") as File;
 
-	if (!file) return NextResponse.json({ error: "no file" }, { status: 400 });
+		if (!file) return NextResponse.json({ error: "no file" }, { status: 400 });
 
-	// vérifier le type de media
-	if (!ALLOWED_TYPES.includes(file.type))
+		// vérifier le type de media
+		if (!ALLOWED_TYPES.includes(file.type))
+			return NextResponse.json(
+				{ error: "file type not allowed" },
+				{ status: 400 },
+			);
+
+		// VERSION AVEC MEMOIRE TAMPON
+		// on convertit le fichier en buffer
+		// const arrayBuffer = await file.arrayBuffer();
+
+		// // vérifier le poids du media
+		// if (arrayBuffer.byteLength > MAX_SIZE)
+		// 	return NextResponse.json({ error: "file too large" }, { status: 400 });
+
+		// const buffer = Buffer.from(arrayBuffer);
+
+		// const fileName = `${Date.now()}_${file.name}`;
+		// const filePath = path.join(process.cwd(), "public/uploads", fileName);
+
+		// fs.writeFileSync(filePath, buffer);
+
+		// VESRION AVEC STREAMING
+		const fileName = `${Date.now()}_${file.name.replace(/\s+/g, "_")}`; // on sécurise le nom du fichier avec "replace"
+		const filePath = path.join(process.cwd(), "public/uploads", fileName);
+
+		// Créer un stream d'écriture pour ne pas charger tout le fichier en mémoire
+		const writable = fs.createWriteStream(filePath); // écrit les chunks directement en local
+		const readable = file.stream(); // pour lire le fichier par petits chunks
+
+		let uploadedBytes = 0;
+
+		// Copier les chunks du ReadableStream vers le WriteStream
+		for await (const chunk of readable) {
+			uploadedBytes += chunk.length;
+
+			if (uploadedBytes > MAX_SIZE_FOR_VIDEO) {
+				writable.destroy();
+				await fs.promises.unlink(filePath);
+				return NextResponse.json({ error: "File too large" }, { status: 400 });
+			}
+
+			writable.write(chunk);
+		}
+		writable.end();
+
+		const publicUrl = `/uploads/${fileName}`;
+
+		return NextResponse.json({ url: publicUrl });
+	} catch (e) {
+		console.error("upload failed", e);
 		return NextResponse.json(
-			{ error: "file type not allowed" },
-			{ status: 400 },
+			{ error: "Internal Server Error" },
+			{ status: 500 },
 		);
-
-	// on convertit le fichier en buffer
-	const arrayBuffer = await file.arrayBuffer();
-
-	// vérifier le poids du media
-	if (arrayBuffer.byteLength > MAX_SIZE)
-		return NextResponse.json({ error: "file too large" }, { status: 400 });
-
-	const buffer = Buffer.from(arrayBuffer);
-
-	const fileName = `${Date.now()}_${file.name}`;
-	const filePath = path.join(process.cwd(), "public/uploads", fileName);
-
-	fs.writeFileSync(filePath, buffer);
-
-	const publicUrl = `/uploads/${fileName}`;
-
-	return NextResponse.json({ url: publicUrl });
+	}
 }
