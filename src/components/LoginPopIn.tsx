@@ -98,7 +98,7 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
           logout();
           onClose()
         }}>déconnexion</button>
-        <button type="submit" className=" self-end w-30 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer ">connexion</button>
+        <button type="submit" className="self-end w-30 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer ">connexion</button>
         </div>
         <div className="flex justify-around ml-5">
         <button type="button" className=" self-end w-40 m-4 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer " onClick={()=> setShowRegister(true)}>Créer un compte</button>
