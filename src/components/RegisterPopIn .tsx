@@ -2,24 +2,20 @@
 import { useAuthStore } from "@/app/store/auth";
 import Image from "next/image";
 import { useState } from "react";
-import RegisterPopIn from "./RegisterPopIn ";
 
 
 
-interface ILoginPopInProps {
+interface IRegisterPopInProps {
   onClose: () => void;
 }
 
-export default function LoginPopIn({ onClose }: ILoginPopInProps) {
-
+export default function RegisterPopIn({ onClose }: IRegisterPopInProps) {
   const login = useAuthStore((state) => state.login);
 
-  const logout = useAuthStore((state) => state.logout);
-
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");    
-  
-  const [showRegister, setShowRegister] = useState(false);
+  const [password, setPassword] = useState("");     
 
   const handleSubmit =  async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -31,19 +27,18 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
         },
         body: JSON.stringify({
           query: `
-            mutation LoginUser($input: LoginUserInput!) {
-              loginUser(input: $input) {
-                user {
+            mutation RegisterUser($input: CreateUserInput!) {
+              registerUser(input: $input) {
+                User {
                   id
-                  email
                   firstName
                   lastName
+                  email
                 }
-                accessToken
               }
             }
           `,
-          variables: {input: {email, password}},
+          variables: {input: {firstName, lastName, email, password}},
         }),
       });
       const result = await response.json();
@@ -53,7 +48,7 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
         return;
       }
 
-      const { user, accessToken } = result.data.loginUser;    
+      const { user, accessToken } = result.data.registerUser;    
 
     if (!accessToken) {
       alert("Login failed: No token received");
@@ -63,7 +58,7 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
     onClose();
 
     } catch (error) {     
-      console.error("Error during login:", error);
+      console.error("Error during registration:", error);
       return;
     }
 
@@ -74,7 +69,7 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
     <div className="min-h-90 h-100 w-150 md:w-100">
       <p></p>
     </div>
-    <div className="min-h-90 h-100 w-70 md:w-110 flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30 bg-primary-red">
+    <div className="min-h-110 h-140 w-70 md:w-110 flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30 bg-primary-red">
       <div className="flex self-end">
         <button className="m-2 cursor-pointer" onClick={onClose}>
           <p className="text-background-charte ">
@@ -89,25 +84,21 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
       </div>
       <div>
       <form className="flex flex-col m-5" onSubmit={handleSubmit}>
+        <label className="font-display font-normal text-background-charte mb-1">Prénom</label>
+        <input name="firstname" type="firstname" className="mb-3 p-2 rounded-md border-2 border-background-charte bg-background-charte outline-hidden" onChange={(event) => setFirstName(event.target.value)}/>
+        <label className="font-display font-normal text-background-charte mb-1">Nom</label>
+        <input name="lastname" type="lastname" className="mb-3 p-2 rounded-md border-2 border-background-charte bg-background-charte outline-hidden" onChange={(event) => setLastName(event.target.value)}/>
         <label className="font-display font-normal text-background-charte mb-1">Adresse Mail</label>
         <input name="email" type="email" className="mb-3 p-2 rounded-md border-2 border-background-charte bg-background-charte" onChange={(event) => setEmail(event.target.value)}/>
         <label className="font-display font-normal text-background-charte mb-1">Mot de Passe</label>
         <input name="password" type="password" className="mb-3 p-2 rounded-md border-2 border-background-charte bg-background-charte outline-hidden" onChange={(event) => setPassword(event.target.value)}/>
         <div className="flex justify-around">
-        <button type="button" className=" self-end w-30 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer " onClick={() => {
-          logout();
-          onClose()
-        }}>déconnexion</button>
-        <button type="submit" className=" self-end w-30 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer ">connexion</button>
-        </div>
-        <div className="flex justify-around ml-5">
-        <button type="button" className=" self-end w-40 m-4 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer " onClick={()=> setShowRegister(true)}>Créer un compte</button>
+        <button type="submit" className=" self-end w-30 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer ">s'inscrire</button>
         </div>
       </form>
       </div>
     </div>
     <div className="min-h-90 h-90 w-150 md:w-100">
-    {showRegister && <RegisterPopIn onClose={() => setShowRegister(false)} />}
     </div>
     </div>
   )
