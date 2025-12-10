@@ -107,7 +107,7 @@ export default function LoginPopIn({ onClose }: ILoginPopInProps) {
       </div>
     </div>
     <div className="min-h-90 h-90 w-150 md:w-100">
-    {showRegister && <RegisterPopIn onClose={() => setShowRegister(false)} />}
+    {showRegister && <RegisterPopIn onFullClose={onClose} onClose={() => setShowRegister(false)} />}
     </div>
     </div>
   )

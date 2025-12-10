@@ -7,9 +7,10 @@ import { useState } from "react";
 
 interface IRegisterPopInProps {
   onClose: () => void;
+  onFullClose: () => void;
 }
 
-export default function RegisterPopIn({ onClose }: IRegisterPopInProps) {
+export default function RegisterPopIn({ onClose, onFullClose }: IRegisterPopInProps) {
 const login = useAuthStore((state) => state.login);
 
   const [firstName, setFirstName] = useState("");
@@ -103,7 +104,8 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
     login(user, accessToken);
 
-    onClose();
+    onFullClose();
+    
   } catch (error) {
     console.error("Error during registration or login:", error);
     alert("Une erreur est survenue");
@@ -148,3 +150,5 @@ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     </div>
   )
 }
+
+ 
