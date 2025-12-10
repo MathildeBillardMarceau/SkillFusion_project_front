@@ -1,37 +1,12 @@
-"use client"; // passer en "use client" pour utiliser le hook
-
-import type { CourseType } from "@/@types";
+"use client";
+import CoursesCard from "@/components/CoursesCard";
+import Header from "@/components/Header";
+import LoginPopIn from "@/components/LoginPopIn";
 import { useGraphQL } from "@/hooks/useGraphQL";
-import Link from "next/link";
+import { useState } from "react";
 
-export default function CoursesPage() {
-  // SANS LE HOOK
-  // export default async function CoursesPage() { "async" sans le hook
-  /* const fetchData = async () => {
-    // query graphQL
-    const query = `#graphql
-      query {
-        courses {
-          id
-          title
-          slug
-        }
-      }
-    `;
-
-    // requête au endpoint GraphQL
-    const res = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API_URL}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query }),
-      cache: "no-store",
-    });
-    const { data } = await res.json();
-    return data;
-  };
-  const CoursesData = await fetchData(); */
-
-  // AVEC LE HOOK
+export default function Courses() {
+  const [showLogin, setShowLogin] = useState(false);
   const {
     data: CoursesData,
     loading,
@@ -40,33 +15,41 @@ export default function CoursesPage() {
     `#graphql
     query {
       courses {
-        id
-        title
-        slug
+          id
+          title
+          slug
+          image
+          createdAt
+          description
       }
     }
   `,
     {},
   );
 
+  if (error) return <p>Error: {error}</p>;
+  if (!CoursesData?.courses) return <p>No courses</p>;      
   return (
-    <main>
-      <h1>Page des cours</h1>
-      <div>
-        {loading ? (
-          <>Loading...</>
-        ) : (
-          CoursesData?.courses.map((course: CourseType) => {
-            const { id, slug, title } = course;
-            return (
-              <Link key={id} href={`/courses/${slug}`}>
-                <div>Accéder aux détails du cours "{title}"</div>
-              </Link>
-            );
-          })
-        )}
-        <Link href={"/courses/create"}>Créer un cours</Link>
+    <div className="m-10">
+      <div className={`bg-[#F4ECE2] transition-all duration-300 ${
+        showLogin ? "blur-sm" : ""
+      }`}>
+      <header>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <Header onLoginclick={() => setShowLogin(true)}  />
+      </header>
+      <main className=" bg-[#F4ECE2]">
+
+          <div className="flex flex-row flex-wrap justify-center ">
+          {CoursesData.courses.map((course: CourseType) => (
+            < CoursesCard key={course.id} image={course.image} title={course.title} date={course.createdAt} description={course.description} />))}
+        </div>
+      </main>
       </div>
-    </main>
+      <div >
+      {showLogin && 
+        <LoginPopIn onClose={() => setShowLogin(false)} />}
+      </div>
+    </div>
   );
 }

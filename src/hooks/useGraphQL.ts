@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 export function useGraphQL<T>(query: string, variables?: any) {
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string| null>(null);
 
   // biome-ignore lint: correctnes/useExhaustiveDependencies <faux positif avec JSON.stringify(variables)>
   useEffect(() => {
@@ -26,10 +26,14 @@ export function useGraphQL<T>(query: string, variables?: any) {
         } else {
           setData(json.data);
         }
-      } catch (e) {
-        setError(e.message);
+      } catch (error: unknown ) {
+        if (error instanceof Error) {
+          setError(error.message);
+      } else {
+        setError(String(error));
       }
       setLoading(false);
+    }
     };
 
     fetchData();
