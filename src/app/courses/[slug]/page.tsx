@@ -12,6 +12,7 @@ export default function SingleCourse() {
   // fonction qui va afficher l'ensemble de la page
   const [showLogin, setShowLogin] = useState(false);
   // on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
+  const [checkedChapter, setCheckedChapter] = useState(false);
   return (
     // début de la fonction qui return le contenu de la page
     <div className="m-10 ">
@@ -32,9 +33,9 @@ export default function SingleCourse() {
             Changer son tableau électrique
           </h2>
 
-          <div className="flex basis-full w-full items-center justify-between space-between 10%  bg-[yellow] py-1 px-1">
+          <div className="flex basis-full w-full items-start justify-between space-between 0%  bg-[yellow] p-1">
             {/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
-            <div className="flex-col w-[70%] bg-[blue]">
+            <div className="flex-col w-[68%] bg-[blue]">
               {/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
               {/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
               <div className="w-full relative aspect-[16/9]">
@@ -77,23 +78,78 @@ export default function SingleCourse() {
                 </p>
               </div>
             </div>
-            <div className="flex-col w-[25%] bg-[green]">
-              <div className="box de droite haut avec la liste des chaptires">
-                <ul>
-                  <li>Etape 1</li>
-                  <li>Etape 2</li>
-                  <li>Etape 3</li>
-                </ul>
-              </div>
-              <div className="box de droite bas avec les infos du cours">
-                <p>durée: 2H30</p>
-                <p>niveau: Débutant</p>
-                <p>cout: minime</p>
-                <p>
-                  outils: perceuse, crayon,niveau à bulle, cheville
-                  MOLLY,marteau
-                </p>
-              </div>
+            <div className="flex flex-col w-[28%] gap-12 bg-[green]">
+              {/* ici on va définir les éléments de la colonne de gauche */}
+              <ul className="min-h-20 w-60 md:w-full flex flex-col gap-4 border-4 rounded-md border-primary-red shadow-xl/30">
+                {/* la classe du ul est la même que la classe du div ci-dessous */}
+                {/* les li vont être gérénées automatiquement */}
+                <li className="flex flex-row justify-between font-bold p-2">
+                  Etape 1{" "}
+                  <input
+                    type="checkbox"
+                    className={`appearance-none border-primary-red w-6 h-6 border-3 rounded 
+                      ${checkedChapter ? "bg-primary-red" : "border-primary-red"}`}
+                    checked={checkedChapter}
+                    onChange={() => setCheckedChapter(!checkedChapter)}
+                  />
+                </li>
+                <li className="flex flex-row justify-between font-bold p-2">
+                  Etape 2{" "}
+                  <input
+                    type="checkbox"
+                    className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
+                  />
+                </li>
+                <li className="flex flex-row justify-between font-bold  border-primary-red border-t-2 border-b-2 p-2 bg-primary-red/30">
+                  Etape 3{" "}
+                  <input
+                    type="checkbox"
+                    className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
+                  />
+                </li>
+                <li className="flex flex-row justify-between p-2">
+                  Etape 1{" "}
+                  <input
+                    type="checkbox"
+                    className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
+                  />
+                </li>
+                <li className="flex flex-row justify-between p-2">
+                  Etape 2{" "}
+                  <input
+                    type="checkbox"
+                    className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
+                  />
+                </li>
+                <li className="flex flex-row justify-between p-2">
+                  Etape 3{" "}
+                  <input
+                    type="checkbox"
+                    className="appearance-none border-primary-red w-6 h-6 border-3 rounded"
+                  />
+                </li>
+              </ul>
+              {/* cette className est la même que l'élément au-dessus (le ul) */}
+              <dl className="min-h-20 w-60 md:w-full flex flex-col gap-4 p-4 border-4 rounded-md border-primary-red justify-between shadow-xl/30">
+                <div className="flex flex-row gap-2">
+                  <dt className="font-bold capitalize">durée:</dt> <dd>2H30</dd>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <dt className="font-bold capitalize">niveau:</dt>{" "}
+                  <dd>débutant</dd>
+                </div>
+                <div className="flex flex-row gap-2">
+                  <dt className="font-bold capitalize">cout:</dt>{" "}
+                  <dd>faible</dd>
+                </div>
+                <div>
+                  <dt className="font-bold capitalize">outils:</dt>
+                  <dd>perceuse</dd> <dd>crayon</dd> <dd>niveau à bulle</dd>
+                  <dd>cheville</dd>
+                  <dd>MOLLY</dd>
+                  <dd>marteau</dd>
+                </div>
+              </dl>
             </div>
           </div>
         </main>
