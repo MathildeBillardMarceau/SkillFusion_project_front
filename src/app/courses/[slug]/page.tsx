@@ -32,15 +32,15 @@ export default function SingleCourse() {
         // modifie le blur en arrière plan quand on affiche le login
         // doit contenir toute la page (ou tous les éléments qu'on veut blur donc pas le header par exemple)
       >
-        <main className="flex flex-col h-[calc(100vh-HEADER_HEIGHT)] w-full mx-auto max-w-7xl  items-center justify-between gap-x-[5%] gap-y-4 py-4 px-2 bg-[#F0F] dark:bg-black sm:items-start">
+        <main className="flex flex-col h-[calc(100vh-HEADER_HEIGHT)] w-full mx-auto max-w-7xl  items-center justify-between gap-x-[5%] gap-y-4 py-4 px-2 dark:bg-black sm:items-start">
           {/* titre du chapitre */}
-          <h2 className="font-display-title font-bold text-2xl text-primary-red mx-2 bg-green-300">
+          <h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
             Changer son tableau électrique
           </h2>
           {/* contenu du cours */}
-          <div className="flex basis-full w-full items-start justify-between space-between 0%  bg-[yellow] p-1">
+          <div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
             {/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
-            <div className="flex flex-col w-[68%] bg-[blue]">
+            <div className="flex flex-col w-[68%] ">
               {/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
               {/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
               <div className="w-full relative aspect-[16/9] overflow-hidden rounded-4xl">
@@ -52,9 +52,13 @@ export default function SingleCourse() {
                   className="absolute top-0 left-0 object-cover"
                 />
               </div>
-              <div className="flex flex-col gap-6 bg-orange-400 p-2">
-                <h3 className="font-bold capitalize">Etape 5</h3>
-                <h4 className="font-bold capitalize">Traçage des repères</h4>
+              <div className="flex flex-col gap-6 p-2">
+                <h3 className="font-bold capitalize  text-primary-red">
+                  Etape 5
+                </h3>
+                <h4 className="font-bold capitalize  text-primary-red">
+                  Traçage des repères
+                </h4>
                 <p>
                   Contrary to popular belief, Lorem Ipsum is not simply random
                   text. It has roots in a piece of classical Latin literature
@@ -70,7 +74,7 @@ export default function SingleCourse() {
                   first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
                   comes from a line in section 1.10.32.
                 </p>
-                <h4 className="font-bold capitalize">
+                <h4 className="font-bold capitalize  text-primary-red">
                   Préparer les trous dans le placo
                 </h4>
                 <p>
@@ -80,7 +84,7 @@ export default function SingleCourse() {
                   also reproduced in their exact original form, accompanied by
                   English versions from the 1914 translation by H. Rackham.
                 </p>
-                <h4 className="font-bold capitalize">
+                <h4 className="font-bold capitalize  text-primary-red">
                   Vérifier qu'on ne perce pas dans un cable
                 </h4>
                 <p>
@@ -110,7 +114,7 @@ export default function SingleCourse() {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col w-[28%] gap-12 bg-[green]">
+            <div className="flex flex-col w-[28%] gap-12 ">
               {/* ici on va définir les éléments de la colonne de gauche */}
               <ul className="min-h-20 w-60 md:w-full flex flex-col gap-4 border-4 rounded-md border-primary-red shadow-xl/30">
                 {/* la classe du ul est la même que la classe du div ci-dessous */}
@@ -196,20 +200,20 @@ export default function SingleCourse() {
             </div>
           </div>
           {/* contenu du forum */}
-          <div className="flex flex-col basis-full w-full bg-purple-500 min-h-30">
+          <div className="flex flex-col gap-2 basis-full w-full min-h-30">
             {/* un post du forum */}
-            <div className="flex flex-row p2 w-full bg-amber-400 p-1  ">
-              <div className="bg-blue-300 flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-4 border-b-4 border-l-4">
+            <div className="flex flex-row p2 w-full p-1  ">
+              <div className=" flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-2 border-b-2 border-l-2">
                 <Image
                   src="/avatar/av01.jpg"
                   alt="avatar de av01"
                   width={150}
                   height={150}
-                  className="border-primary-red border-3 rounded"
+                  className="border-primary-red border-2 rounded"
                 />
                 <p className="font-bold text-primary-red">Avatar 01</p>
               </div>
-              <div className="bg-red-300 flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-4 border-b-4 border-r-4 ">
+              <div className=" flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-2 border-b-2 border-r-2 ">
                 <p className="italic font-light">10/12/2025 - 22H05</p>
                 <p>
                   J'ai vraiment beaucoup aimé ce cour pour apprendre à bien
@@ -221,15 +225,15 @@ export default function SingleCourse() {
                 </p>
                 <button
                   type="button"
-                  className=" self-end w-25 m-5 right-0 bottom-0 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"
+                  className="  self-end w-25 m-5 right-0 bottom-0 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"
                 >
                   Corriger
                 </button>
               </div>
             </div>
             {/* un post du forum */}
-            <div className="flex flex-row p2 w-full bg-amber-400 p-1  ">
-              <div className="bg-blue-300 flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-4 border-b-4 border-l-4">
+            <div className="flex flex-row p2 w-full  p-1  ">
+              <div className=" flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-4 border-b-4 border-l-4">
                 <Image
                   src="/avatar/av08.jpg"
                   alt="avatar de av08"
@@ -239,7 +243,7 @@ export default function SingleCourse() {
                 />
                 <p className="font-bold text-primary-red">Avatar 08</p>
               </div>
-              <div className="bg-red-300 flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-4 border-b-4 border-r-4 ">
+              <div className=" flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-4 border-b-4 border-r-4 ">
                 <p className="italic font-light">10/12/2025 - 22H20</p>
                 <p>
                   C'est vrai, du coup j'ai coupé le courant de tout l'immeuble
@@ -260,8 +264,8 @@ export default function SingleCourse() {
               </div>
             </div>
             {/* un post du forum */}
-            <div className="flex flex-row p2 w-full bg-amber-400 p-1  ">
-              <div className="bg-blue-300 flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-4 border-b-4 border-l-4">
+            <div className="flex flex-row p2 w-full  p-1  ">
+              <div className=" flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-4 border-b-4 border-l-4">
                 <Image
                   src="/avatar/av05.jpg"
                   alt="avatar de av05"
@@ -271,7 +275,7 @@ export default function SingleCourse() {
                 />
                 <p className="font-bold text-primary-red">Avatar 05</p>
               </div>
-              <div className="bg-red-300 flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-4 border-b-4 border-r-4 ">
+              <div className=" flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-4 border-b-4 border-r-4 ">
                 <p className="italic font-light">10/12/2025 - 22H20</p>
                 <p>
                   Désolé, mais je ne peux pas générer de spam, même fictif — ça
