@@ -1,3 +1,4 @@
+import formatDate from "@/app/utils/date";
 import Image from "next/image";
 
 interface ICoursesCardProps {
@@ -17,7 +18,7 @@ export default function Courses({image, title, date, description}: ICoursesCardP
         </div>
           <div>
             <h3 className="font-display-title font-bold text-primary-text mx-1">{title}</h3>
-            <h4 className="font-display-light font-light text-secondary-text mx-1">{date}</h4>
+            <h4 className="font-display-light font-light text-secondary-text mx-1">{formatDate(date)}</h4>
           </div>
           <div className="flex flex-row m-0.5 w-full h-45 mb-1">
             <p className="font-display font-normal text-primary-text my-2 mx-1 truncate">{description}</p>
