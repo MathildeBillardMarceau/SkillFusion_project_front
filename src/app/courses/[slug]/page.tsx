@@ -39,10 +39,10 @@ export default function SingleCourse() {
 
           <div className="flex basis-full w-full items-start justify-between space-between 0%  bg-[yellow] p-1">
             {/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
-            <div className="flex-col w-[68%] bg-[blue]">
+            <div className="flex flex-col w-[68%] bg-[blue]">
               {/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
               {/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
-              <div className="w-full relative aspect-[16/9]">
+              <div className="w-full relative aspect-[16/9] overflow-hidden rounded-4xl">
                 <Image
                   src="/images/tableau_electrique.jpg"
                   alt="tableau électrique"
@@ -51,10 +51,34 @@ export default function SingleCourse() {
                   className="absolute top-0 left-0 object-cover"
                 />
               </div>
-              <div className="box de gauche haut avec le media"></div>
-              <div className="box de gauche haut avec le contenu du cours et se coupe horizontalement">
+              <div className="flex flex-col gap-6 bg-orange-400 p-2">
                 <p>Etape 5</p>
                 <p>Traçage des repères</p>
+                <p>
+                  Traçages des repères Lorem ipsum dolor sit amet, consectetur
+                  adipiscing elit, sed do eiusmod tempor incididunt ut labore et
+                  dolore magna aliqua. Proin tortor purus platea sit eu id nisi
+                  litora libero. Neque vulputate consequat ac amet augue blandit
+                  maximus aliquet congue. Pharetra vestibulum posuere ornare
+                  faucibus fusce dictumst orci aenean eu facilisis ut volutpat
+                  commodo senectus purus himenaeos fames primis convallis nisi.
+                  Phasellus fermentum malesuada phasellus netus dictum aenean
+                  placerat egestas amet. Ornare taciti semper dolor tristique
+                  morbi. Sem leo tincidunt aliquet semper eu lectus scelerisque
+                  quis. Sagittis vivamus mollis nisi mollis enim fermentum
+                  laoreet. Curabitur semper venenatis lectus viverra ex dictumst
+                  nulla maximus. Primis iaculis elementum conubia feugiat
+                  venenatis dolor augue ac blandit nullam ac phasellus turpis
+                  feugiat mollis. Duis lectus porta mattis imperdiet vivamus
+                  augue litora lectus arcu. Justo torquent pharetra volutpat ad
+                  blandit bibendum accumsan nec elit cras luctus primis ipsum
+                  gravida class congue. Vehicula etiam elementum finibus enim
+                  duis feugiat commodo adipiscing tortor tempor elit. Et mollis
+                  consectetur habitant turpis tortor consectetur adipiscing
+                  vulputate dolor lectus iaculis convallis adipiscing. Nam
+                  hendrerit dignissim condimentum ullamcorper diam morbi eget
+                  consectetur odio in sagittis.
+                </p>
                 <p>
                   Traçages des repères Lorem ipsum dolor sit amet, consectetur
                   adipiscing elit, sed do eiusmod tempor incididunt ut labore et
@@ -145,7 +169,7 @@ export default function SingleCourse() {
                 </li>
               </ul>
               {/* cette className est la même que l'élément au-dessus (le ul) */}
-              <dl className="min-h-20 w-60 md:w-full flex flex-col gap-4 p-4 border-4 rounded-md border-primary-red justify-between shadow-xl/30">
+              <dl className="min-h-20 w-60 md:w-full flex flex-col gap-4 p-2 border-4 rounded-md border-primary-red justify-between shadow-xl/30">
                 <div className="flex flex-row gap-2">
                   <dt className="font-bold capitalize">durée:</dt> <dd>2H30</dd>
                 </div>
@@ -160,8 +184,8 @@ export default function SingleCourse() {
                 <div>
                   <dt className="font-bold capitalize">outils:</dt>
                   <dd>perceuse</dd> <dd>crayon</dd> <dd>niveau à bulle</dd>
-                  <dd>cheville</dd>
-                  <dd>MOLLY</dd>
+                  <dd>cheville à expansion</dd>
+                  <dd>pince pour cheville Molly</dd>
                   <dd>marteau</dd>
                 </div>
               </dl>
