@@ -65,6 +65,7 @@ export default function CoursesPage() {
             );
           })
         )}
+        <Link href={"/courses/create"}>Créer un cours</Link>
       </div>
     </main>
   );

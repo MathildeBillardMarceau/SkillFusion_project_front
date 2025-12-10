@@ -1,21 +1,23 @@
 "use client";
 import type { CourseType } from "@/@types";
-import { useGraphQL } from "@/hooks/useGraphQL";
+import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
+import Image from "next/image";
 import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 export type CourseBySlug = {
-  courseBySlug: CourseType;
+	courseBySlug: CourseType;
 };
 
 export default function CoursePage() {
-  // récupération du param
-  const { slug } = useParams();
-  console.log("params.slug", slug);
+	// récupération du param
+	const { slug } = useParams();
+	// console.log("params.slug", slug);
 
-  // SANS LE HOOK
-  // récupération des datas
-  // const [courseData, setCourseData] = useState<CourseType | null>(null);
-  /* useEffect(() => {
+	// SANS LE HOOK
+	// récupération des datas
+	// const [courseData, setCourseData] = useState<CourseType | null>(null);
+	/* useEffect(() => {
     const fetchData = async () => {
       // query graphQLs
       const query = `#graphql
@@ -51,7 +53,7 @@ export default function CoursePage() {
     });
   }, [slug]); */
 
-  const { data, loading, error } = useGraphQL<CourseBySlug>(
+	/*  const { data, loading, error } = useGraphQL<CourseBySlug>(
     `#graphql
   query ($slug: String!) {
     courseBySlug(slug: $slug) { 
@@ -61,20 +63,40 @@ export default function CoursePage() {
   }
 `,
     { slug },
-  );
+  ); */
 
-  if (!slug) return <>Aucun cours ici</>;
+	const { data, loading, error, fetchData } =
+		useLazyGraphQL<CourseBySlug>(`#graphql
+    query ($slug: String!) {
+      courseBySlug(slug: $slug) { 
+        id 
+        title 
+        image
+      }
+    }
+  `);
 
-  return (
-    <main>
-      {loading ? (
-        <>Loading...</>
-      ) : (
-        <>
-          <h1>Page du cours {data?.courseBySlug.title}</h1>
-          <div>détails du cours</div>
-        </>
-      )}
-    </main>
-  );
+	useEffect(() => {
+		console.log("params.slug", slug);
+		if (!slug) return;
+		fetchData({ slug });
+	}, [slug, fetchData]);
+
+	if (!slug || !data) return <>Aucun cours ici</>;
+
+	const { title, image } = data.courseBySlug;
+
+	return (
+		<main>
+			{loading ? (
+				<>Loading...</>
+			) : (
+				<>
+					<h1>Page du cours {title}</h1>
+					<div>détails du cours</div>
+					<Image src={image} width={200} height={200} alt="" />
+				</>
+			)}
+		</main>
+	);
 }
