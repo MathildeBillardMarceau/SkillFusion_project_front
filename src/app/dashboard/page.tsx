@@ -1,12 +1,37 @@
-import Link from "next/link";
+"use client";
+import Dashboard from "@/components/Dashboard";
+import Header from "@/components/Header";
+import LoginPopIn from "@/components/modals/LoginModal";
+import ProfilPopIn from "@/components/modals/ProfilPopIn";
+import { useState } from "react";
 
-export default function Dashboard() {
+export default function ProfilDashboard() {
+
+  const [showLogin, setShowLogin] = useState(false);
+  const [ showProfil, setShowProfil] = useState(false); 
+
+  
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-[#F4ECE2] dark:bg-black sm:items-start">
-        <div className="text-primary">Dashboard</div>
-        <Link href="/dashboard/create" className="px-4 py-2 border-2 rounded-md bg-secondary-red text-background-charte cursor-pointer transition hover:brightness-110">Créer un nouveau cours</Link>
+  <div className="m-10 ">
+      <div className={`bg-[#F4ECE2] transition-all duration-300 ${
+        showLogin || showProfil ? "blur-sm" : ""
+      }`}>
+      <header>
+        
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <Header onLoginclick={() => setShowLogin(true)} onProfilclick={() => setShowProfil(true)} />
+      </header>
+      <main className=" bg-[#F4ECE2] relative">
+      <Dashboard onClick={onCreateClick} />
       </main>
     </div>
+      <div>
+        {showProfil && 
+          <ProfilPopIn onClose={() => setShowProfil(false)} />}
+      </div>
+      <div>
+        {showLogin && <LoginPopIn onClose={() => setShowLogin(false)} />}
+      </div>
+  </div>
   );
 }
