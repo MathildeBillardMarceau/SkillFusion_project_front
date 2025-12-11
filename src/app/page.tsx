@@ -37,7 +37,7 @@ export default function Courses() {
         <ProfilPopIn onClose={() => setShowProfil(false)} />}
       </div>
       <div>
-      {showLogin && <LoginPopIn adresseMail="" motDePasse="" onClose={() => setShowLogin(false)} />}
+      {showLogin && <LoginPopIn onClose={() => setShowLogin(false)} />}
       </div>
     </div>
   );
