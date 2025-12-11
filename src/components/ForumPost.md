@@ -12,6 +12,11 @@
     - la date du message
     - les boutons pour éditer, admin, report ...
 
+## Fonctions
+deux fonctions pour la mis en forme:
+- la première met en forme la date
+- la seconde permet d'afficher juste la partie avatar + nom de l'utilisateur et est couplée à une ternaire dans le code pour définir s'il est à gauche ou à droite
+
 ## éléments interactifs
 - faire varier la couleur du background (un sur deux)
 - inverser le coté ou user s'affiche si current user
