@@ -1,5 +1,6 @@
 "use client";
 
+import { useAuthStore } from "@/app/store/auth";
 import MediaPreviewer from "@/components/MediaPreviewer";
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import { slugify } from "@/lib/helpers";
@@ -13,6 +14,8 @@ export default function CreateCoursePage() {
 	const [categoriesId, setCategoriesId] = useState<string[]>([]);
 	const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 	const [loading, setLoading] = useState(false);
+
+	const userId = useAuthStore((state) => state.user.id);
 
 	const {
 		data: dataCategories,
@@ -121,7 +124,7 @@ export default function CreateCoursePage() {
 						duration,
 						cost,
 						material,
-						userId: "019b02a7-c2ef-71cd-9b81-2257a7d82d27", // TODO: récupérer le userId
+						userId,
 						categoriesId,
 					},
 				},
