@@ -47,7 +47,7 @@ export default function ShowPost({
       <div className="flex flex-row w-[70%] mx-auto p-1">
         {/* partie date aligner à gauche*/}
         <div className="flex justify-start w-full gap-2">
-          <p className="italic font-light">{createdAt}</p>
+          <p className="italic font-light">{formatDateFr(createdAt)}</p>
         </div>
         {/* groupe de boutons - aligner à droite */}
         <div className="flex justify-end w-full gap-2">
@@ -73,4 +73,16 @@ export default function ShowPost({
       </div>
     </div>
   );
+}
+
+// fonction de mise en forme de la date qui se appelée pour formater createdAt lors de son affichage
+function formatDateFr(iso: string) {
+  return new Date(iso).toLocaleString("fr-FR", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
 }
