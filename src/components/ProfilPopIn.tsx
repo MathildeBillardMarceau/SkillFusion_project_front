@@ -1,6 +1,7 @@
 "use client";
 import { useAuthStore } from "@/app/store/auth";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 interface IProfilPopInProps {
@@ -22,7 +23,7 @@ export default function ProfilPopIn({ onClose }: IProfilPopInProps) {
           <Image src="/logo/Logo.svg" alt="Login Image" width={400} height={120} className=" max-w-20 object-cover w-20 h-20 mb-1 rounded-full border-2 bg-background-charte border-background-charte"/>
           </button>
           <div className="flex flex-col justify-center">
-            <button type="button" className=" self-end w-40 mt-1 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer " onClick={()=> setShowProfile(true)}>Tableau de bord</button>
+            <Link href={"/dashboard"} className=" self-end w-40 mt-1 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer " onClick={()=> setShowProfile(true)}>Tableau de bord</Link>
             <button type="button" className=" self-end w-40 mt-1 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer " onClick={() => {
               logout();
               onClose()
