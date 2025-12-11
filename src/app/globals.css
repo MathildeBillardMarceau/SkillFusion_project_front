@@ -3,6 +3,11 @@
 :root {
   --background: #f4ece2;
   --foreground: #171717;
+  /* Ajout de altground pour souligner message utilisateur */
+  --altground: #a78a7f;
+  /* ajout des couleurs de texte pour pouvoir les appliquer sur les éléments sans passer dans les balises */
+  --color-primary-text: #3c2e2a;
+  --color-primary-red: #8c1c13;
 }
 
 @theme {
@@ -15,7 +20,6 @@
 }
 
 @theme {
-  
   --color-foreground: var(--foreground);
   --font-display-title: "Inter", sans-serif;
   --font-display: "Roboto", sans-serif;
@@ -24,6 +28,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  /* utilisation de altground */
+  --color-altground: var(--altground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -39,4 +45,17 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Roboto", "Inter", sans-serif;
+}
+
+p {
+  color: var(--color-primary-text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--color-primary-red);
 }
