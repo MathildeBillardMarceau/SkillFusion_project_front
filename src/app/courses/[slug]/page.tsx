@@ -205,7 +205,7 @@ export default function SingleCourse() {
           {/* contenu du forum */}
           <div className="flex flex-col gap-4 basis-full w-full min-h-30">
             {/* message du forum en provenance du component */}
-            {messagesData.map((eachMsg) => (
+            {messagesData.map((eachMsg, index) => (
               <ShowPost
                 key={eachMsg.id}
                 createdAt={eachMsg.createdAt}
@@ -213,6 +213,11 @@ export default function SingleCourse() {
                 userName={eachMsg.userName}
                 userAvatar={eachMsg.userAvatar}
                 userRole={eachMsg.userRole}
+                isOdd={index % 2 === 1}
+                // renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
+                // on compare ensuite ce reste à 1
+                // si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
+                // et on le récupère dans le composant
               />
             ))}
           </div>

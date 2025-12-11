@@ -6,6 +6,7 @@ interface ShowOneMessage {
   userName: string;
   userAvatar: string;
   userRole: string;
+  isOdd: boolean;
 }
 
 export default function ShowPost({
@@ -14,10 +15,15 @@ export default function ShowPost({
   userName,
   userAvatar,
   userRole,
+  isOdd,
 }: ShowOneMessage) {
+  const bgOpacity = isOdd ? "30" : "50";
+  // on récupère le isOdd calculé sur l'index du map et on définit selon qu'il soit true ou false la valeur de bgOpacity, qu'on pourra ensuite utiliser pour afficher en alternance les deux fonds
   return (
     // bord de la case
-    <div className="flex flex-col p2 w-full p-1 shadow-xl/30 rounded-md bg-altground/50 ">
+    <div
+      className={`flex flex-col p2 w-full p-1 shadow-xl/30 rounded-md bg-altground/${bgOpacity}`}
+    >
       {/* partie avatar et message */}
       <div className="flex flex-row p2 w-full p-1">
         <div className="  flex flex-col items-center justify-start w-[15%] p-2">
