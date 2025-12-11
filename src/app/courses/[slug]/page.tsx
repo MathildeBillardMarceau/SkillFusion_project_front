@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 // le popin pour se connecter
+import ShowPost from "@/components/ForumPost";
 import { useState } from "react";
 // directive nécéssaire pour utiliser useState
 import Header from "@/components/Header";
@@ -200,10 +201,12 @@ export default function SingleCourse() {
             </div>
           </div>
           {/* contenu du forum */}
-          <div className="flex flex-col gap-2 basis-full w-full min-h-30">
+          <div className="flex flex-col gap-4 basis-full w-full min-h-30">
+            {/* message en component */}
+            <ShowPost />
             {/* un post du forum */}
-            <div className="flex flex-row p2 w-full p-1  border-primary-red shadow-xl/30 border-4 rounded-md bg-altground/50 ">
-              <div className="  flex flex-col items-center justify-start w-[20%] p-2">
+            <div className="flex flex-row p2 w-full p-1 shadow-xl/30 rounded-md bg-altground/50 ">
+              <div className="  flex flex-col items-center justify-start w-[15%] p-2">
                 <Image
                   src="/avatar/av01.jpg"
                   alt="avatar de av01"
@@ -213,7 +216,7 @@ export default function SingleCourse() {
                 />
                 <h5 className="font-bold text-primary-red">Avatar 01</h5>
               </div>
-              <div className=" flex flex-col justify-around w-[80%] p-4">
+              <div className=" flex flex-col justify-around w-[70%] p-4">
                 <p className="italic font-light">10/12/2025 - 22H05</p>
                 <p>
                   J'ai vraiment beaucoup aimé ce cour pour apprendre à bien
@@ -230,10 +233,12 @@ export default function SingleCourse() {
                   Corriger
                 </button>
               </div>
+              <div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
             </div>
             {/* un post du forum */}
-            <div className="flex flex-row p2 w-full  p-1  border-primary-red shadow-xl/30 border-4 rounded-md">
-              <div className=" flex flex-col justify-around w-[80%] p-4 ">
+            <div className="flex flex-row p2 w-full  p-1 shadow-xl/30 rounded-md bg-altground/25">
+              <div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
+              <div className=" flex flex-col justify-around w-[70%] p-4 ">
                 <p className="italic font-light">10/12/2025 - 22H20</p>
                 <p>
                   C'est vrai, du coup j'ai coupé le courant de tout l'immeuble
@@ -252,13 +257,13 @@ export default function SingleCourse() {
                   Corriger
                 </button>
               </div>
-              <div className=" flex flex-col items-center justify-start w-[20%] p-2">
+              <div className=" flex flex-col items-center justify-start w-[15%] p-2">
                 <Image
                   src="/avatar/av08.jpg"
                   alt="avatar de av08"
                   width={150}
                   height={150}
-                  className="border-primary-red border-3 rounded"
+                  className="border-primary-red border-2 rounded"
                 />
                 <h5 className="font-bold text-primary-red">Avatar 08</h5>
               </div>
