@@ -13,16 +13,9 @@ export default function ProfilDashboard() {
   
   return (
   <div className="m-10 ">
-      <div className={`bg-[#F4ECE2] transition-all duration-300 ${
-        showLogin || showProfil ? "blur-sm" : ""
-      }`}>
-      <header>
-        
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <Header onLoginclick={() => setShowLogin(true)} onProfilclick={() => setShowProfil(true)} />
-      </header>
+    <div>
       <main className=" bg-[#F4ECE2] relative">
-      <Dashboard onClick={onCreateClick} />
+      <Dashboard />
       </main>
     </div>
       <div>
