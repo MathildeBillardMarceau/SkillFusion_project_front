@@ -196,4 +196,24 @@ export const messagesData = [
     userRole: "APPRENTICE",
     courseId: "3",
   },
+  {
+    id: "21",
+    createdAt: "2025-12-11T09:00:00Z",
+    content:
+      "course 3\nSalut, moi c’est Lina, je suis quelqu’un de curieux et créatif.\nJ’adore découvrir de nouvelles idées et relever des défis.\nLa technologie et l’innovation me passionnent, j’aime apprendre tout le temps.\nJe suis plutôt organisée et j’aime planifier mes projets.\nTravailler en équipe me motive, j’aime collaborer et échanger avec les autres.\nLa culture, l’art et les voyages m’inspirent beaucoup.\nJe sais m’adapter facilement aux changements et aux situations imprévues.\nOn dit souvent de moi que je suis à l’écoute et bienveillante.\nJ’aime partager ce que je sais et aider les autres à progresser.\nEt surtout, je fonce dans mes projets avec énergie et détermination.\nSalut, moi c’est Lina, je suis quelqu’un de curieux et créatif.\nJ’adore découvrir de nouvelles idées et relever des défis.\nLa technologie et l’innovation me passionnent, j’aime apprendre tout le temps.\nJe suis plutôt organisée et j’aime planifier mes projets.\nTravailler en équipe me motive, j’aime collaborer et échanger avec les autres.\nLa culture, l’art et les voyages m’inspirent beaucoup.\nJe sais m’adapter facilement aux changements et aux situations imprévues.\nOn dit souvent de moi que je suis à l’écoute et bienveillante.\nJ’aime partager ce que je sais et aider les autres à progresser.\nEt surtout, je fonce dans mes projets avec énergie et détermination.\nSalut, moi c’est Lina, je suis quelqu’un de curieux et créatif.\nJ’adore découvrir de nouvelles idées et relever des défis.\nLa technologie et l’innovation me passionnent, j’aime apprendre tout le temps.\nJe suis plutôt organisée et j’aime planifier mes projets.\nTravailler en équipe me motive, j’aime collaborer et échanger avec les autres.\nLa culture, l’art et les voyages m’inspirent beaucoup.\nJe sais m’adapter facilement aux changements et aux situations imprévues.\nOn dit souvent de moi que je suis à l’écoute et bienveillante.\nJ’aime partager ce que je sais et aider les autres à progresser.\nEt surtout, je fonce dans mes projets avec énergie et détermination.\nSalut, moi c’est Lina, je suis quelqu’un de curieux et créatif.\nJ’adore découvrir de nouvelles idées et relever des défis.\nLa technologie et l’innovation me passionnent, j’aime apprendre tout le temps.\nJe suis plutôt organisée et j’aime planifier mes projets.\nTravailler en équipe me motive, j’aime collaborer et échanger avec les autres.\nLa culture, l’art et les voyages m’inspirent beaucoup.\nJe sais m’adapter facilement aux changements et aux situations imprévues.\nOn dit souvent de moi que je suis à l’écoute et bienveillante.\nJ’aime partager ce que je sais et aider les autres à progresser.\nEt surtout, je fonce dans mes projets avec énergie et détermination.",
+    userName: "Lina",
+    userAvatar: "av01.jpg",
+    userRole: "APPRENTICE",
+    courseId: "3",
+  },
+  {
+    id: "22",
+    createdAt: "2025-12-11T09:00:00Z",
+    content:
+      "course 2\nCoucou les gars, je spamme votre cours pour bien m'afficher à droite de l'écran car je suis une vraie USER!!!",
+    userName: "Lina",
+    userAvatar: "av01.jpg",
+    userRole: "APPRENTICE",
+    courseId: "2",
+  },
 ];

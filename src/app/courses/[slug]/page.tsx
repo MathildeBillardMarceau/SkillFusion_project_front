@@ -18,6 +18,7 @@ import { messagesData } from "@/data/messagesData";
 export default function SingleCourse() {
   const params = useParams();
   // je définit params depuis useParams() et je vais récupérer plus bas params.slug
+  const simConnectedUser = "Lina";
   const [showLogin, setShowLogin] = useState(false);
   // on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
   const [checkedChapter, setCheckedChapter] = useState(false);
@@ -222,6 +223,7 @@ export default function SingleCourse() {
                   userAvatar={eachMsg.userAvatar}
                   userRole={eachMsg.userRole}
                   isOdd={index % 2 === 1}
+                  connectedUser={simConnectedUser}
                   // renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
                   // on compare ensuite ce reste à 1
                   // si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
