@@ -17,7 +17,7 @@ export default function Courses({
 	return (
 		<div className="">
 			{/* max-w-300 max-h-500 */}
-			<div className="bg-background-charte sm:items-start w-[90vw] md:w-100">
+			<div className="bg-background-charte sm:items-start w-[90vw] md:w-97 max-w-97">
 				<div className=" flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30 min-h-90">
 					<div className="w-full h-45 mb-1">
 						{image && (

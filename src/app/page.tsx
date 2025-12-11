@@ -6,7 +6,7 @@ import { coursesData } from "@/data/coursesData";
 export default function Home() {
 	return (
 		<main>
-			<div className="flex flex-col max-w-7xl m-auto ">
+			<div className="flex flex-col max-w-7xl m-auto px-4">
 				<FilterHome />
 
 				<div className="flex flex-wrap flex-row justify-center gap-10">

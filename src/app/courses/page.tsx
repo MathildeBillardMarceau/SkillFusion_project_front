@@ -1,9 +1,6 @@
 "use client";
 import { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
-import Header from "@/components/Header";
-import LoginPopIn from "@/components/modals/LoginPopIn";
-import ProfilPopIn from "@/components/modals/ProfilPopIn";
 import { useGraphQL } from "@/hooks/useGraphQL";
 import { useState } from "react";
 
@@ -35,7 +32,7 @@ export default function Courses() {
 	return (
 		<main>
 			{/* <div className="flex flex-row flex-wrap justify-center "> */}
-			<div className="flex flex-col max-w-7xl m-auto ">
+			<div className="flex flex-col max-w-7xl m-auto p-4">
 				<div className="flex flex-wrap flex-row justify-center gap-10">
 					{CoursesData.courses.map((course: CourseType) => (
 						<CoursesCard

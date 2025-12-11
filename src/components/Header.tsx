@@ -14,7 +14,7 @@ export default function Header() {
 	return (
 		<header>
 			{/* className="bg-white" */}
-			<div className="flex flex-col justify-center items-center md:flex-row md:justify-between relative z-1 max-w-7xl m-auto py-4">
+			<div className="flex flex-col justify-center items-center md:flex-row md:justify-between relative z-1 max-w-7xl m-auto p-4">
 				<div className="flex cursor-pointer justify-center md:justify-start mb-10">
 					<Link
 						href="/"
