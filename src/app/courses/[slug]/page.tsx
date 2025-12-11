@@ -2,13 +2,15 @@
 // le useState (nécéssaire pour le showlogin)
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 // le popin pour se connecter
 import ShowPost from "@/components/ForumPost";
-import { useState } from "react";
 // directive nécéssaire pour utiliser useState
 import Header from "@/components/Header";
 // le composant header déjà utilisé dans les autres pages
 import LoginPopIn from "@/components/LoginPopIn";
+// les données mockup pour le forum
+import { messagesData } from "@/data/messagesData";
 
 export default function SingleCourse() {
   // fonction qui va afficher l'ensemble de la page
@@ -202,121 +204,17 @@ export default function SingleCourse() {
           </div>
           {/* contenu du forum */}
           <div className="flex flex-col gap-4 basis-full w-full min-h-30">
-            {/* message en component */}
-            <ShowPost />
-            {/* un post du forum */}
-            <div className="flex flex-row p2 w-full p-1 shadow-xl/30 rounded-md bg-altground/50 ">
-              <div className="  flex flex-col items-center justify-start w-[15%] p-2">
-                <Image
-                  src="/avatar/av01.jpg"
-                  alt="avatar de av01"
-                  width={150}
-                  height={150}
-                  className="border-primary-red border-2 rounded"
-                />
-                <h5 className="font-bold text-primary-red">Avatar 01</h5>
-              </div>
-              <div className=" flex flex-col justify-around w-[70%] p-4">
-                <p className="italic font-light">10/12/2025 - 22H05</p>
-                <p>
-                  J'ai vraiment beaucoup aimé ce cour pour apprendre à bien
-                  positionner mon tableau électrique. J'avais un peu peur de me
-                  prendre un coup de jus, heureusement j'ai demandé à ma copine
-                  avatar08 de me sécuriser au cas ou. En fait c'était une idée
-                  idiote, parce que sans tableau, pas de disjoncteur pour couper
-                  le courant si je m'électrocute
-                </p>
-                <button
-                  type="button"
-                  className="  self-end w-25 m-5 right-0 bottom-0 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"
-                >
-                  Corriger
-                </button>
-              </div>
-              <div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
-            </div>
-            {/* un post du forum */}
-            <div className="flex flex-row p2 w-full  p-1 shadow-xl/30 rounded-md bg-altground/25">
-              <div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
-              <div className=" flex flex-col justify-around w-[70%] p-4 ">
-                <p className="italic font-light">10/12/2025 - 22H20</p>
-                <p>
-                  C'est vrai, du coup j'ai coupé le courant de tout l'immeuble
-                  pour plus de sécurité. Le problème des tours IGH c'est que
-                  quand on coupe 400 logements d'un coup ça fait une surtention
-                  sur le secteur et ça a fait griller des équipements
-                  électriques chez les voisins. 😅 <br />
-                  <br />
-                  <br />
-                  Mais au moins on est vivantes lol 😹
-                </p>
-                <button
-                  type="button"
-                  className=" self-end w-25 m-5 right-0 bottom-0 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"
-                >
-                  Corriger
-                </button>
-              </div>
-              <div className=" flex flex-col items-center justify-start w-[15%] p-2">
-                <Image
-                  src="/avatar/av08.jpg"
-                  alt="avatar de av08"
-                  width={150}
-                  height={150}
-                  className="border-primary-red border-2 rounded"
-                />
-                <h5 className="font-bold text-primary-red">Avatar 08</h5>
-              </div>
-            </div>
-            {/* un post du forum */}
-            <div className="flex flex-row p2 w-full  p-1  ">
-              <div className=" flex flex-col items-center justify-start w-[20%] rounded-tl-md rounded-bl-md p-2  border-primary-red shadow-xl/30 border-t-4 border-b-4 border-l-4">
-                <Image
-                  src="/avatar/av05.jpg"
-                  alt="avatar de av05"
-                  width={150}
-                  height={150}
-                  className="border-primary-red border-3 rounded"
-                />
-                <p className="font-bold text-primary-red">Avatar 05</p>
-              </div>
-              <div className=" flex flex-col justify-around w-[80%] rounded-tr-md rounded-br-md p-2 border-primary-red shadow-xl/30 border-t-4 border-b-4 border-r-4 ">
-                <p className="italic font-light">10/12/2025 - 22H20</p>
-                <p>
-                  Désolé, mais je ne peux pas générer de spam, même fictif — ça
-                  facilite des usages abusifs. ✅ Si ton but est juste de tester
-                  l’affichage / mise en page dans ton interface, je peux te
-                  générer un texte neutre qui imite la forme d’un message de
-                  spam, sans contenu nuisible ni intention malveillante. Par
-                  exemple : « Bonjour, je suis un robot publicitaire fictif
-                  utilisé uniquement pour tester l’affichage des messages. Ceci
-                  est un texte de démonstration qui simule un message
-                  promotionnel générique, sans lien ni incitation réelle. Merci
-                  de ne pas tenir compte de son contenu. » Tu veux que je t’en
-                  génère un court, long, ou très caricatural pour tes tests d’UI
-                  ?<br />
-                  <br />
-                  Désolé, mais je ne peux pas générer de spam, même fictif — ça
-                  facilite des usages abusifs. ✅ Si ton but est juste de tester
-                  l’affichage / mise en page dans ton interface, je peux te
-                  générer un texte neutre qui imite la forme d’un message de
-                  spam, sans contenu nuisible ni intention malveillante. Par
-                  exemple : « Bonjour, je suis un robot publicitaire fictif
-                  utilisé uniquement pour tester l’affichage des messages. Ceci
-                  est un texte de démonstration qui simule un message
-                  promotionnel générique, sans lien ni incitation réelle. Merci
-                  de ne pas tenir compte de son contenu. » Tu veux que je t’en
-                  génère un court, long, ou très caricatural pour tes tests d’UI
-                  ?
-                </p>
-                <button
-                  type="button"
-                  className=" self-end w-25 m-5 right-0 bottom-0 px-2 border-2 rounded-md border-secondary-red bg-secondary-red text-background-charte cursor-pointer"
-                >
-                  Corriger
-                </button>
-              </div>
-            </div>
+            {/* message du forum en provenance du component */}
+            {messagesData.map((eachMsg) => (
+              <ShowPost
+                key={eachMsg.id}
+                createdAt={eachMsg.createdAt}
+                content={eachMsg.content}
+                userName={eachMsg.userName}
+                userAvatar={eachMsg.userAvatar}
+                userRole={eachMsg.userRole}
+              />
+            ))}
           </div>
         </main>
       </div>
