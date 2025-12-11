@@ -1,20 +1,21 @@
 {
-  // Utiliser Biome pour le formatage
-  "editor.defaultFormatter": "biomejs.biome",
-  "editor.formatOnSave": true,
+	// Utiliser Biome pour le formatage
+	"editor.defaultFormatter": "biomejs.biome",
+	"editor.formatOnSave": true,
 
-  // Tri automatique des imports à la sauvegarde
-  "editor.codeActionsOnSave": {
-    "source.organizeImports": "explicit"
-  },
+	// Tri automatique des imports à la sauvegarde
+	"editor.codeActionsOnSave": {
+		// "source.organizeImports": "explicit",
+		"source.organizeImports.biome": "explicit"
+	},
 
-  // Indentation et style
-  "editor.tabSize": 2,
-  "editor.insertSpaces": true,
+	// Indentation et style
+	"editor.tabSize": 2,
+	"editor.insertSpaces": true,
 
-  // Fichiers à ignorer
-  "files.exclude": {
-    "**/node_modules": true,
-    "**/dist": true
-  }
+	// Fichiers à ignorer
+	"files.exclude": {
+		"**/node_modules": true,
+		"**/dist": true
+	}
 }

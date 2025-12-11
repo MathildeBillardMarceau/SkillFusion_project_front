@@ -1,12 +1,12 @@
 "use client";
 
+import clsx from "clsx";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "@/app/store/auth";
 import MediaPreviewer from "@/components/MediaPreviewer";
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import { slugify } from "@/lib/helpers";
 import { uploadMedia } from "@/lib/uploadMedia";
-import clsx from "clsx";
-import { useEffect, useState } from "react";
 
 export default function CreateCoursePage() {
 	const [title, setTitle] = useState("");
@@ -70,31 +70,6 @@ export default function CreateCoursePage() {
 		const cost = formData.get("cost") as string;
 		const material = formData.get("material") as string;
 
-		console.log(
-			"title",
-			title,
-			"\n",
-			"slug",
-			slug,
-			"\n",
-			"description",
-			description,
-			"\n",
-			"duration",
-			duration,
-			"\n",
-			"material",
-			material,
-			"\n",
-			"level",
-			level,
-			"\n",
-			"categoriesId",
-			categoriesId,
-			"\n",
-		);
-		// return;
-
 		setLoading(true);
 		try {
 			// fichier à uploader
@@ -135,7 +110,7 @@ export default function CreateCoursePage() {
 	}
 
 	return (
-		<main className="w-full max-w-7xl h-lvh bg-gray-50 m-auto p-5">
+		<main className="w-full max-w-7xl h-lvh bg-gray-50 m-auto p-5 rounded-2xl">
 			{/* HEADER */}
 			{/* <header className="pb-10">
 				<div className="flex items-center justify-between">
@@ -158,7 +133,15 @@ export default function CreateCoursePage() {
 				</div>
 			</header> */}
 			{/* CONTENT */}
+			{/* 
 
+  --breakpoint-md: 830px;
+  --color-primary-text: #3c2e2a;
+  --color-secondary-text: #a78a7f;
+  --color-background-charte: #f4ece2;
+  --color-primary-red: #8c1c13;
+  --color-secondary-red: #bf4342;
+*/}
 			<div className="">
 				<div className="m-auto w-full max-w-4xl ">
 					<h1 className="text-2xl  ">Création d'un cours</h1>
@@ -180,7 +163,6 @@ export default function CreateCoursePage() {
 						<div className="py-4 flex gap-4 items-center">
 							{/* CATEGORIES */}
 							<p className="py-2">Catégorie(s)</p>
-							{loadingCategories && <>Loading categories...</>}
 							{!loadingCategories && (
 								<div className="flex gap-4 h-min">
 									{dataCategories?.categories?.map(
@@ -223,26 +205,28 @@ export default function CreateCoursePage() {
 								{/* LEVELS */}
 								<div className="py-4">
 									<p className="py-2">Niveau</p>
-									<div className="flex gap-4 h-min">
-										{dataLevels?.levels?.map((levelElement) => {
-											const isSelected = level === levelElement;
-											return (
-												<button
-													key={levelElement}
-													className={clsx(
-														"text-white  rounded-2xl px-4  py-1 flex h-min cursor-pointer",
-														isSelected ? "bg-blue-400" : "bg-gray-400",
-													)}
-													type="button"
-													onClick={() => {
-														setLevel(levelElement);
-													}}
-												>
-													{levelElement.toLowerCase()}
-												</button>
-											);
-										})}
-									</div>
+									{!loadingLevels && (
+										<div className="flex gap-4 h-min">
+											{dataLevels?.levels?.map((levelElement) => {
+												const isSelected = level === levelElement;
+												return (
+													<button
+														key={levelElement}
+														className={clsx(
+															"text-white  rounded-2xl px-4  py-1 flex h-min cursor-pointer",
+															isSelected ? "bg-blue-400" : "bg-gray-400",
+														)}
+														type="button"
+														onClick={() => {
+															setLevel(levelElement);
+														}}
+													>
+														{levelElement.toLowerCase()}
+													</button>
+												);
+											})}
+										</div>
+									)}
 								</div>
 							</div>
 							{/* UPLOAD IMAGE */}
