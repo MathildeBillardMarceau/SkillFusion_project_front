@@ -2,8 +2,8 @@
 import { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
 import Header from "@/components/Header";
-import LoginPopIn from "@/components/LoginPopIn";
-import ProfilPopIn from "@/components/ProfilPopIn";
+import LoginPopIn from "@/components/modals/LoginPopIn";
+import ProfilPopIn from "@/components/modals/ProfilPopIn";
 import { useGraphQL } from "@/hooks/useGraphQL";
 import { useState } from "react";
 

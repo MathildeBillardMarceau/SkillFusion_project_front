@@ -1,9 +1,9 @@
 "use client";
-import Header from "@/components/Header";
-import { useState } from "react";
-import LoginPopIn from "@/components/LoginPopIn";
-import ProfilPopIn from "@/components/ProfilPopIn";
 import Dashboard from "@/components/Dashboard";
+import Header from "@/components/Header";
+import LoginPopIn from "@/components/modals/LoginModal";
+import ProfilPopIn from "@/components/modals/ProfilPopIn";
+import { useState } from "react";
 
 export default function ProfilDashboard() {
 
@@ -22,7 +22,7 @@ export default function ProfilDashboard() {
       <Header onLoginclick={() => setShowLogin(true)} onProfilclick={() => setShowProfil(true)} />
       </header>
       <main className=" bg-[#F4ECE2] relative">
-      <Dashboard />
+      <Dashboard onClick={onCreateClick} />
       </main>
     </div>
       <div>
