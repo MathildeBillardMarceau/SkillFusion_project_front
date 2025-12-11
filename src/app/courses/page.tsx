@@ -1,21 +1,18 @@
 "use client";
 import { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
-import Header from "@/components/Header";
-import LoginPopIn from "@/components/LoginPopIn";
-import ProfilPopIn from "@/components/ProfilPopIn";
 import { useGraphQL } from "@/hooks/useGraphQL";
 import { useState } from "react";
 
 export default function Courses() {
-  const [ showProfil, setShowProfil] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const {
-    data: CoursesData,
-    loading,
-    error,
-  } = useGraphQL(
-    `#graphql
+	const [showProfil, setShowProfil] = useState(false);
+	const [showLogin, setShowLogin] = useState(false);
+	const {
+		data: CoursesData,
+		loading,
+		error,
+	} = useGraphQL(
+		`#graphql
     query {
       courses {
           id
@@ -27,36 +24,27 @@ export default function Courses() {
       }
     }
   `,
-    {},
-  );
+		{},
+	);
 
-  if (error) return <p>Error: {error}</p>;
-  if (!CoursesData?.courses) return <p>No courses</p>;      
-  return (
-    <div className="m-10">
-      <div className={`bg-[#F4ECE2] transition-all duration-300 ${
-        showLogin || showProfil ? "blur-sm" : ""
-      }`}>
-      <header>
-        <meta name="viewport" content="width=device-width, initial-scale=< set1.0" />
-      <Header onLoginclick={() => setShowLogin(true)} onProfilclick={() => setShowProfil(true)} />
-      </header>
-      <main className=" bg-[#F4ECE2]">
-
-          <div className="flex flex-row flex-wrap justify-center ">
-          {CoursesData.courses.map((course: CourseType) => (
-            < CoursesCard key={course.id} image={course.image} title={course.title} date={course.createdAt} description={course.description} />))}
-        </div>
-      </main>
-      </div>
-      <div>
-      {showProfil && 
-        <ProfilPopIn onClose={() => setShowProfil(false)} />}
-      </div>
-      <div >
-      {showLogin && 
-        <LoginPopIn onClose={() => setShowLogin(false)} />}
-      </div>
-    </div>
-  );
+	if (error) return <p>Error: {error}</p>;
+	if (!CoursesData?.courses) return <p>No courses</p>;
+	return (
+		<main>
+			{/* <div className="flex flex-row flex-wrap justify-center "> */}
+			<div className="flex flex-col max-w-7xl m-auto ">
+				<div className="flex flex-wrap flex-row justify-center gap-10">
+					{CoursesData.courses.map((course: CourseType) => (
+						<CoursesCard
+							key={course.id}
+							image={course.image}
+							title={course.title}
+							date={course.createdAt}
+							description={course.description}
+						/>
+					))}
+				</div>
+			</div>
+		</main>
+	);
 }
