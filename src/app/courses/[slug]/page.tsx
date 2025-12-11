@@ -2,6 +2,8 @@
 // le useState (nécéssaire pour le showlogin)
 import Image from "next/image";
 import Link from "next/link";
+import { useParams } from "next/navigation";
+// useParams va nous permettre de récupérer le slug pour avoir les commentaires qui correspondent aux deux forums
 import { useState } from "react";
 // le popin pour se connecter
 import ShowPost from "@/components/ForumPost";
@@ -12,8 +14,10 @@ import LoginPopIn from "@/components/LoginPopIn";
 // les données mockup pour le forum
 import { messagesData } from "@/data/messagesData";
 
+// fonction qui va afficher l'ensemble de la page
 export default function SingleCourse() {
-  // fonction qui va afficher l'ensemble de la page
+  const params = useParams();
+  // je définit params depuis useParams() et je vais récupérer plus bas params.slug
   const [showLogin, setShowLogin] = useState(false);
   // on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
   const [checkedChapter, setCheckedChapter] = useState(false);
@@ -205,21 +209,25 @@ export default function SingleCourse() {
           {/* contenu du forum */}
           <div className="flex flex-col gap-4 basis-full w-full min-h-30">
             {/* message du forum en provenance du component */}
-            {messagesData.map((eachMsg, index) => (
-              <ShowPost
-                key={eachMsg.id}
-                createdAt={eachMsg.createdAt}
-                content={eachMsg.content}
-                userName={eachMsg.userName}
-                userAvatar={eachMsg.userAvatar}
-                userRole={eachMsg.userRole}
-                isOdd={index % 2 === 1}
-                // renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
-                // on compare ensuite ce reste à 1
-                // si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
-                // et on le récupère dans le composant
-              />
-            ))}
+            {messagesData
+              // filter pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams()
+              .filter((eachMsg) => eachMsg.courseId === params.slug)
+              // map pour envoyer tous les messages filtrés au composant
+              .map((eachMsg, index) => (
+                <ShowPost
+                  key={eachMsg.id}
+                  createdAt={eachMsg.createdAt}
+                  content={eachMsg.content}
+                  userName={eachMsg.userName}
+                  userAvatar={eachMsg.userAvatar}
+                  userRole={eachMsg.userRole}
+                  isOdd={index % 2 === 1}
+                  // renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
+                  // on compare ensuite ce reste à 1
+                  // si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
+                  // et on le récupère dans le composant
+                />
+              ))}
           </div>
         </main>
       </div>
