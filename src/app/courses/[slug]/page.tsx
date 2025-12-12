@@ -1,17 +1,11 @@
 "use client";
 // le useState (nécéssaire pour le showlogin)
 import { useParams } from "next/navigation";
-import { useState } from "react";
 // useParams va nous permettre de récupérer le slug pour avoir les commentaires qui correspondent aux deux forums
 import ShowCourseLesson from "@/components/CourseLesson";
 // le popin pour se connecter
 import ShowPost from "@/components/ForumPost";
-// directive nécéssaire pour utiliser useState
-import Header from "@/components/Header";
-// le composant header déjà utilisé dans les autres pages
-import LoginPopIn from "@/components/LoginPopIn";
-// les données mockup pour le forum
-import { messagesData } from "@/data/messagesData";
+import { messagesData } from "@/data/messagesData"; // les données mockup pour le forum
 
 // le composant qui contient le cours
 
@@ -25,21 +19,15 @@ export default function SingleCourse() {
   const params = useParams();
   // je définit params depuis useParams() et je vais récupérer plus bas params.slug
   const simConnectedUser = "Lina";
-  const [showLogin, setShowLogin] = useState(false);
   // on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
 
   return (
     // début de la fonction qui return le contenu de la page
     <div className="m-10 ">
       {/* container principal avec un margin de 10 */}
-      <header>
-        <Header onLoginclick={() => setShowLogin(true)} />
-        {/* le composant header avec la valeur de setShowLogin */}
-      </header>
+
       <div
-        className={`bg-[#F4ECE2] transition-all duration-300 ${
-          showLogin ? "blur-sm" : ""
-        }`}
+        className={`bg-[#F4ECE2] transition-all duration-300`}
         // modifie le blur en arrière plan quand on affiche le login
         // doit contenir toute la page (ou tous les éléments qu'on veut blur donc pas le header par exemple)
       >
@@ -92,14 +80,6 @@ export default function SingleCourse() {
           </div>
         </main>
       </div>
-      {/* cette fonction affiche le popin login et est censé faire le blur en arrière plan */}
-      {showLogin && (
-        <LoginPopIn
-          adresseMail=""
-          motDePasse=""
-          onClose={() => setShowLogin(false)}
-        />
-      )}
     </div>
   );
 }
