@@ -38,7 +38,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 				<div className="relative" ref={menuRef}>
 					<button
 						onClick={() => {
-							setOpenProfil(true);
+							setOpenProfil(on => !on);
 						}}
 						type="button"
 						className="px-4 py-2 font-bold rounded-md bg-primary-red text-background-charte cursor-pointer min-w-50"
