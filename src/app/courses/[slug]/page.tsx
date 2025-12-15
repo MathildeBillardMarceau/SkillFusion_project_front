@@ -23,9 +23,9 @@ export default function SingleCourse() {
 	// on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
 
 	const {
-		data: messagesDataFromDB,
-		loading,
-		error,
+		data: messagesFromDBData,
+		loading: messagesFromDBLoading,
+		error: messagesFromDBError,
 	} = useGraphQL(
 		`#graphql
     query MessagesByCourseSlug($slug: String!) {
@@ -47,6 +47,41 @@ export default function SingleCourse() {
 		{ slug: params.slug },
 	);
 
+	const {
+		data: courseFromDBData,
+		loading: courseFromDBLoading,
+		error: courseFromDBError,
+	} = useGraphQL(
+		`#graphql
+    query CourseBySlug($slug: String!) {
+      courseBySlug(slug: $slug) {
+        id
+        title
+        slug
+        description
+        image
+        level
+        duration
+        cost
+        material
+        publishedAt
+        user {
+          firstName
+          lastName
+        }
+        categories {
+          name
+          color
+          icon
+        }
+        createdAt
+        updatedAt
+      }
+    }
+    `,
+		{ slug: params.slug },
+	);
+
 	return (
 		// début de la fonction qui return le contenu de la page
 		<div className="m-10 ">
@@ -60,7 +95,7 @@ export default function SingleCourse() {
 				<main className="flex flex-col h-[calc(100vh-HEADER_HEIGHT)] w-full mx-auto max-w-7xl  items-center justify-between gap-x-[5%] gap-y-4 py-4 px-2 dark:bg-black sm:items-start">
 					{/* titre du chapitre */}
 					<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
-						Changer son tableau électrique
+						{courseFromDBData?.courseBySlug?.title}
 					</h2>
 					{/* contenu du cours */}
 					<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
@@ -70,7 +105,11 @@ export default function SingleCourse() {
 							{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
 							<ShowCourseImage />
 							{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
-							<ShowCourseLesson />
+							<ShowCourseLesson
+								description={courseFromDBData?.courseBySlug?.description}
+								createdAt={courseFromDBData?.courseBySlug?.createdAt}
+								userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
+							/>
 						</div>
 						<div className="flex flex-col w-[28%] gap-12 ">
 							{/* ici on va définir les éléments de la colonne de gauche */}
@@ -83,7 +122,7 @@ export default function SingleCourse() {
 					{/* contenu du forum */}
 					<div className="flex flex-col gap-4 basis-full w-full min-h-30">
 						{/* message du forum en provenance du component */}
-						{messagesDataFromDB?.messagesByCourseSlug
+						{messagesFromDBData?.messagesByCourseSlug
 							// filter pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams()
 							//.filter((eachMsg) => eachMsg.courseId === params.slug)
 							// map pour envoyer tous les messages filtrés au composant
