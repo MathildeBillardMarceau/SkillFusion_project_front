@@ -96,33 +96,40 @@ export default function SingleCourse() {
 			>
 				<main className="flex flex-col h-[calc(100vh-HEADER_HEIGHT)] w-full mx-auto max-w-7xl  items-center justify-between gap-x-[5%] gap-y-4 py-4 px-2 dark:bg-black sm:items-start">
 					{/* titre du chapitre */}
-					<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
-						{courseFromDBData?.courseBySlug?.title}
-					</h2>
-					{/* contenu du cours */}
-					<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
-						{/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
-						<div className="flex flex-col w-[68%] ">
-							{/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
-							{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
-							<ShowCourseImage media={courseFromDBData?.courseBySlug?.image} />
-							{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
-							{!courseFromDBLoading && (
-								<ShowCourseLesson
-									description={courseFromDBData?.courseBySlug?.description}
-									createdAt={courseFromDBData?.courseBySlug?.createdAt}
-									userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
-								/>
-							)}
-						</div>
-						<div className="flex flex-col w-[28%] gap-12 ">
-							{/* ici on va définir les éléments de la colonne de gauche */}
-							{/* La navigation entre les chapitres */}
-							<ShowCourseChapters />
-							{/* les infos complémentaires */}
-							<ShowCourseTools />
-						</div>
-					</div>
+
+					{!courseFromDBLoading && (
+						<>
+							<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
+								{courseFromDBData?.courseBySlug?.title}
+							</h2>
+							{/* contenu du cours */}
+							<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
+								{/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
+								<div className="flex flex-col w-[68%] ">
+									{/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
+									{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
+									<ShowCourseImage
+										media={courseFromDBData?.courseBySlug?.image}
+									/>
+									{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
+
+									<ShowCourseLesson
+										description={courseFromDBData?.courseBySlug?.description}
+										createdAt={courseFromDBData?.courseBySlug?.createdAt}
+										userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
+									/>
+								</div>
+								<div className="flex flex-col w-[28%] gap-12 ">
+									{/* ici on va définir les éléments de la colonne de gauche */}
+									{/* La navigation entre les chapitres */}
+									<ShowCourseChapters />
+									{/* les infos complémentaires */}
+									<ShowCourseTools />
+								</div>
+							</div>
+						</>
+					)}
+
 					{/* contenu du forum */}
 					<div className="flex flex-col gap-4 basis-full w-full min-h-30">
 						{/* message du forum en provenance du component */}
