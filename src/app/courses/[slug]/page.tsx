@@ -1,5 +1,5 @@
 "use client";
-// le useState (nécéssaire pour le showlogin)
+// le useState (nécéssaire pour le showlogin) (test)
 import { useParams } from "next/navigation";
 // useParams va nous permettre de récupérer le slug pour avoir les commentaires qui correspondent aux deux forums
 import ShowCourseLesson from "@/components/CourseLesson";
