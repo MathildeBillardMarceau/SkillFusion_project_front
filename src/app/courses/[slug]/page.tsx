@@ -124,7 +124,12 @@ export default function SingleCourse() {
 									{/* La navigation entre les chapitres */}
 									<ShowCourseChapters />
 									{/* les infos complémentaires */}
-									<ShowCourseTools />
+									<ShowCourseTools
+										duration={courseFromDBData?.courseBySlug?.duration}
+										level={courseFromDBData?.courseBySlug?.level}
+										cost={courseFromDBData?.courseBySlug?.cost}
+										material={courseFromDBData?.courseBySlug?.material}
+									/>
 								</div>
 							</div>
 						</>
