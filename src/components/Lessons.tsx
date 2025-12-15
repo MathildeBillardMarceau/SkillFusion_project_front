@@ -85,7 +85,7 @@ export default function Lessons({ lessons, setLessons }: ILessonsProps) {
 				<DragOverlay>
 					{activeLesson ? (
 						<SortbaleLesson
-							lesson={{ ...activeLesson, isNew: true }}
+							lesson={{ ...activeLesson }}
 							lastCreatedLessonRef={lastCreatedLessonRef}
 							onChange={updateLesson}
 							onDelete={(id: string) =>
@@ -98,12 +98,12 @@ export default function Lessons({ lessons, setLessons }: ILessonsProps) {
 			<div className="flex flex-wrap">
 				<button
 					type="button"
-					className="flex items-center gap-2 bg-gray-500 text-white px-4 pr-5 py-2 rounded-4xl cursor-pointer transition-all hover:bg-blue-400"
+					className="flex items-center gap-2 bg-gray-500 text-white px-4 pr-5 py-2 rounded-4xl cursor-pointer transition-all hover:bg-primary-text-primary-red"
 					onClick={() => {
 						const newId = uuid();
 						setLessons((prev) => [
 							...prev,
-							{ id: newId, title: "", isNew: true, isOpen: true },
+							{ id: newId, title: "", isOpen: true },
 						]);
 
 						lastCreatedLessonRef.current = newId;
@@ -122,7 +122,6 @@ function SortbaleLesson({
 	onChange,
 	onDelete,
 }: ISortbaleLesson) {
-	const [isOpen, setIsOpen] = useState(lesson.isOpen);
 	const { id } = lesson;
 	const {
 		setNodeRef,
@@ -157,14 +156,14 @@ function SortbaleLesson({
 		>
 			<div
 				className={clsx(
-					"flex gap-2 items-center py-2 cursor-pointer transition hover:text-blue-400",
-					isOpen && "rotate-180",
+					"flex gap-2 items-center py-2 cursor-pointer transition hover:text-primary-red",
+					lesson.isOpen && "rotate-180",
 				)}
 			>
 				<IoMdArrowDropdownCircle
 					className="text-2xl"
 					onClick={() => {
-						setIsOpen((prev) => !prev);
+						onChange(lesson.id, { isOpen: !lesson.isOpen });
 					}}
 				/>
 			</div>
@@ -173,7 +172,7 @@ function SortbaleLesson({
 					ref={inputRef}
 					className={clsx(
 						"border p-2 transition",
-						isOpen ? "border-gray-300" : "border-transparent",
+						lesson.isOpen ? "border-gray-300" : "border-transparent",
 					)}
 					type="text"
 					placeholder="titre"
@@ -181,7 +180,7 @@ function SortbaleLesson({
 					value={lesson.title}
 					onChange={(e) => onChange(lesson.id, { title: e.target.value })}
 				/>
-				{isOpen && (
+				{lesson.isOpen && (
 					<div className="flex flex-col gap-2 w-full animate-fadeInDISABLED">
 						<div className="flex gap-4">
 							<textarea
@@ -217,11 +216,11 @@ function SortbaleLesson({
 			</div>
 			<div className="flex gap-2 items-center py-2">
 				<FaTrash
-					className="text-md cursor-pointer transition hover:text-blue-400"
+					className="text-md cursor-pointer transition hover:text-primary-red"
 					onClick={() => onDelete(lesson.id)}
 				/>
 				<button type="button" {...listeners} {...attributes}>
-					<RxDragHandleDots2 className="cursor-grab active:cursor-grabbing text-2xl transition hover:text-blue-400" />
+					<RxDragHandleDots2 className="cursor-grab active:cursor-grabbing text-2xl transition hover:text-primary-red" />
 				</button>
 			</div>
 		</article>

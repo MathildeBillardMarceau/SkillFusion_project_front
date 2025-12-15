@@ -49,7 +49,6 @@ export interface ILessonProps {
 	text?: string;
 	media?: MediaProps;
 	fileToUpload?: File | null;
-	isNew?: boolean;
 	isOpen?: boolean;
 }
 export interface ILessonsProps {

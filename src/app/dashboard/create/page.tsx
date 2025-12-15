@@ -170,7 +170,7 @@ export default function CreateCoursePage() {
 			await Promise.all(uploadPromises);
 
 			lessonsToSave = lessonsToSave.map(
-				({ isNew, isOpen, fileToUpload, ...rest }) => ({
+				({ isOpen, fileToUpload, ...rest }) => ({
 					...rest,
 				}),
 			);
