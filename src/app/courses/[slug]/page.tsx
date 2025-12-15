@@ -103,8 +103,9 @@ export default function SingleCourse() {
 						<div className="flex flex-col w-[68%] ">
 							{/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
 							{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
-							<ShowCourseImage />
+							<ShowCourseImage media={courseFromDBData?.courseBySlug?.image} />
 							{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
+
 							<ShowCourseLesson
 								description={courseFromDBData?.courseBySlug?.description}
 								createdAt={courseFromDBData?.courseBySlug?.createdAt}
