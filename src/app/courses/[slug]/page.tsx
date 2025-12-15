@@ -5,10 +5,12 @@ import { useParams } from "next/navigation";
 import ShowCourseLesson from "@/components/CourseLesson";
 // le popin pour se connecter
 import ShowPost from "@/components/ForumPost";
+
 //import { messagesData } from "@/data/messagesData"; // les données mockup pour le forum
 
 // le composant qui contient le cours
 
+import { useEffect } from "react";
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseTools from "@/components/CourseTools";
@@ -105,12 +107,13 @@ export default function SingleCourse() {
 							{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
 							<ShowCourseImage media={courseFromDBData?.courseBySlug?.image} />
 							{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
-
-							<ShowCourseLesson
-								description={courseFromDBData?.courseBySlug?.description}
-								createdAt={courseFromDBData?.courseBySlug?.createdAt}
-								userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
-							/>
+							{!courseFromDBLoading && (
+								<ShowCourseLesson
+									description={courseFromDBData?.courseBySlug?.description}
+									createdAt={courseFromDBData?.courseBySlug?.createdAt}
+									userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
+								/>
+							)}
 						</div>
 						<div className="flex flex-col w-[28%] gap-12 ">
 							{/* ici on va définir les éléments de la colonne de gauche */}
