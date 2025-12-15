@@ -1,4 +1,5 @@
 import Image from "next/image";
+import formatDateFr from "@/app/utils/datefr";
 
 interface ShowOneMessage {
 	createdAt: string;
@@ -78,17 +79,17 @@ export default function ShowPost({
 	);
 }
 
-// fonction de mise en forme de la date qui se appelée pour formater createdAt lors de son affichage
-function formatDateFr(iso: string) {
-	return new Date(iso).toLocaleString("fr-FR", {
-		day: "2-digit",
-		month: "short",
-		year: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		hour12: false,
-	});
-}
+// // fonction de mise en forme de la date qui se appelée pour formater createdAt lors de son affichage
+// function formatDateFr(iso: string) {
+// 	return new Date(iso).toLocaleString("fr-FR", {
+// 		day: "2-digit",
+// 		month: "short",
+// 		year: "numeric",
+// 		hour: "2-digit",
+// 		minute: "2-digit",
+// 		hour12: false,
+// 	});
+// }
 
 // fonction pour afficher l'avatar (et pouvoir l'afficher à gauche ou à droite selon les cas)
 function avatarBlock(userAvatar: string, userName: string) {

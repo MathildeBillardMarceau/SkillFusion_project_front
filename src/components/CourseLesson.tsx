@@ -4,6 +4,8 @@ interface CourseInfos {
 	userName: string;
 }
 
+import formatDateFr from "@/app/utils/datefr";
+
 export default function ShowCourseLesson({
 	description,
 	createdAt,
@@ -34,13 +36,13 @@ export default function ShowCourseLesson({
 }
 
 // fonction de mise en forme de la date qui se appelée pour formater createdAt lors de son affichage
-function formatDateFr(iso: string) {
-	return new Date(iso).toLocaleString("fr-FR", {
-		day: "2-digit",
-		month: "short",
-		year: "numeric",
-		hour: "2-digit",
-		minute: "2-digit",
-		hour12: false,
-	});
-}
+// function formatDateFr(iso: string) {
+// 	return new Date(iso).toLocaleString("fr-FR", {
+// 		day: "2-digit",
+// 		month: "short",
+// 		year: "numeric",
+// 		hour: "2-digit",
+// 		minute: "2-digit",
+// 		hour12: false,
+// 	});
+// }

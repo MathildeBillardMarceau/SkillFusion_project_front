@@ -1,7 +1,7 @@
 import Image from "next/image";
 
 interface CourseMainMedia {
-	media: string;
+	media?: string;
 }
 
 export default function ShowCourseImage({ media }: CourseMainMedia) {

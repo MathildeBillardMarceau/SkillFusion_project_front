@@ -1,8 +1,8 @@
 interface CourseTools {
-	duration: string;
-	level: string;
-	cost: string;
-	material: string;
+	duration?: string;
+	level?: string;
+	cost?: string;
+	material?: string;
 }
 
 export default function ShowCourseTools({
@@ -26,8 +26,8 @@ export default function ShowCourseTools({
 			</div>
 			<div>
 				<dt className="font-bold capitalize">outils:</dt>
-				{toolList.map((item, index) => {
-					return <dd key={index}>{item}</dd>;
+				{toolList.map((item) => {
+					return <dd key={item}>{item}</dd>;
 				})}
 				{/* <dd>perceuse</dd> <dd>crayon</dd> <dd>niveau à bulle</dd>
 				<dd>cheville à expansion</dd>

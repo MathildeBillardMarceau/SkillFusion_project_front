@@ -8,14 +8,30 @@ import ShowPost from "@/components/ForumPost";
 
 //import { messagesData } from "@/data/messagesData"; // les données mockup pour le forum
 
-// le composant qui contient le cours
-
 import { useEffect } from "react";
+// les différents composants du cours
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseTools from "@/components/CourseTools";
 import { useGraphQL } from "@/hooks/useGraphQL";
-// le composant qui contient la présentation du cours
+
+// ajout du typage du retour GQL pour éviter les erreurs sur courseBySlug
+interface CourseFromDB {
+	courseBySlug: {
+		id: string;
+		title: string;
+		description: string;
+		image: string;
+		level: string;
+		duration: string;
+		cost: string;
+		material: string;
+		createdAt: string;
+		updatedAt: string;
+		user: { firstName: string; lastName: string };
+		categories: { name: string; color: string; icon: string }[];
+	};
+}
 
 // fonction qui va afficher l'ensemble de la page
 export default function SingleCourse() {
@@ -53,7 +69,7 @@ export default function SingleCourse() {
 		data: courseFromDBData,
 		loading: courseFromDBLoading,
 		error: courseFromDBError,
-	} = useGraphQL(
+	} = useGraphQL<CourseFromDB>(
 		`#graphql
     query CourseBySlug($slug: String!) {
       courseBySlug(slug: $slug) {
@@ -84,6 +100,9 @@ export default function SingleCourse() {
 		{ slug: params.slug },
 	);
 
+	// pour ne pas avoir à utiliser 15 fois tout ce chemin, je le remplace par la variable course
+	const course = courseFromDBData?.courseBySlug;
+
 	return (
 		// début de la fonction qui return le contenu de la page
 		<div className="m-10 ">
@@ -99,36 +118,39 @@ export default function SingleCourse() {
 
 					{!courseFromDBLoading && (
 						<>
+							{/* Le courseFromDBLoading et le fragment <></> permettent déviter d'afficher la page tant qu'on a pas reçu les éléments de la requête et donc de faire des doubles loadings */}
 							<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
-								{courseFromDBData?.courseBySlug?.title}
+								{course?.title}
 							</h2>
+							{/* Possible ajout d'une ligne de catégories ici */}
 							{/* contenu du cours */}
 							<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
 								{/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
 								<div className="flex flex-col w-[68%] ">
 									{/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
 									{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
-									<ShowCourseImage
-										media={courseFromDBData?.courseBySlug?.image}
-									/>
+									<ShowCourseImage media={course?.image} />
 									{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
-
-									<ShowCourseLesson
-										description={courseFromDBData?.courseBySlug?.description}
-										createdAt={courseFromDBData?.courseBySlug?.createdAt}
-										userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
-									/>
+									{course && (
+										// je conditionne l'existence de course pour les erreurs de typage
+										<ShowCourseLesson
+											description={course?.description}
+											createdAt={course?.createdAt}
+											userName={`${course?.user.firstName} ${course?.user.lastName}`}
+										/>
+									)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
 									{/* ici on va définir les éléments de la colonne de gauche */}
 									{/* La navigation entre les chapitres */}
 									<ShowCourseChapters />
 									{/* les infos complémentaires */}
+									{/* Ces composants sont optionnels et sont donc mis en ? dans leur interface */}
 									<ShowCourseTools
-										duration={courseFromDBData?.courseBySlug?.duration}
-										level={courseFromDBData?.courseBySlug?.level}
-										cost={courseFromDBData?.courseBySlug?.cost}
-										material={courseFromDBData?.courseBySlug?.material}
+										duration={course?.duration}
+										level={course?.level}
+										cost={course?.cost}
+										material={course?.material}
 									/>
 								</div>
 							</div>
