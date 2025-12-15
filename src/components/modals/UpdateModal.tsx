@@ -12,7 +12,7 @@ export default function ProfilOnDashboard({
 	setOpenUpdate,
 }: IUpdateModalProps) {
  
-  const { user, token: accessToken, isAuthenticated } = useAuthStore();
+  const { user, token: accessToken, isAuthenticated, updateUser } = useAuthStore();
 
 
   const [email, setEmail] = useState("");
@@ -26,6 +26,7 @@ export default function ProfilOnDashboard({
       setLastName(user.lastName);
     }
   }, [user]);
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -69,9 +70,7 @@ export default function ProfilOnDashboard({
         throw new Error(result.errors[0].message);
       }
 
-      setEmail(result.data.updateUser.email);
-      setFirstName(result.data.updateUser.firstName);
-      setLastName(result.data.updateUser.lastName);
+      updateUser(result.data.updateUser);
 
       setOpenUpdate(false);
     } catch (error) {
@@ -95,7 +94,7 @@ export default function ProfilOnDashboard({
 				<input type="text" name="nom" placeholder="nom" className="mb-3 p-2 rounded-md border-2 border-background-charte bg-background-charte" value={lastName} onChange={(event) => setLastName(event.target.value)} /> 
 				
         
-        <button type="button"
+        <button type="submit"
 					className="underline cursor-pointer"> Enregister les modifications </button> 
 			</form>
 
