@@ -252,8 +252,8 @@ export default function CreateCoursePage() {
 					<h1 className="text-2xl">Création d'un cours</h1>
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
-				<div className="flex justify-end mr-2 -mt-5 fixed right-[max(1rem,calc((100vw-80rem)/2))] z-1">
-					<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs">
+				<div className="flex justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+					<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
 						<SwitchButton checked={published} setChecked={setPublished} />
 						<button
 							type="submit"
@@ -270,7 +270,7 @@ export default function CreateCoursePage() {
 					</div>
 				</div>
 				<form action={createCourse}>
-					<div className="m-auto w-full max-w-7xl p-5 pr-0 md:pr-75">
+					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						{/* TITLE */}
 						<input
 							className="border border-gray-300 p-2 w-full"
@@ -282,11 +282,11 @@ export default function CreateCoursePage() {
 								setTitle(e.currentTarget.value);
 							}}
 						/>
-						<div className="py-4 flex gap-4 items-center">
+						<div className="py-4 flex gap-4 items-baseline">
 							{/* CATEGORIES */}
 							<p className="py-2">Catégorie(s)</p>
 							{!loadingCategories && (
-								<div className="flex gap-4 h-min">
+								<div className="flex gap-4 h-min flex-wrap">
 									{dataCategories?.categories?.map(
 										(category: { id: string; name: string }) => {
 											const isSelected = categoriesId.includes(category.id);
@@ -328,7 +328,7 @@ export default function CreateCoursePage() {
 								<div className="py-4">
 									<p className="py-2">Niveau</p>
 									{!loadingLevels && (
-										<div className="flex gap-4 h-min">
+										<div className="flex gap-4 h-min flex-wrap">
 											{dataLevels?.levels?.map((levelElement: string) => {
 												const isSelected = level === levelElement;
 												const foundKey = Object.keys(levelTranslations).find(
@@ -370,7 +370,7 @@ export default function CreateCoursePage() {
 						</div>
 						{/* OPTIONNAL SETTINGS */}
 						<div className="flex justify-between py-4 gap-4">
-							<div className="flex w-full gap-4">
+							<div className="flex w-full gap-4 flex-wrap">
 								<input
 									className="border border-gray-300 p-2"
 									type="text"
@@ -395,7 +395,7 @@ export default function CreateCoursePage() {
 						{loading && <p>Uploading...</p>}
 					</div>
 					<div className="bg-amber-200">
-						<div className="m-auto w-full max-w-7xl p-5 pr-0 md:pr-75">
+						<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 							<Lessons lessons={lessons} setLessons={setLessons} />
 						</div>
 					</div>
