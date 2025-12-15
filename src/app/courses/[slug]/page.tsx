@@ -1,19 +1,13 @@
 "use client";
-// le useState (nécéssaire pour le showlogin) (test)
-import { useParams } from "next/navigation";
-// useParams va nous permettre de récupérer le slug pour avoir les commentaires qui correspondent aux deux forums
-import ShowCourseLesson from "@/components/CourseLesson";
-// le popin pour se connecter
-import ShowPost from "@/components/ForumPost";
 
-//import { messagesData } from "@/data/messagesData"; // les données mockup pour le forum
-
-import { useEffect } from "react";
-// les différents composants du cours
+import { useParams } from "next/navigation"; // récupération du slug
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
+import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
-import { useGraphQL } from "@/hooks/useGraphQL";
+import ShowPost from "@/components/ForumPost";
+
+import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 
 // ajout du typage du retour GQL pour éviter les erreurs sur courseBySlug
 interface CourseFromDB {
@@ -33,39 +27,23 @@ interface CourseFromDB {
 	};
 }
 
-// fonction qui va afficher l'ensemble de la page
+interface MessagesFromDb {
+	messagesByCourseSlug: {
+		id: string;
+		content: string;
+		createdAt: string;
+		updatedAt: string;
+		user: { firstName: string; lastName: string; id: string };
+		course: { title: string };
+	}[];
+}
+
 export default function SingleCourse() {
 	const params = useParams();
-	// je définit params depuis useParams() et je vais récupérer plus bas params.slug
 	const simConnectedUser = "Lina";
-	// on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
 
 	const {
-		data: messagesFromDBData,
-		loading: messagesFromDBLoading,
-		error: messagesFromDBError,
-	} = useGraphQL(
-		`#graphql
-    query MessagesByCourseSlug($slug: String!) {
-       messagesByCourseSlug(slug: $slug) {
-        id
-        content
-        user {
-          firstName
-          lastName
-          id
-        }
-        course {
-          title
-        }
-        createdAt
-        updatedAt
-    }
-  }`,
-		{ slug: params.slug },
-	);
-
-	const {
+		// requête pour aller récupérer les éléments du cours
 		data: courseFromDBData,
 		loading: courseFromDBLoading,
 		error: courseFromDBError,
@@ -73,66 +51,81 @@ export default function SingleCourse() {
 		`#graphql
     query CourseBySlug($slug: String!) {
       courseBySlug(slug: $slug) {
-        id
+        id            #inutile ?
         title
-        slug
+        slug          #utilisé pour la requête
         description
         image
         level
         duration
         cost
         material
-        publishedAt
+        publishedAt   #j'ai utilisé created at dans l'affichage
+        createdAt
+        updatedAt     #j'ai utilisé created at dans l'affichage
         user {
           firstName
           lastName
         }
-        categories {
+        categories {  #pas disponibles actuellement
           name
           color
           icon
         }
-        createdAt
-        updatedAt
       }
     }
     `,
 		{ slug: params.slug },
 	);
 
-	// pour ne pas avoir à utiliser 15 fois tout ce chemin, je le remplace par la variable course
-	const course = courseFromDBData?.courseBySlug;
+	const course = courseFromDBData?.courseBySlug; // chemin raccourci pour les éléments de la requête
 
+	const {
+		// requête pour aller récupérer les messages du forum
+		data: messagesFromDBData,
+		loading: messagesFromDBLoading,
+		error: messagesFromDBError,
+	} = useGraphQL<MessagesFromDb>(
+		`#graphql
+    query MessagesByCourseSlug($slug: String!) {
+      messagesByCourseSlug(slug: $slug) {
+      id
+      content
+      createdAt
+      updatedAt
+      user {
+        firstName
+        lastName
+        id
+        }
+      course {
+        title
+        }
+    }
+  }`,
+		{ slug: params.slug },
+	);
+
+	// début de la fonction qui return le contenu de la page
 	return (
-		// début de la fonction qui return le contenu de la page
 		<div className="m-10 ">
-			{/* container principal avec un margin de 10 */}
-
 			<div
 				className={`bg-[#F4ECE2] transition-all duration-300`}
-				// modifie le blur en arrière plan quand on affiche le login
-				// doit contenir toute la page (ou tous les éléments qu'on veut blur donc pas le header par exemple)
+				// gestion du blur
 			>
 				<main className="flex flex-col h-[calc(100vh-HEADER_HEIGHT)] w-full mx-auto max-w-7xl  items-center justify-between gap-x-[5%] gap-y-4 py-4 px-2 dark:bg-black sm:items-start">
-					{/* titre du chapitre */}
-
+					{/* Le courseFromDBLoading et le fragment <></> permettent déviter d'afficher la page tant qu'on a pas reçu les éléments de la requête et donc de faire des doubles loadings */}
 					{!courseFromDBLoading && (
 						<>
-							{/* Le courseFromDBLoading et le fragment <></> permettent déviter d'afficher la page tant qu'on a pas reçu les éléments de la requête et donc de faire des doubles loadings */}
 							<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
 								{course?.title}
 							</h2>
-							{/* Possible ajout d'une ligne de catégories ici */}
-							{/* contenu du cours */}
+							{/* TODO: Possible ajout d'une ligne de catégories ici */}
 							<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
-								{/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
+								{/* <div className="flexbox principale qui se coupe en deux verticalement G2/3 (avec media, texte) D1/3 (avec chapitres et outils"> */}
 								<div className="flex flex-col w-[68%] ">
-									{/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
-									{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
 									<ShowCourseImage media={course?.image} />
-									{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
-									{course && (
-										// je conditionne l'existence de course pour les erreurs de typage
+									{course && ( // je conditionne l'existence de course pour les erreurs de typage
 										<ShowCourseLesson
 											description={course?.description}
 											createdAt={course?.createdAt}
@@ -141,11 +134,7 @@ export default function SingleCourse() {
 									)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
-									{/* ici on va définir les éléments de la colonne de gauche */}
-									{/* La navigation entre les chapitres */}
 									<ShowCourseChapters />
-									{/* les infos complémentaires */}
-									{/* Ces composants sont optionnels et sont donc mis en ? dans leur interface */}
 									<ShowCourseTools
 										duration={course?.duration}
 										level={course?.level}
@@ -159,11 +148,9 @@ export default function SingleCourse() {
 
 					{/* contenu du forum */}
 					<div className="flex flex-col gap-4 basis-full w-full min-h-30">
-						{/* message du forum en provenance du component */}
 						{messagesFromDBData?.messagesByCourseSlug
-							// filter pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams()
+							// filter OLD: utile avec le mockup, plus avec GQL - pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams -
 							//.filter((eachMsg) => eachMsg.courseId === params.slug)
-							// map pour envoyer tous les messages filtrés au composant
 							.map((eachMsg, index) => (
 								<ShowPost
 									key={eachMsg.id}
@@ -174,10 +161,6 @@ export default function SingleCourse() {
 									userRole={eachMsg.userRole}
 									isOdd={index % 2 === 1}
 									connectedUser={simConnectedUser}
-									// renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
-									// on compare ensuite ce reste à 1
-									// si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
-									// et on le récupère dans le composant
 								/>
 							))}
 					</div>
@@ -186,3 +169,9 @@ export default function SingleCourse() {
 		</div>
 	);
 }
+
+// explication de isOdd={index % 2 === 1}
+// renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
+// on compare ensuite ce reste à 1
+// si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
+// et on le récupère dans le composant

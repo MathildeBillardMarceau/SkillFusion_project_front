@@ -29,10 +29,6 @@ export default function ShowCourseTools({
 				{toolList.map((item) => {
 					return <dd key={item}>{item}</dd>;
 				})}
-				{/* <dd>perceuse</dd> <dd>crayon</dd> <dd>niveau à bulle</dd>
-				<dd>cheville à expansion</dd>
-				<dd>pince pour cheville Molly</dd>
-				<dd>marteau</dd> */}
 			</div>
 		</dl>
 	);
