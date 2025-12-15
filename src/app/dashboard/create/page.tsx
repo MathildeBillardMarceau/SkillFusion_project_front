@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import dynamic from "next/dynamic";
+import { Switch } from "radix-ui";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type {
@@ -18,6 +19,30 @@ import { uploadMedia } from "@/lib/uploadMedia";
 
 // import Lessons from "@/components/Lessons";
 const Lessons = dynamic(() => import("@/components/Lessons"), { ssr: false });
+
+function SwitchButton({
+	checked,
+	setChecked,
+}: {
+	checked: boolean;
+	setChecked: (value: boolean) => void;
+}) {
+	return (
+		<div className="flex items-center gap-3 w-full">
+			<Switch.Root
+				className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-500 transition-colors data-[state=checked]:bg-primary-red"
+				checked={checked}
+				onCheckedChange={setChecked}
+				id="status"
+			>
+				<Switch.Thumb className="block h-5 w-5 translate-x-1 rounded-full bg-white shadow transition-transform will-change-transform data-[state=checked]:translate-x-5" />
+			</Switch.Root>
+			<label htmlFor="status" className="text-sm font-medium">
+				{checked ? "Doit être publié" : "Reste à l'état de brouillon"}
+			</label>
+		</div>
+	);
+}
 
 export default function CreateCoursePage() {
 	const [lessons, setLessons] = useState<ILessonProps[]>([
@@ -38,6 +63,7 @@ export default function CreateCoursePage() {
 			title: "titre d'une leçon 2",
 		}, */
 	]);
+	const [published, setPublished] = useState(false);
 	const [title, setTitle] = useState("");
 	const [level, setLevel] = useState<string | null>(null);
 	const [categoriesId, setCategoriesId] = useState<string[]>([]);
@@ -98,13 +124,6 @@ export default function CreateCoursePage() {
           }
         `,
 		});
-
-		/* 
-		{levelTranslations[
-															Object.keys(levelTranslations).find(
-																(l) => l === levelElement,
-															)
-														] || levelElement.toLowerCase()} */
 	}, [fetchLevels]);
 
 	async function createCourse(formData: FormData) {
@@ -135,8 +154,8 @@ export default function CreateCoursePage() {
 					};
 				}
 			}
-			//////////////////////////
-			//////////////////////////
+
+			// images des leçons à uploader
 			let lessonsToSave = [...lessons];
 			const uploadPromises = lessonsToSave.map(async (l) => {
 				if (l?.fileToUpload && !l?.media?.url?.includes(l.fileToUpload?.name)) {
@@ -170,6 +189,7 @@ export default function CreateCoursePage() {
 					material,
 					userId,
 					categoriesId,
+					publishedAt: published ? new Date().toISOString() : null,
 					lessons: lessonsToSave,
 				},
 			});
@@ -193,6 +213,7 @@ export default function CreateCoursePage() {
 							material
 							userId
 							categoriesId
+							publishedAt
             }
           }
         `,
@@ -208,6 +229,7 @@ export default function CreateCoursePage() {
 						material,
 						userId,
 						categoriesId,
+						publishedAt: published ? new Date().toISOString() : null,
 					},
 				},
 			});
@@ -224,14 +246,31 @@ export default function CreateCoursePage() {
 	} as Record<string, string>;
 
 	return (
-		<main className="w-full  h-lvh bg-white m-auto">
+		<main className="w-full h-lvh bg-white m-auto">
 			<div className="">
-				<div className="m-auto w-full max-w-7xl m-auto  p-5 bg-white ">
-					<h1 className="text-2xl  ">Création d'un cours</h1>
+				<div className="m-auto w-full max-w-7xl p-5 bg-white ">
+					<h1 className="text-2xl">Création d'un cours</h1>
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
+				<div className="flex justify-end mr-2 -mt-5 fixed right-[max(1rem,calc((100vw-80rem)/2))] z-1">
+					<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs">
+						<SwitchButton checked={published} setChecked={setPublished} />
+						<button
+							type="submit"
+							disabled={loading || loadingGQL || !title.length}
+							className={clsx(
+								"text-white py-2 px-4 rounded font-bold cursor-pointer transition-all hover:bg-primary-red",
+								loading || loadingGQL || !title.length
+									? "bg-gray-200 pointer-events-none"
+									: "bg-gray-500",
+							)}
+						>
+							Enregistrer
+						</button>
+					</div>
+				</div>
 				<form action={createCourse}>
-					<div className="m-auto w-full max-w-7xl p-5">
+					<div className="m-auto w-full max-w-7xl p-5 pr-0 md:pr-75">
 						{/* TITLE */}
 						<input
 							className="border border-gray-300 p-2 w-full"
@@ -257,7 +296,7 @@ export default function CreateCoursePage() {
 													key={category.id}
 													className={clsx(
 														"text-white  rounded-2xl px-4 py-1 flex transition-all cursor-pointer",
-														isSelected ? "bg-blue-400" : "bg-gray-400",
+														isSelected ? "bg-primary-red" : "bg-gray-400",
 													)}
 													onClick={() => {
 														if (categoriesId.includes(category.id)) {
@@ -303,7 +342,7 @@ export default function CreateCoursePage() {
 														key={levelElement}
 														className={clsx(
 															"text-white  rounded-2xl px-4  py-1 flex h-min cursor-pointer",
-															isSelected ? "bg-blue-400" : "bg-gray-400",
+															isSelected ? "bg-primary-red" : "bg-gray-400",
 														)}
 														type="button"
 														onClick={() => {
@@ -354,23 +393,9 @@ export default function CreateCoursePage() {
 						</div>
 
 						{loading && <p>Uploading...</p>}
-						<div className="flex justify-end mt-4">
-							<button
-								type="submit"
-								disabled={loading || loadingGQL || !title.length}
-								className={clsx(
-									"text-white py-2 px-4 rounded font-bold cursor-pointer transition-all hover:bg-blue-400",
-									loading || loadingGQL || !title.length
-										? "bg-gray-200 pointer-events-none"
-										: "bg-gray-500",
-								)}
-							>
-								Enregistrer
-							</button>
-						</div>
 					</div>
 					<div className="bg-amber-200">
-						<div className="m-auto w-full max-w-7xl p-5">
+						<div className="m-auto w-full max-w-7xl p-5 pr-0 md:pr-75">
 							<Lessons lessons={lessons} setLessons={setLessons} />
 						</div>
 					</div>
