@@ -2,7 +2,6 @@
 
 import clsx from "clsx";
 import dynamic from "next/dynamic";
-import { Switch, Toast } from "radix-ui";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type {
@@ -12,37 +11,15 @@ import type {
 	MediaProps,
 } from "@/@types";
 import { useAuthStore } from "@/app/store/auth";
-import MediaPreviewer from "@/components/MediaPreviewer";
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import { slugify } from "@/lib/helpers";
 import { uploadMedia } from "@/lib/uploadMedia";
+import MediaPreviewer from "@/ui/MediaPreviewer";
+import { SwitchButton } from "@/ui/SwitchButton";
+import { Toaster } from "@/ui/Toaster";
 
 // import Lessons from "@/components/Lessons";
 const Lessons = dynamic(() => import("@/components/Lessons"), { ssr: false });
-
-function SwitchButton({
-	checked,
-	setChecked,
-}: {
-	checked: boolean;
-	setChecked: (value: boolean) => void;
-}) {
-	return (
-		<div className="flex items-center gap-3 w-full">
-			<Switch.Root
-				className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-500 transition-colors data-[state=checked]:bg-primary-red"
-				checked={checked}
-				onCheckedChange={setChecked}
-				id="status"
-			>
-				<Switch.Thumb className="block h-5 w-5 translate-x-1 rounded-full bg-white shadow transition-transform will-change-transform data-[state=checked]:translate-x-5" />
-			</Switch.Root>
-			<label htmlFor="status" className="text-sm font-medium">
-				{checked ? "Doit être publié" : "Reste à l'état de brouillon"}
-			</label>
-		</div>
-	);
-}
 
 export default function CreateCoursePage() {
 	const [lessons, setLessons] = useState<ILessonProps[]>([
@@ -324,7 +301,12 @@ export default function CreateCoursePage() {
 				<form action={createCourse}>
 					<div className="flex flex-col justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
 						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
-							<SwitchButton checked={published} setChecked={setPublished} />
+							<SwitchButton
+								checked={published}
+								setChecked={setPublished}
+								textTrue="Doit être publié"
+								textFalse="Reste à l'état de brouillon"
+							/>
 							<button
 								type="submit"
 								disabled={loading || loadingGQL || !title.length}
@@ -338,21 +320,12 @@ export default function CreateCoursePage() {
 								Enregistrer
 							</button>
 						</div>
-						<Toast.Provider>
-							<Toast.Root
-								className="mt-2  text-white px-4 py-2 rounded shadow-lg"
-								style={{
-									backgroundColor: bgColorToast,
-								}}
-								open={openToast}
-								onOpenChange={setOpenToast}
-							>
-								<Toast.Description>
-									<p dangerouslySetInnerHTML={{ __html: messageToast }} />
-								</Toast.Description>
-							</Toast.Root>
-							<Toast.Viewport />
-						</Toast.Provider>
+						<Toaster
+							openToast={openToast}
+							setOpenToast={setOpenToast}
+							messageToast={messageToast}
+							bgColorToast={bgColorToast}
+						/>
 					</div>
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						{/* TITLE */}
