@@ -1,12 +1,13 @@
 "use client";
 
+import { channel } from "diagnostics_channel";
 import { useParams } from "next/navigation"; // récupération du slug
+import { useEffect, useState } from "react"; // le useState pour le browsing des chapitres
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
 import ShowPost from "@/components/ForumPost";
-
 import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 
 // ajout du typage du retour GQL pour éviter les erreurs sur courseBySlug
@@ -115,6 +116,20 @@ export default function SingleCourse() {
 		{ slug: params.slug },
 	);
 
+	const [selectedChapter, setSelectedChapter] = useState(
+		course?.chapters[0] || null,
+	);
+
+	useEffect(
+		() => {
+			// fonction qui permet de changer la valeur de course (manuellement pour l'instant)
+			if (course?.chapters?.length) {
+				setSelectedChapter(course.chapters[2]);
+			}
+		},
+		[course], // ici on précise que useEffect ne s'applique que pour les éléments de course (et donc chapter)
+	);
+
 	// début de la fonction qui return le contenu de la page
 	return (
 		<div className="m-10 ">
@@ -137,13 +152,17 @@ export default function SingleCourse() {
 								{/* <div className="flexbox principale qui se coupe en deux verticalement G2/3 (avec media, texte) D1/3 (avec chapitres et outils"> */}
 								<div className="flex flex-col w-[68%] ">
 									<ShowCourseImage media={course?.image} />
-									{course && ( // je conditionne l'existence de course pour les erreurs de typage
-										<ShowCourseLesson
-											description={course?.description}
-											createdAt={course?.createdAt}
-											userName={`${course?.user.firstName} ${course?.user.lastName}`}
-										/>
-									)}
+									{course &&
+										selectedChapter && ( // je conditionne l'existence de course pour les erreurs de typage
+											<ShowCourseLesson
+												description={course.description}
+												createdAt={course.createdAt}
+												userName={`${course.user.firstName} ${course?.user.lastName}`}
+												chapterTitle={selectedChapter.title}
+												chapterDescription={selectedChapter.description}
+												chapterText={selectedChapter.text}
+											/>
+										)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
 									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-4 border-4 rounded-md border-primary-red shadow-xl/30">
