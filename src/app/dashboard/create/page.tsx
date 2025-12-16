@@ -299,8 +299,8 @@ export default function CreateCoursePage() {
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
 				<form action={createCourse}>
-					<div className="flex flex-col justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
-						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
+					<div className="flex flex-col justify-end z-0 mx-4 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto md:mx-0">
 							<SwitchButton
 								checked={published}
 								setChecked={setPublished}
