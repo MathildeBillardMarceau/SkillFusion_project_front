@@ -12,8 +12,10 @@
 	--color-primary-text: #3c2e2a;
 	--color-secondary-text: #a78a7f;
 	--color-background-charte: #f4ece2;
-	--color-primary-red: #8c1c13;
-	--color-secondary-red: #bf4342;
+	/* --color-primary-red: #8c1c13; */
+	--color-primary-red: #e91d63;
+	/* --color-secondary-red: #bf4342; */
+	--color-secondary-red: #f28c8e;
 }
 
 @theme {

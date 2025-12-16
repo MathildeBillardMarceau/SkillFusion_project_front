@@ -122,7 +122,7 @@ export default function SingleCourse() {
 		() => {
 			// fonction qui permet de changer la valeur de course (manuellement pour l'instant)
 			if (course?.chapters?.length) {
-				setSelectedChapter(course.chapters[2]);
+				setSelectedChapter(course.chapters[0]);
 			}
 		},
 		[course], // ici on précise que useEffect ne s'applique que pour les éléments de course (et donc chapter)
