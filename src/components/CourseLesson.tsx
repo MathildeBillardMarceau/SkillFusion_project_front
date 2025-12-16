@@ -19,12 +19,16 @@ export default function ShowCourseLesson({
 }: CourseInfos) {
 	return (
 		<div className="flex flex-col gap-6 p-2">
-			<h3 className="font-bold capitalize  text-primary-red">{chapterTitle}</h3>
-			<p className="font-bold text-primary-text">
+			<h2 className="font-bold capitalize  text-primary-red text-2xl">
+				{chapterTitle}
+			</h2>
+			<p className="italic text-primary-text text-lg">
 				{chapterDescription || "chargement en cours"}
 			</p>
-			{chapterText}
-
+			<div
+				className="chapter-content"
+				dangerouslySetInnerHTML={{ __html: chapterText }}
+			/>
 			{/* <h4 className="font-bold capitalize  text-primary-red">
 				Traçage des repères
 			</h4>
@@ -38,7 +42,7 @@ export default function ShowCourseLesson({
 			</h4>
 			<p>{description || "chargement en cours"}</p> */}
 			<div>
-				<p className="italic font-light">
+				<p className="text-sm text-primary-text italic font-light">
 					Publié le {formatDateFr(createdAt)} par{`${userName}`}
 				</p>
 			</div>

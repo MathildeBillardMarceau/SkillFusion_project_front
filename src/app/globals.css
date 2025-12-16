@@ -3,8 +3,8 @@
 :root {
 	--background: #f4ece2;
 	--foreground: #171717;
-   /* Ajout de altground pour souligner message utilisateur */
-  --altground: #a78a7f;
+	/* Ajout de altground pour souligner message utilisateur */
+	--altground: #a78a7f;
 }
 
 @theme {
@@ -25,8 +25,8 @@
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
-    /* utilisation de altground */
-  --color-altground: var(--altground);
+	/* utilisation de altground */
+	--color-altground: var(--altground);
 	--font-sans: var(--font-geist-sans);
 	--font-mono: var(--font-geist-mono);
 }
@@ -59,3 +59,10 @@ body {
 	}
 }
 
+.chapter-content h3 {
+	@apply text-primary-red text-xl;
+}
+
+.chapter-content p {
+	@apply text-primary-text;
+}

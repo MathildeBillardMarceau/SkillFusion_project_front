@@ -1,6 +1,4 @@
 "use client";
-
-import { channel } from "diagnostics_channel";
 import { useParams } from "next/navigation"; // récupération du slug
 import { useEffect, useState } from "react"; // le useState pour le browsing des chapitres
 import ShowCourseChapters from "@/components/CourseChapters";
@@ -141,9 +139,9 @@ export default function SingleCourse() {
 					{/* Le courseFromDBLoading et le fragment <></> permettent déviter d'afficher la page tant qu'on a pas reçu les éléments de la requête et donc de faire des doubles loadings */}
 					{!courseFromDBLoading && (
 						<>
-							<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
+							<h1 className="font-display-title font-bold text-4xl text-primary-red mx-2">
 								{course?.title}
-							</h2>
+							</h1>
 							<article className="font-display-title font-bold text-2l text-primary-text mx-2">
 								{course?.description}
 							</article>
@@ -154,14 +152,17 @@ export default function SingleCourse() {
 									<ShowCourseImage media={course?.image} />
 									{course &&
 										selectedChapter && ( // je conditionne l'existence de course pour les erreurs de typage
-											<ShowCourseLesson
-												description={course.description}
-												createdAt={course.createdAt}
-												userName={`${course.user.firstName} ${course?.user.lastName}`}
-												chapterTitle={selectedChapter.title}
-												chapterDescription={selectedChapter.description}
-												chapterText={selectedChapter.text}
-											/>
+											<>
+												{console.log("contenu du cours", selectedChapter.text)}
+												<ShowCourseLesson
+													description={course.description}
+													createdAt={course.createdAt}
+													userName={`${course.user.firstName} ${course?.user.lastName}`}
+													chapterTitle={selectedChapter.title}
+													chapterDescription={selectedChapter.description}
+													chapterText={selectedChapter.text}
+												/>
+											</>
 										)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
