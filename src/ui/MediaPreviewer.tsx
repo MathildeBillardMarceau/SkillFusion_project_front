@@ -1,15 +1,32 @@
+"use client";
+
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LuUpload } from "react-icons/lu";
+import type { MediaPreviewerProps } from "@/@types";
 
 export default function MediaPreviewer({
+	media,
+	selectedFile,
 	onFileSelected,
 	allowedTypes = "image/*,video/*",
 	maxSize = 500 * 1024 * 1024, // 500Mo
-}) {
-	const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+}: MediaPreviewerProps) {
+	const [fileToUpload, setFileToUpload] = useState<File | null | undefined>(
+		selectedFile,
+	);
 	const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 	const [error, setError] = useState("");
+
+	useEffect(() => {
+		if (!selectedFile) {
+			setPreviewUrl(null);
+			return;
+		}
+		const url = URL.createObjectURL(selectedFile);
+		setPreviewUrl(url);
+		return () => URL.revokeObjectURL(url);
+	}, [selectedFile]);
 
 	async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
@@ -48,9 +65,32 @@ export default function MediaPreviewer({
 					className="h-full w-auto"
 				/>
 			)}
+			{media?.type?.startsWith("image/") && !previewUrl && (
+				<Image
+					src={media.url}
+					alt=""
+					width={100}
+					height={100}
+					className="h-full w-auto"
+				/>
+			)}
+			{media?.type?.startsWith("video/") && !previewUrl && (
+				// biome-ignore lint/a11y/useMediaCaption: c'est pour l'upload, pas de besoin d'accessibilité à ce niveau
+				<video
+					src={media.url}
+					width={100}
+					height={100}
+					className="h-full w-auto"
+				/>
+			)}
 			{previewUrl && fileToUpload?.type.startsWith("video/") && (
 				// biome-ignore lint/a11y/useMediaCaption: c'est pour l'upload, pas de besoin d'accessibilité à ce niveau
-				<video src={previewUrl} width={100} height={100} />
+				<video
+					src={previewUrl}
+					width={100}
+					height={100}
+					className="h-full w-auto"
+				/>
 			)}
 			<input
 				type="file"

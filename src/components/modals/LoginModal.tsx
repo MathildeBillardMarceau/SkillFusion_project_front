@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuthStore } from "@/app/store/auth";
 import { useState } from "react";
+import { useAuthStore } from "@/app/store/auth";
 
 interface ILoginModalProps {
 	setOpenLogin: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,8 +14,8 @@ export default function LoginModal({
 }: ILoginModalProps) {
 	const login = useAuthStore((state) => state.login);
 
-	const [email, setEmail] = useState(""); // 2john@carpenter.io
-	const [password, setPassword] = useState(""); // Azerty123!
+	const [email, setEmail] = useState("2john@carpenter.io"); // 2john@carpenter.io
+	const [password, setPassword] = useState("Azerty123!"); // Azerty123!
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
