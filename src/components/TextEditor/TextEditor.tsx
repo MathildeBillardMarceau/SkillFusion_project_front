@@ -12,7 +12,7 @@ import { Placeholder } from "@tiptap/extensions";
 import { LuBold, LuHeading, LuItalic, LuList } from "react-icons/lu";
 
 interface ITextEditorProps {
-	contentText: string;
+	contentText: string | null | undefined;
 	setContentText: (text: string) => void;
 }
 

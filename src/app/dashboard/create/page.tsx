@@ -128,9 +128,12 @@ export default function CreateCoursePage() {
 
 	async function createCourse(formData: FormData) {
 		console.log("createCourse");
+
 		// Required
 		const title = formData.get("title")?.toString() || "";
 		const slug = slugify(title);
+
+		// TODO: vérifier d'abord qu'il n'y a pas déjà un cours avec ce slug
 
 		// Optionnel
 		const description = formData.get("description") as string;
@@ -177,6 +180,10 @@ export default function CreateCoursePage() {
 
 			finalLessons = await [...lessonsToSave];
 
+			const lessonsToSaveToBdd = lessonsToSave.map(({ id, ...rest }) => ({
+				...rest,
+			}));
+
 			console.log("variables:", {
 				input: {
 					title,
@@ -190,12 +197,10 @@ export default function CreateCoursePage() {
 					userId,
 					categoriesId,
 					publishedAt: published ? new Date().toISOString() : null,
-					lessons: lessonsToSave,
+					chapters: lessonsToSaveToBdd,
 				},
 			});
-			return;
-			//////////////////////////
-			//////////////////////////
+			// return;
 
 			// mutation graphQL pour la création du cours
 			fetchCreateCourse({
@@ -205,15 +210,15 @@ export default function CreateCoursePage() {
               id
 							title
 							slug
-							image
-							description
-							level
-							duration
-							cost
-							material
-							userId
-							categoriesId
-							publishedAt
+							# image
+							# description
+							# level
+							# duration
+							# cost
+							# material
+							# userId
+							# categoriesId
+							# publishedAt
             }
           }
         `,
@@ -221,14 +226,15 @@ export default function CreateCoursePage() {
 					input: {
 						title,
 						slug,
+						userId,
 						image: publicUrl,
 						description,
 						level,
 						duration,
 						cost,
 						material,
-						userId,
 						categoriesId,
+						chapters: lessonsToSaveToBdd,
 						publishedAt: published ? new Date().toISOString() : null,
 					},
 				},
@@ -252,24 +258,24 @@ export default function CreateCoursePage() {
 					<h1 className="text-2xl">Création d'un cours</h1>
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
-				<div className="flex justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
-					<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
-						<SwitchButton checked={published} setChecked={setPublished} />
-						<button
-							type="submit"
-							disabled={loading || loadingGQL || !title.length}
-							className={clsx(
-								"text-white py-2 px-4 rounded font-bold cursor-pointer transition-all hover:bg-primary-red",
-								loading || loadingGQL || !title.length
-									? "bg-gray-200 pointer-events-none"
-									: "bg-gray-500",
-							)}
-						>
-							Enregistrer
-						</button>
-					</div>
-				</div>
 				<form action={createCourse}>
+					<div className="flex justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
+							<SwitchButton checked={published} setChecked={setPublished} />
+							<button
+								type="submit"
+								disabled={loading || loadingGQL || !title.length}
+								className={clsx(
+									"text-white py-2 px-4 rounded font-bold cursor-pointer transition-all hover:bg-primary-red",
+									loading || loadingGQL || !title.length
+										? "bg-gray-200 pointer-events-none"
+										: "bg-gray-500",
+								)}
+							>
+								Enregistrer
+							</button>
+						</div>
+					</div>
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						{/* TITLE */}
 						<input
