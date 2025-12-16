@@ -295,7 +295,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 		<>
 			<div className="max-w-7xl m-auto p-5">
 				<h1 className="text-2xl">
-					{mode === "create" ? "Création d'un cours" : "Modifier le cours"}
+					{mode === "create" ? "Créer un cours" : "Modifier le cours"}
 				</h1>
 			</div>
 
