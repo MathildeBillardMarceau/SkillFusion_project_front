@@ -2,6 +2,7 @@
 
 import clsx from "clsx";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type {
@@ -22,24 +23,9 @@ import { Toaster } from "@/ui/Toaster";
 const Lessons = dynamic(() => import("@/components/Lessons"), { ssr: false });
 
 export default function CreateCoursePage() {
-	const [lessons, setLessons] = useState<ILessonProps[]>([
-		/* {
-			id: "01",
-			title: "titre d'une leçon 1",
-			description: "description leçon 1", // ?
-			text: "<p><b>Text</b> du contenu du chapitre</p>", // ?
-			media: {
-				// ?
-				id: "541564",
-				url: "./uploads/test.png",
-				type: "image",
-			},
-		},
-		{
-			id: "02",
-			title: "titre d'une leçon 2",
-		}, */
-	]);
+	const router = useRouter();
+
+	const [lessons, setLessons] = useState<ILessonProps[]>([]);
 	const [published, setPublished] = useState(false);
 	const [title, setTitle] = useState("");
 	const [level, setLevel] = useState<string | null>(null);
@@ -59,9 +45,9 @@ export default function CreateCoursePage() {
 
 	// save the course
 	const {
-		data: dataCourse,
+		// data: dataCourse,
 		loading: loadingGQL,
-		error: errorGQL,
+		// error: errorGQL,
 		fetchData: fetchCreateCourse,
 	} = useLazyGraphQL();
 
@@ -271,6 +257,11 @@ export default function CreateCoursePage() {
 				showToast(`Le cours a bien été créé.`);
 
 				// TODO: rediriger vers la page update du cours
+				/* setEditingCourse({
+					id: result.createCourse.id,
+					slug: result.createCourse.slug,
+				}); */
+				router.push(`/courses/${result.createCourse.id}/edit`);
 				// réinitialiser le formulaire
 				// setTitle("");
 				// setLevel(null);
@@ -295,12 +286,12 @@ export default function CreateCoursePage() {
 		<main className="w-full h-lvh bg-white m-auto">
 			<div className="">
 				<div className="m-auto w-full max-w-7xl p-5 bg-white ">
-					<h1 className="text-2xl">Création d'un cours</h1>
+					<h1 className="text-2xl">"Création d'un cours"</h1>
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
 				<form action={createCourse}>
-					<div className="flex flex-col justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
-						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
+					<div className="flex flex-col justify-end z-0 mx-4 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto md:mx-0">
 							<SwitchButton
 								checked={published}
 								setChecked={setPublished}

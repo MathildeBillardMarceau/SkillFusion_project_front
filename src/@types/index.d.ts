@@ -71,7 +71,7 @@ export interface CategoryProps {
 }
 
 export interface CategoriesDataProps {
-	categories: Category[];
+	categories: CategoryProps[];
 }
 export interface LevelsDataProps {
 	levels: string[];
