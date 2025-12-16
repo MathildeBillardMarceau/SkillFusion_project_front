@@ -1,10 +1,8 @@
-// import { BulletList, ListItem } from "@tiptap/extension-list";
-// import { Placeholder } from "@tiptap/extensions";
-
 import { EditorContent, useEditor } from "@tiptap/react";
 import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import clsx from "clsx";
+import DOMPurify from "dompurify";
 import { useEffect, useState } from "react";
 
 import "./styles.css";
@@ -64,8 +62,9 @@ export default function TextEditor({
 		const handleUpdate = () => {
 			// console.log("Texte brut:", editor.getText()); // Contenu texte
 			const html = editor.getHTML();
+			const cleanHTML = DOMPurify.sanitize(html);
 			// console.log("HTML:", html); // contenu HTML
-			setContentText(html);
+			setContentText(cleanHTML);
 		};
 
 		editor.on("update", handleUpdate);
