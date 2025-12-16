@@ -24,6 +24,7 @@ interface CourseFromDB {
 		updatedAt: string;
 		user: { firstName: string; lastName: string };
 		categories: { name: string; color: string; icon: string }[];
+		chapters: { title: string; description: string; text: string }[];
 	};
 }
 
@@ -72,6 +73,14 @@ export default function SingleCourse() {
           color
           icon
         }
+				chapters {
+					id
+					title
+					description
+					text
+					createdAt
+					updatedAt
+    		}
       }
     }
     `,
@@ -120,6 +129,9 @@ export default function SingleCourse() {
 							<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
 								{course?.title}
 							</h2>
+							<article className="font-display-title font-bold text-2l text-primary-text mx-2">
+								{course?.description}
+							</article>
 							{/* TODO: Possible ajout d'une ligne de catégories ici */}
 							<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
 								{/* <div className="flexbox principale qui se coupe en deux verticalement G2/3 (avec media, texte) D1/3 (avec chapitres et outils"> */}
@@ -134,7 +146,14 @@ export default function SingleCourse() {
 									)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
-									<ShowCourseChapters />
+									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-4 border-4 rounded-md border-primary-red shadow-xl/30">
+										{course?.chapters.map((eachChapter) => (
+											<ShowCourseChapters
+												key={eachChapter.id}
+												title={eachChapter.title}
+											/>
+										))}
+									</ul>
 									<ShowCourseTools
 										duration={course?.duration}
 										level={course?.level}
