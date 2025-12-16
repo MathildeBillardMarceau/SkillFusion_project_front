@@ -23,14 +23,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       token: null,
       isAuthenticated: false,
-
-      user: {
-        id: "",
-        email: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-      },
+      user: { id: "", email: "", password: "", firstName: "", lastName: "", },
 
       login: (user, accessToken) =>
         set({
@@ -41,20 +34,14 @@ export const useAuthStore = create<AuthState>()(
 
       logout: () =>
         set({
-          token: null,
+          token: undefined,
           isAuthenticated: false,
-          user: {
-            id: "",
-            email: "",
-            password: "",
-            firstName: "",
-            lastName: "",
-          },
+          user: undefined,
         }),
 
       updateUser: (updatedUser: Partial<User>) =>
         set((state) => ({
-          user: { ...state.user, ...updatedUser},
+          user: state.user ? { ...state.user, ...updatedUser}: state.user
         })),
     }),
     {
