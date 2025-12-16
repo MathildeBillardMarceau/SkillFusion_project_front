@@ -157,7 +157,11 @@ export default function CreateCoursePage() {
 					};
 				}
 			}
-
+			const getMediaType = (type: string) => {
+				if (type.startsWith("image/")) return "IMAGE";
+				if (type.startsWith("video/")) return "VIDEO";
+				throw new Error(`Type de média non supporté : ${type}`);
+			};
 			// images des leçons à uploader
 			let lessonsToSave = [...lessons];
 			const uploadPromises = lessonsToSave.map(async (l) => {
@@ -166,7 +170,7 @@ export default function CreateCoursePage() {
 					l.media = {
 						id: uuid(),
 						url,
-						type: l.fileToUpload.type, //.split("/")[0],
+						type: l.fileToUpload.type, // getMediaType(l.fileToUpload.type), // l.fileToUpload.type, //.split("/")[0],
 					};
 				}
 			});
@@ -180,9 +184,24 @@ export default function CreateCoursePage() {
 
 			finalLessons = await [...lessonsToSave];
 
-			const lessonsToSaveToBdd = lessonsToSave.map(({ id, ...rest }) => ({
-				...rest,
-			}));
+			// const lessonsToSaveToBdd = lessonsToSave.map(({ id, ...rest }) => ({
+			// 	...rest,
+			// }));
+
+			// on prépare les leçons à envoyer à la bdd en formatant le media et enlevant
+			// les props inutiles (id)
+
+			const lessonsToSaveToBdd = lessonsToSave.map(
+				({ id, media, ...rest }) => ({
+					...rest,
+					...(media && {
+						media: (({ id: _mediaId, type, ...mediaRest }) => ({
+							...mediaRest,
+							type: getMediaType(type || ""),
+						}))(media),
+					}),
+				}),
+			);
 
 			console.log("variables:", {
 				input: {
