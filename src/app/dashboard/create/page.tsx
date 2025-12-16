@@ -1,38 +1,107 @@
 "use client";
 
 import clsx from "clsx";
+import dynamic from "next/dynamic";
+import { Switch } from "radix-ui";
 import { useEffect, useState } from "react";
+import { v4 as uuid } from "uuid";
+import type {
+	CategoriesDataProps,
+	ILessonProps,
+	LevelsDataProps,
+	MediaProps,
+} from "@/@types";
 import { useAuthStore } from "@/app/store/auth";
 import MediaPreviewer from "@/components/MediaPreviewer";
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import { slugify } from "@/lib/helpers";
 import { uploadMedia } from "@/lib/uploadMedia";
 
+// import Lessons from "@/components/Lessons";
+const Lessons = dynamic(() => import("@/components/Lessons"), { ssr: false });
+
+function SwitchButton({
+	checked,
+	setChecked,
+}: {
+	checked: boolean;
+	setChecked: (value: boolean) => void;
+}) {
+	return (
+		<div className="flex items-center gap-3 w-full">
+			<Switch.Root
+				className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-500 transition-colors data-[state=checked]:bg-primary-red"
+				checked={checked}
+				onCheckedChange={setChecked}
+				id="status"
+			>
+				<Switch.Thumb className="block h-5 w-5 translate-x-1 rounded-full bg-white shadow transition-transform will-change-transform data-[state=checked]:translate-x-5" />
+			</Switch.Root>
+			<label htmlFor="status" className="text-sm font-medium">
+				{checked ? "Doit être publié" : "Reste à l'état de brouillon"}
+			</label>
+		</div>
+	);
+}
+
 export default function CreateCoursePage() {
+	const [lessons, setLessons] = useState<ILessonProps[]>([
+		/* {
+			id: "01",
+			title: "titre d'une leçon 1",
+			description: "description leçon 1", // ?
+			text: "<p><b>Text</b> du contenu du chapitre</p>", // ?
+			media: {
+				// ?
+				id: "541564",
+				url: "./uploads/test.png",
+				type: "image",
+			},
+		},
+		{
+			id: "02",
+			title: "titre d'une leçon 2",
+		}, */
+	]);
+	const [published, setPublished] = useState(false);
 	const [title, setTitle] = useState("");
 	const [level, setLevel] = useState<string | null>(null);
 	const [categoriesId, setCategoriesId] = useState<string[]>([]);
 	const [fileToUpload, setFileToUpload] = useState<File | null>(null);
+	const [media, setMedia] = useState<MediaProps | null>(null);
 	const [loading, setLoading] = useState(false);
 
 	const userId = useAuthStore((state) => state.user.id);
 
+	// useEffect(() => {
+	// 	console.log("lessons", lessons);
+	// }, [lessons]);
+
+	// save the course
+	const {
+		data: dataCourse,
+		loading: loadingGQL,
+		fetchData: fetchCreateCourse,
+	} = useLazyGraphQL();
+
+	// categories
 	const {
 		data: dataCategories,
 		loading: loadingCategories,
 		fetchData: fetchCategories,
-	} = useLazyGraphQL();
-	const { loading: loadingGQL, fetchData: fetchCreateCourse } =
-		useLazyGraphQL();
+	} = useLazyGraphQL<CategoriesDataProps>();
 
 	const {
 		data: dataLevels,
 		loading: loadingLevels,
 		fetchData: fetchLevels,
-	} = useLazyGraphQL();
+	} = useLazyGraphQL<LevelsDataProps>();
 
 	useEffect(() => {
-		console.log("fetchCategories");
+		console.log("dataCourse", dataCourse);
+	}, [dataCourse]);
+
+	useEffect(() => {
 		fetchCategories({
 			query: `#graphql
           query Categories {
@@ -48,7 +117,6 @@ export default function CreateCoursePage() {
 	}, [fetchCategories]);
 
 	useEffect(() => {
-		console.log("fetchLevels");
 		fetchLevels({
 			query: `#graphql
           query Levels {
@@ -60,9 +128,12 @@ export default function CreateCoursePage() {
 
 	async function createCourse(formData: FormData) {
 		console.log("createCourse");
+
 		// Required
-		const title = formData.get("title") as string;
+		const title = formData.get("title")?.toString() || "";
 		const slug = slugify(title);
+
+		// TODO: vérifier d'abord qu'il n'y a pas déjà un cours avec ce slug
 
 		// Optionnel
 		const description = formData.get("description") as string;
@@ -71,14 +142,65 @@ export default function CreateCoursePage() {
 		const material = formData.get("material") as string;
 
 		setLoading(true);
+		let finalMedia = media;
+		let finalLessons = [...lessons];
 		try {
-			// fichier à uploader
+			// image principale à uploader
 			let publicUrl = undefined;
-			console.log("fileToUpload", fileToUpload);
 			if (fileToUpload) {
-				publicUrl = await uploadMedia(fileToUpload);
-				console.log("publicUrl", publicUrl);
+				if (fileToUpload && !media?.url?.includes(fileToUpload?.name)) {
+					publicUrl = await uploadMedia(fileToUpload);
+					finalMedia = {
+						id: uuid(),
+						url: publicUrl,
+						type: fileToUpload.type, //.split("/")[0],
+					};
+				}
 			}
+
+			// images des leçons à uploader
+			let lessonsToSave = [...lessons];
+			const uploadPromises = lessonsToSave.map(async (l) => {
+				if (l?.fileToUpload && !l?.media?.url?.includes(l.fileToUpload?.name)) {
+					const url = await uploadMedia(l.fileToUpload);
+					l.media = {
+						id: uuid(),
+						url,
+						type: l.fileToUpload.type, //.split("/")[0],
+					};
+				}
+			});
+			await Promise.all(uploadPromises);
+
+			lessonsToSave = lessonsToSave.map(
+				({ isOpen, fileToUpload, ...rest }) => ({
+					...rest,
+				}),
+			);
+
+			finalLessons = await [...lessonsToSave];
+
+			const lessonsToSaveToBdd = lessonsToSave.map(({ id, ...rest }) => ({
+				...rest,
+			}));
+
+			console.log("variables:", {
+				input: {
+					title,
+					slug,
+					image: publicUrl,
+					description,
+					level,
+					duration,
+					cost,
+					material,
+					userId,
+					categoriesId,
+					publishedAt: published ? new Date().toISOString() : null,
+					chapters: lessonsToSaveToBdd,
+				},
+			});
+			// return;
 
 			// mutation graphQL pour la création du cours
 			fetchCreateCourse({
@@ -86,6 +208,17 @@ export default function CreateCoursePage() {
           mutation CreateCourse($input: CreateCourseInput!) {
             createCourse(input: $input) {
               id
+							title
+							slug
+							# image
+							# description
+							# level
+							# duration
+							# cost
+							# material
+							# userId
+							# categoriesId
+							# publishedAt
             }
           }
         `,
@@ -93,62 +226,57 @@ export default function CreateCoursePage() {
 					input: {
 						title,
 						slug,
+						userId,
 						image: publicUrl,
 						description,
 						level,
 						duration,
 						cost,
 						material,
-						userId,
 						categoriesId,
+						chapters: lessonsToSaveToBdd,
+						publishedAt: published ? new Date().toISOString() : null,
 					},
 				},
 			});
 		} finally {
+			setMedia(finalMedia);
+			setLessons(finalLessons);
 			setLoading(false);
 		}
 	}
+	const levelTranslations = {
+		BEGINNER: "débutant",
+		INTERMEDIATE: "intermédiaire",
+		ADVANCED: "avancé",
+	} as Record<string, string>;
 
 	return (
-		<main className="w-full max-w-7xl h-lvh bg-gray-50 m-auto p-5 rounded-2xl">
-			{/* HEADER */}
-			{/* <header className="pb-10">
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-4">
-						<Image
-							src="https://placehold.co/600x400/png?text=logo"
-							alt="logo"
-							width={100}
-							height={100}
-						/>
-						<p className="text-4xl">Skill Fusion</p>
-					</div>
-					<button
-						type="button"
-						className="flex items-center gap-2 cursor-pointer"
-					>
-						<FaUserCircle size={40} />
-						<p className="font-bold">Prénom Nom</p>
-					</button>
-				</div>
-			</header> */}
-			{/* CONTENT */}
-			{/* 
-
-  --breakpoint-md: 830px;
-  --color-primary-text: #3c2e2a;
-  --color-secondary-text: #a78a7f;
-  --color-background-charte: #f4ece2;
-  --color-primary-red: #8c1c13;
-  --color-secondary-red: #bf4342;
-*/}
+		<main className="w-full h-lvh bg-white m-auto">
 			<div className="">
-				<div className="m-auto w-full max-w-4xl ">
-					<h1 className="text-2xl  ">Création d'un cours</h1>
+				<div className="m-auto w-full max-w-7xl p-5 bg-white ">
+					<h1 className="text-2xl">Création d'un cours</h1>
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
 				<form action={createCourse}>
-					<div className="m-auto w-full max-w-4xl">
+					<div className="flex justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
+							<SwitchButton checked={published} setChecked={setPublished} />
+							<button
+								type="submit"
+								disabled={loading || loadingGQL || !title.length}
+								className={clsx(
+									"text-white py-2 px-4 rounded font-bold cursor-pointer transition-all hover:bg-primary-red",
+									loading || loadingGQL || !title.length
+										? "bg-gray-200 pointer-events-none"
+										: "bg-gray-500",
+								)}
+							>
+								Enregistrer
+							</button>
+						</div>
+					</div>
+					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						{/* TITLE */}
 						<input
 							className="border border-gray-300 p-2 w-full"
@@ -160,11 +288,11 @@ export default function CreateCoursePage() {
 								setTitle(e.currentTarget.value);
 							}}
 						/>
-						<div className="py-4 flex gap-4 items-center">
+						<div className="py-4 flex gap-4 items-baseline">
 							{/* CATEGORIES */}
 							<p className="py-2">Catégorie(s)</p>
 							{!loadingCategories && (
-								<div className="flex gap-4 h-min">
+								<div className="flex gap-4 h-min flex-wrap">
 									{dataCategories?.categories?.map(
 										(category: { id: string; name: string }) => {
 											const isSelected = categoriesId.includes(category.id);
@@ -174,7 +302,7 @@ export default function CreateCoursePage() {
 													key={category.id}
 													className={clsx(
 														"text-white  rounded-2xl px-4 py-1 flex transition-all cursor-pointer",
-														isSelected ? "bg-blue-400" : "bg-gray-400",
+														isSelected ? "bg-primary-red" : "bg-gray-400",
 													)}
 													onClick={() => {
 														if (categoriesId.includes(category.id)) {
@@ -206,22 +334,28 @@ export default function CreateCoursePage() {
 								<div className="py-4">
 									<p className="py-2">Niveau</p>
 									{!loadingLevels && (
-										<div className="flex gap-4 h-min">
-											{dataLevels?.levels?.map((levelElement) => {
+										<div className="flex gap-4 h-min flex-wrap">
+											{dataLevels?.levels?.map((levelElement: string) => {
 												const isSelected = level === levelElement;
+												const foundKey = Object.keys(levelTranslations).find(
+													(l) => l === levelElement,
+												);
+												const translatedLevel = foundKey
+													? levelTranslations[foundKey]
+													: levelElement.toLowerCase();
 												return (
 													<button
 														key={levelElement}
 														className={clsx(
 															"text-white  rounded-2xl px-4  py-1 flex h-min cursor-pointer",
-															isSelected ? "bg-blue-400" : "bg-gray-400",
+															isSelected ? "bg-primary-red" : "bg-gray-400",
 														)}
 														type="button"
 														onClick={() => {
 															setLevel(levelElement);
 														}}
 													>
-														{levelElement.toLowerCase()}
+														{translatedLevel}
 													</button>
 												);
 											})}
@@ -232,6 +366,8 @@ export default function CreateCoursePage() {
 							{/* UPLOAD IMAGE */}
 							<div className="border border-gray-300 p-2 w-full bg-gray-100">
 								<MediaPreviewer
+									media={media}
+									selectedFile={fileToUpload ?? null}
 									onFileSelected={setFileToUpload}
 									allowedTypes={"image/*"}
 									maxSize={1 * 1024 * 1024} // 1Mo}
@@ -240,7 +376,7 @@ export default function CreateCoursePage() {
 						</div>
 						{/* OPTIONNAL SETTINGS */}
 						<div className="flex justify-between py-4 gap-4">
-							<div className="flex w-full gap-4">
+							<div className="flex w-full gap-4 flex-wrap">
 								<input
 									className="border border-gray-300 p-2"
 									type="text"
@@ -263,19 +399,10 @@ export default function CreateCoursePage() {
 						</div>
 
 						{loading && <p>Uploading...</p>}
-						<div className="flex justify-end mt-4">
-							<button
-								type="submit"
-								disabled={loading || loadingGQL || !title.length}
-								className={clsx(
-									"text-white py-2 px-4 rounded font-bold cursor-pointer transition-all hover:bg-blue-400",
-									loading || loadingGQL || !title.length
-										? "bg-gray-200 pointer-events-none"
-										: "bg-gray-500",
-								)}
-							>
-								Enregistrer
-							</button>
+					</div>
+					<div className="bg-amber-200">
+						<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
+							<Lessons lessons={lessons} setLessons={setLessons} />
 						</div>
 					</div>
 				</form>
