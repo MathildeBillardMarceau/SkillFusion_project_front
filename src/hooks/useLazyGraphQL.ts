@@ -24,13 +24,20 @@ export function useLazyGraphQL<T>(defaultQuery?: string) {
 
 				if (json.errors) {
 					setError(json.errors[0].message);
-				} else {
-					setData(json.data);
+					setLoading(false);
+					return null;
 				}
+
+				setData(json.data);
+				setLoading(false);
+				return json.data;
 			} catch (e: any) {
 				setError(e.message);
+				setLoading(false);
+				return null;
+			} finally {
+				setLoading(false);
 			}
-			setLoading(false);
 		},
 		[defaultQuery],
 	);

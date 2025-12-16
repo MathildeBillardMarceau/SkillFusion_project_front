@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import dynamic from "next/dynamic";
-import { Switch } from "radix-ui";
+import { Switch, Toast } from "radix-ui";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type {
@@ -73,14 +73,18 @@ export default function CreateCoursePage() {
 
 	const userId = useAuthStore((state) => state.user.id);
 
-	// useEffect(() => {
-	// 	console.log("lessons", lessons);
-	// }, [lessons]);
+	// save the course
+	const {
+		// data: dataCourseBySlug,
+		// loading: loadingCourseBySlug,
+		fetchData: fetchCourseBySlug,
+	} = useLazyGraphQL();
 
 	// save the course
 	const {
 		data: dataCourse,
 		loading: loadingGQL,
+		error: errorGQL,
 		fetchData: fetchCreateCourse,
 	} = useLazyGraphQL();
 
@@ -91,15 +95,23 @@ export default function CreateCoursePage() {
 		fetchData: fetchCategories,
 	} = useLazyGraphQL<CategoriesDataProps>();
 
+	// levels
 	const {
 		data: dataLevels,
 		loading: loadingLevels,
 		fetchData: fetchLevels,
 	} = useLazyGraphQL<LevelsDataProps>();
 
-	useEffect(() => {
-		console.log("dataCourse", dataCourse);
-	}, [dataCourse]);
+	// toast
+	const [openToast, setOpenToast] = useState(false);
+	const [bgColorToast, setBgColorToast] = useState("#6a7282");
+	const [messageToast, setMessageToast] = useState("");
+
+	const showToast = (msg: string, bgColor: string = "#6a7282") => {
+		setMessageToast(msg);
+		setBgColorToast(bgColor);
+		setOpenToast(true);
+	};
 
 	useEffect(() => {
 		fetchCategories({
@@ -127,13 +139,31 @@ export default function CreateCoursePage() {
 	}, [fetchLevels]);
 
 	async function createCourse(formData: FormData) {
-		console.log("createCourse");
+		// console.log("createCourse");
 
 		// Required
 		const title = formData.get("title")?.toString() || "";
 		const slug = slugify(title);
 
-		// TODO: vérifier d'abord qu'il n'y a pas déjà un cours avec ce slug
+		// Vérifier si le slug existe déjà
+		const slugData = await fetchCourseBySlug({
+			query: `#graphql
+				query CourseBySlug($slug: String!) {
+					courseBySlug(slug: $slug) {
+						id
+					}
+				}
+			`,
+			variables: {
+				slug,
+			},
+		});
+
+		if (slugData?.courseBySlug) {
+			// Le slug existe déjà !
+			showToast("Un cours avec ce titre </br>existe déjà !", "red");
+			return;
+		}
 
 		// Optionnel
 		const description = formData.get("description") as string;
@@ -203,7 +233,7 @@ export default function CreateCoursePage() {
 				}),
 			);
 
-			console.log("variables:", {
+			/* console.log("variables:", {
 				input: {
 					title,
 					slug,
@@ -218,11 +248,11 @@ export default function CreateCoursePage() {
 					publishedAt: published ? new Date().toISOString() : null,
 					chapters: lessonsToSaveToBdd,
 				},
-			});
+			}); */
 			// return;
 
 			// mutation graphQL pour la création du cours
-			fetchCreateCourse({
+			const result = await fetchCreateCourse({
 				query: `#graphql
           mutation CreateCourse($input: CreateCourseInput!) {
             createCourse(input: $input) {
@@ -258,6 +288,20 @@ export default function CreateCoursePage() {
 					},
 				},
 			});
+
+			if (result?.createCourse) {
+				// Cours créé avec succès !
+				showToast(`Le cours a bien été créé.`);
+
+				// TODO: rediriger vers la page update du cours
+				// réinitialiser le formulaire
+				// setTitle("");
+				// setLevel(null);
+				// setCategoriesId([]);
+				// setFileToUpload(null);
+				// setMedia(null);
+				// setLessons([]);
+			}
 		} finally {
 			setMedia(finalMedia);
 			setLessons(finalLessons);
@@ -278,7 +322,7 @@ export default function CreateCoursePage() {
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
 				<form action={createCourse}>
-					<div className="flex justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+					<div className="flex flex-col justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
 						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
 							<SwitchButton checked={published} setChecked={setPublished} />
 							<button
@@ -294,6 +338,21 @@ export default function CreateCoursePage() {
 								Enregistrer
 							</button>
 						</div>
+						<Toast.Provider>
+							<Toast.Root
+								className="mt-2  text-white px-4 py-2 rounded shadow-lg"
+								style={{
+									backgroundColor: bgColorToast,
+								}}
+								open={openToast}
+								onOpenChange={setOpenToast}
+							>
+								<Toast.Description>
+									<p dangerouslySetInnerHTML={{ __html: messageToast }} />
+								</Toast.Description>
+							</Toast.Root>
+							<Toast.Viewport />
+						</Toast.Provider>
 					</div>
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						{/* TITLE */}
