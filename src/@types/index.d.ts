@@ -79,21 +79,22 @@ export interface LevelsDataProps {
 
 export interface ICourseBySlugQuery {
 	courseBySlug: {
+		id: string;
 		title: string;
 		slug: string;
 		description: string;
 		image: string | null;
 		level: string;
-		duration: number;
-		cost: number;
+		duration: string | null;
+		cost: string | null;
 		material: string | null;
 		publishedAt: string | null;
 		createdAt: string;
-		updatedAt: string;
+		updatedAt: string | null;
 		categories: {
 			id: string;
 			name: string;
-			color: string;
+			color: string | null;
 			icon: string | null;
 		}[];
 		chapters: {

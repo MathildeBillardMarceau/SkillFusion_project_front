@@ -33,7 +33,7 @@ export default function ShowPost({
 				{connectedUser === userName ? (
 					<div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
 				) : (
-					avatarBlock(userAvatar || "Manchas.jpg", userName || "placeholder")
+					avatarBlock(userAvatar, userName)
 				)}
 				{/* bloc message central */}
 				<div className=" flex flex-col w-[70%] p-4">
@@ -41,7 +41,7 @@ export default function ShowPost({
 				</div>
 				{/* si oui j'affiche l'avatar à droite */}
 				{connectedUser === userName ? (
-					userAvatar && userName && avatarBlock(userAvatar, userName)
+					avatarBlock(userAvatar, userName)
 				) : (
 					<div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
 				)}

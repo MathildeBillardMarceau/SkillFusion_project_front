@@ -1,17 +1,15 @@
 "use client";
-import { CourseType } from "@/@types";
+import type { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
 import { useGraphQL } from "@/hooks/useGraphQL";
-import { useState } from "react";
 
 export default function Courses() {
-	const [showProfil, setShowProfil] = useState(false);
-	const [showLogin, setShowLogin] = useState(false);
+
 	const {
 		data: CoursesData,
 		loading,
 		error,
-	} = useGraphQL(
+	} = useGraphQL<{ courses: CourseType[] }>(
 		`#graphql
     query {
       courses {
@@ -41,6 +39,7 @@ export default function Courses() {
 							title={course.title}
 							date={course.createdAt}
 							description={course.description}
+							slug={course.slug}
 						/>
 					))}
 				</div>

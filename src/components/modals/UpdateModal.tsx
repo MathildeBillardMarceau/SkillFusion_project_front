@@ -67,7 +67,8 @@ export default function ProfilOnDashboard({
 
 
       if (result.errors) {
-        throw new Error(result.errors[0].message);
+				alert("Update failed: " + result.errors[0].message);
+				return;
       }
 
       updateUser(result.data.updateUser);
