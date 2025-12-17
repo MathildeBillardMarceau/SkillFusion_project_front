@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { CourseType } from "@/@types";
 import { useGraphQL } from "@/hooks/useGraphQL";
-import SmallCoursesCard from "./smallCoursesCard";
+// import SmallCoursesCard from "./smallCoursesCard";
 import SmallCoursesCard_with_progressBar from "./smallCoursesCard_with_progressBar";
 
 export default function Dashboard() {
@@ -27,12 +27,12 @@ export default function Dashboard() {
 	if (!CoursesData?.courses) return <p>No courses</p>;
 
 	return (
-		<div className="flex items-center justify-center font-sans ">
-			<main className="items-center justify-between bg-[#F4ECE2] px-2">
-				<div className="flex flex-col md:flex-row  border-4 rounded-md border-primary-red shadow-xl/30 px-2 ">
+		<div className="flex justify-center font-sans ">
+			<main className="items-center justify-between bg-[#F4ECE2] mx-2">
+				<div className="flex flex-col md:flex-row p-4 border-4 rounded-2xl border-primary-red shadow-xl/30 ">
 					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1">
-						<div className="flex items-center justify-between">
-							<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
+						<div className="flex items-center justify-between gap-2">
+							<h2 className="font-bold text-2xl text-primary-text py-4">
 								Mes cours créés
 							</h2>
 							<Link
@@ -62,7 +62,7 @@ export default function Dashboard() {
 					</div>
 					<div className="h-full md:h-1/2 flex flex-col mx-2 ">
 						<div className="flex items-center justify-between">
-							<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
+							<h2 className="font-bold text-2xl text-primary-text py-4">
 								Mes cours suivis
 							</h2>
 						</div>
