@@ -44,13 +44,21 @@ export default function Dashboard() {
 						</div>
 
 						{CoursesData.courses.map((course: CourseType) => (
-							<SmallCoursesCard
+							<SmallCoursesCard_with_progressBar
 								key={course.id}
 								image={course.image}
 								title={course.title}
 								slug={course.slug}
+								// progress={0}
+								editMode={true}
 							/>
 						))}
+						{/* <SmallCoursesCard
+							key={course.id}
+							image={course.image}
+							title={course.title}
+							slug={course.slug}
+						/> */}
 					</div>
 					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1">
 						<h1 className="font-bold text-2xl m-4 text-primary-text px-4">
@@ -63,7 +71,7 @@ export default function Dashboard() {
 								image={course.image}
 								title={course.title}
 								slug={course.slug}
-								progress={60}
+								progress={Math.floor(Math.random() * 100)}
 							/>
 						))}
 					</div>
