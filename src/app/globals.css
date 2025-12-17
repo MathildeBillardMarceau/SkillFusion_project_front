@@ -13,7 +13,9 @@
 	--color-secondary-text: #a78a7f;
 	--color-background-charte: #f4ece2;
 	--color-primary-red: #8c1c13;
+	/* --color-primary-red: #e91d63; */
 	--color-secondary-red: #bf4342;
+	/* --color-secondary-red: #f28c8e; */
 }
 
 @theme {
@@ -57,4 +59,13 @@ body {
 		opacity: 1;
 		transform: scale(1);
 	}
+}
+
+
+.chapter-content h3 {
+	@apply text-primary-red text-xl;
+}
+
+.chapter-content p {
+	@apply text-primary-text;
 }

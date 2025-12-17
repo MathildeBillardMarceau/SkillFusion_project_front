@@ -1,135 +1,214 @@
 "use client";
-// le useState (nécéssaire pour le showlogin) (test)
-import { useParams } from "next/navigation";
-// useParams va nous permettre de récupérer le slug pour avoir les commentaires qui correspondent aux deux forums
-import ShowCourseLesson from "@/components/CourseLesson";
-// le popin pour se connecter
-import ShowPost from "@/components/ForumPost";
-
-//import { messagesData } from "@/data/messagesData"; // les données mockup pour le forum
-
-// le composant qui contient le cours
-
-import { useEffect } from "react";
+import { useParams } from "next/navigation"; // récupération du slug
+import { useEffect, useState } from "react"; // le useState pour le browsing des chapitres
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
+import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
-import { useGraphQL } from "@/hooks/useGraphQL";
-// le composant qui contient la présentation du cours
+import ShowPost from "@/components/ForumPost";
+import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 
-// fonction qui va afficher l'ensemble de la page
+// ajout du typage du retour GQL pour éviter les erreurs sur courseBySlug
+interface CourseFromDB {
+	courseBySlug: {
+		id: string;
+		title: string;
+		description: string;
+		image: string;
+		level: string;
+		duration: string;
+		cost: string;
+		material: string;
+		createdAt: string;
+		updatedAt: string;
+		user: { firstName: string; lastName: string };
+		categories: { name: string; color: string; icon: string }[];
+		chapters: {
+			id: string;
+			title: string;
+			description: string;
+			text: string;
+		}[];
+	};
+}
+
+interface MessagesFromDb {
+	messagesByCourseSlug: {
+		id: string;
+		content: string;
+		createdAt: string;
+		updatedAt: string;
+		user: { firstName: string; lastName: string; id: string };
+		course: { title: string };
+	}[];
+}
+
+export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
+// le typage de chapter va nous permettre de raccourci le ??? dans le useState
+// il faut exporter ce typage pour le recevoir dans le composant enfant
+
 export default function SingleCourse() {
 	const params = useParams();
-	// je définit params depuis useParams() et je vais récupérer plus bas params.slug
 	const simConnectedUser = "Lina";
-	// on set le useState par défaut à false (je suppose qu'ensuite il faudra le récupérer ailleurs puisqu'on est déjà dans la navigation)
 
 	const {
-		data: messagesFromDBData,
-		loading: messagesFromDBLoading,
-		error: messagesFromDBError,
-	} = useGraphQL(
-		`#graphql
-    query MessagesByCourseSlug($slug: String!) {
-       messagesByCourseSlug(slug: $slug) {
-        id
-        content
-        user {
-          firstName
-          lastName
-          id
-        }
-        course {
-          title
-        }
-        createdAt
-        updatedAt
-    }
-  }`,
-		{ slug: params.slug },
-	);
-
-	const {
+		// requête pour aller récupérer les éléments du cours
 		data: courseFromDBData,
 		loading: courseFromDBLoading,
 		error: courseFromDBError,
-	} = useGraphQL(
+	} = useGraphQL<CourseFromDB>(
 		`#graphql
     query CourseBySlug($slug: String!) {
       courseBySlug(slug: $slug) {
-        id
+        id            #inutile ?
         title
-        slug
+        slug          #utilisé pour la requête
         description
         image
         level
         duration
         cost
         material
-        publishedAt
+        publishedAt   #j'ai utilisé created at dans l'affichage
+        createdAt
+        updatedAt     #j'ai utilisé created at dans l'affichage
         user {
           firstName
           lastName
         }
-        categories {
+        categories {  #pas disponibles actuellement
           name
           color
           icon
         }
-        createdAt
-        updatedAt
+				chapters {
+					id
+					title
+					description
+					text
+					createdAt
+					updatedAt
+    		}
       }
     }
     `,
 		{ slug: params.slug },
 	);
 
-	return (
-		// début de la fonction qui return le contenu de la page
-		<div className="m-10 ">
-			{/* container principal avec un margin de 10 */}
+	const course = courseFromDBData?.courseBySlug; // chemin raccourci pour les éléments de la requête
 
+	const {
+		// requête pour aller récupérer les messages du forum
+		data: messagesFromDBData,
+		loading: messagesFromDBLoading,
+		error: messagesFromDBError,
+	} = useGraphQL<MessagesFromDb>(
+		`#graphql
+    query MessagesByCourseSlug($slug: String!) {
+      messagesByCourseSlug(slug: $slug) {
+      id
+      content
+      createdAt
+      updatedAt
+      user {
+        firstName
+        lastName
+        id
+        }
+      course {
+        title
+        }
+    }
+  }`,
+		{ slug: params.slug },
+	);
+
+	const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(
+		course?.chapters[0] || null,
+	);
+	// Déclaration complexe du use State
+	// on a d'abord l'object destructuré avec sa valeur (selectedChapter) et sa méthode (set...)
+	// ensuite on le déclare comme useState
+	// et on le type avec les < >, ici le type sera soit Chapter soit null
+	// finalement on lui attribue une valeur course?.chapters[0] ou null
+
+	useEffect(
+		() => {
+			// fonction qui permet de changer la valeur de course (manuellement pour l'instant)
+			if (course?.chapters?.length) {
+				setSelectedChapter(course.chapters[0]);
+			}
+		},
+		[course], // ici on précise que useEffect ne s'applique que pour les éléments de course (et donc chapter)
+	);
+
+	// début de la fonction qui return le contenu de la page
+	return (
+		<div className="m-10 ">
 			<div
 				className={`bg-[#F4ECE2] transition-all duration-300`}
-				// modifie le blur en arrière plan quand on affiche le login
-				// doit contenir toute la page (ou tous les éléments qu'on veut blur donc pas le header par exemple)
+				// gestion du blur
 			>
 				<main className="flex flex-col h-[calc(100vh-HEADER_HEIGHT)] w-full mx-auto max-w-7xl  items-center justify-between gap-x-[5%] gap-y-4 py-4 px-2 dark:bg-black sm:items-start">
-					{/* titre du chapitre */}
-					<h2 className="font-display-title font-bold text-2xl text-primary-red mx-2">
-						{courseFromDBData?.courseBySlug?.title}
-					</h2>
-					{/* contenu du cours */}
-					<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
-						{/* <div className="flexbox principale qui se coupe en deux verticalement"> */}
-						<div className="flex flex-col w-[68%] ">
-							{/* <div className="flexbox de gauche qui prends les 2/3 et se coupe horizontalement"> */}
-							{/* l'idée ici c'est d'avoir une image en 16/9 comme ça ce sera bon aussi pour les vidéos*/}
-							<ShowCourseImage media={courseFromDBData?.courseBySlug?.image} />
-							{/* Le cours et l'image sont dans deux composants différents car je souhaite laisser la div parente dans la structure puisqu'elle définit la largeur à 68% */}
-							{!courseFromDBLoading && (
-								<ShowCourseLesson
-									description={courseFromDBData?.courseBySlug?.description}
-									createdAt={courseFromDBData?.courseBySlug?.createdAt}
-									userName={`${courseFromDBData?.courseBySlug?.user.firstName} ${courseFromDBData?.courseBySlug?.user.lastName}`}
-								/>
-							)}
-						</div>
-						<div className="flex flex-col w-[28%] gap-12 ">
-							{/* ici on va définir les éléments de la colonne de gauche */}
-							{/* La navigation entre les chapitres */}
-							<ShowCourseChapters />
-							{/* les infos complémentaires */}
-							<ShowCourseTools />
-						</div>
-					</div>
+					{/* Le courseFromDBLoading et le fragment <></> permettent déviter d'afficher la page tant qu'on a pas reçu les éléments de la requête et donc de faire des doubles loadings */}
+					{!courseFromDBLoading && (
+						<>
+							<h1 className="font-display-title font-bold text-4xl text-primary-red mx-2">
+								{course?.title}
+							</h1>
+							<article className="font-display-title font-bold text-2l text-primary-text mx-2">
+								{course?.description}
+							</article>
+							{/* TODO: Possible ajout d'une ligne de catégories ici */}
+							<div className="flex basis-full w-full items-start justify-between space-between 0% p-1">
+								{/* <div className="flexbox principale qui se coupe en deux verticalement G2/3 (avec media, texte) D1/3 (avec chapitres et outils"> */}
+								<div className="flex flex-col w-[68%] ">
+									<ShowCourseImage media={course?.image} />
+									{course &&
+										selectedChapter && ( // je conditionne l'existence de course pour les erreurs de typage
+											<>
+												{console.log("contenu du cours", selectedChapter.text)}
+												<ShowCourseLesson
+													// TODO: utiliser le use state de l'objet plutot
+													description={course.description}
+													createdAt={course.createdAt}
+													userName={`${course.user.firstName} ${course?.user.lastName}`}
+													chapterTitle={selectedChapter.title}
+													chapterDescription={selectedChapter.description}
+													chapterText={selectedChapter.text}
+												/>
+											</>
+										)}
+								</div>
+								<div className="flex flex-col w-[28%] gap-12 ">
+									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-3 py-2 border-4 rounded-md border-primary-red shadow-xl/30">
+										{course?.chapters.map((eachChapter) => (
+											<ShowCourseChapters
+												key={eachChapter.id}
+												title={eachChapter.title}
+												isSelected={selectedChapter?.id === eachChapter.id}
+												//ici j'envoie un bool pour savoir si le chapitre dans la liste est le chapitre selectionné
+												onClick={() => setSelectedChapter(eachChapter)}
+												//ici j'envoie la fonction qui permetta lors d'un click dans l'enfant de modifier la valeur de selectedChapter
+											/>
+										))}
+									</ul>
+									<ShowCourseTools
+										duration={course?.duration}
+										level={course?.level}
+										cost={course?.cost}
+										material={course?.material}
+									/>
+								</div>
+							</div>
+						</>
+					)}
+
 					{/* contenu du forum */}
 					<div className="flex flex-col gap-4 basis-full w-full min-h-30">
-						{/* message du forum en provenance du component */}
 						{messagesFromDBData?.messagesByCourseSlug
-							// filter pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams()
+							// filter OLD: utile avec le mockup, plus avec GQL - pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams -
 							//.filter((eachMsg) => eachMsg.courseId === params.slug)
-							// map pour envoyer tous les messages filtrés au composant
 							.map((eachMsg, index) => (
 								<ShowPost
 									key={eachMsg.id}
@@ -140,10 +219,6 @@ export default function SingleCourse() {
 									userRole={eachMsg.userRole}
 									isOdd={index % 2 === 1}
 									connectedUser={simConnectedUser}
-									// renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
-									// on compare ensuite ce reste à 1
-									// si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
-									// et on le récupère dans le composant
 								/>
 							))}
 					</div>
@@ -152,3 +227,9 @@ export default function SingleCourse() {
 		</div>
 	);
 }
+
+// explication de isOdd={index % 2 === 1}
+// renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
+// on compare ensuite ce reste à 1
+// si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
+// et on le récupère dans le composant
