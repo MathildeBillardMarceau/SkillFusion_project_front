@@ -27,17 +27,17 @@ export default function Dashboard() {
 	if (!CoursesData?.courses) return <p>No courses</p>;
 
 	return (
-		<div className="flex items-center justify-center font-sans dark:bg-black">
-			<main className="items-center justify-between  bg-[#F4ECE2] dark:bg-black  px-2">
+		<div className="flex items-center justify-center font-sans ">
+			<main className="items-center justify-between bg-[#F4ECE2] px-2">
 				<div className="flex flex-col md:flex-row items-baseline border-4 rounded-md border-primary-red shadow-xl/30 px-2">
-					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1">
+					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1 flex-1">
 						<div className="flex items-center justify-between">
-							<h1 className="font-bold text-2xl m-4 text-primary-text px-4">
+							<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
 								Mes cours créés
-							</h1>
+							</h2>
 							<Link
 								href="/courses/create"
-								className="px-4 py-2 font-bold text-2xl rounded-md bg-secondary-red text-background-charte cursor-pointer min-w-50 text-center"
+								className="px-4 py-2 font-bold text-2xl rounded-md bg-secondary-red text-background-charte cursor-pointer min-w-50 text-center transition hover:bg-primary-red hover:brightness-130 hover:shadow-xl hover:text-white"
 							>
 								Créer un cours
 							</Link>
@@ -60,10 +60,10 @@ export default function Dashboard() {
 							slug={course.slug}
 						/> */}
 					</div>
-					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1">
-						<h1 className="font-bold text-2xl m-4 text-primary-text px-4">
+					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1 flex-1">
+						<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
 							Mes cours suivis
-						</h1>
+						</h2>
 
 						{CoursesData.courses.map((course: CourseType) => (
 							<SmallCoursesCard_with_progressBar
