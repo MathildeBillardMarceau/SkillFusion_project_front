@@ -55,7 +55,7 @@ export default function Dashboard() {
 					<p className="self-center m-2 font-bold text-xl">{user.email}</p>
 				</div>
 
-				<div className="flex flex-row justify-center gap-2">
+				<div className="flex flex-row justify-center p-4 gap-2">
 					<button
 						type="button"
 						className="px-4 py-2 rounded-md font-bold cursor-pointer flex items-center bg-secondary-red text-white transition hover:bg-primary-red hover:brightness-130 hover:shadow-xl hover:text-white"

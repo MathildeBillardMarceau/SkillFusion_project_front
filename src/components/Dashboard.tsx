@@ -29,8 +29,8 @@ export default function Dashboard() {
 	return (
 		<div className="flex items-center justify-center font-sans ">
 			<main className="items-center justify-between bg-[#F4ECE2] px-2">
-				<div className="flex flex-col md:flex-row items-baseline border-4 rounded-md border-primary-red shadow-xl/30 px-2">
-					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1 flex-1">
+				<div className="flex flex-col md:flex-row  border-4 rounded-md border-primary-red shadow-xl/30 px-2 ">
+					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1">
 						<div className="flex items-center justify-between">
 							<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
 								Mes cours créés
@@ -60,10 +60,12 @@ export default function Dashboard() {
 							slug={course.slug}
 						/> */}
 					</div>
-					<div className="h-full md:h-1/2 flex flex-col mx-2 mb-1 flex-1">
-						<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
-							Mes cours suivis
-						</h2>
+					<div className="h-full md:h-1/2 flex flex-col mx-2 ">
+						<div className="flex items-center justify-between">
+							<h2 className="font-bold text-2xl text-primary-text px-4 py-4">
+								Mes cours suivis
+							</h2>
+						</div>
 
 						{CoursesData.courses.map((course: CourseType) => (
 							<SmallCoursesCard_with_progressBar

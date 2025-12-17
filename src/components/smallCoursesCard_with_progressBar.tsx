@@ -22,7 +22,7 @@ export default function SmallCoursesCard_with_progressBar({
 			<main className="py-4">
 				<Link
 					href={`courses/${slug}`}
-					className="bg-black/5 hover:bg-secondary-red/20 block rounded-xl p-4 shadow-xl/10 min-h-25"
+					className="bg-black/5 hover:bg-black/10 block rounded-xl p-4 shadow-xl/10 min-h-25"
 				>
 					<div className="flex flex-row h-10 w-60 md:w-100 justify-between items-center ">
 						<div className="flex items-center">
