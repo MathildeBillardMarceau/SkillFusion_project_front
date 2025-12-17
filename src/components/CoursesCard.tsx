@@ -1,11 +1,13 @@
-import formatDate from "@/app/utils/date";
 import Image from "next/image";
+import Link from "next/link";
+import formatDate from "@/app/utils/date";
 
 interface ICoursesCardProps {
 	image: string;
 	title: string;
 	date: string;
 	description: string;
+	slug: string;
 }
 
 export default function Courses({
@@ -13,6 +15,7 @@ export default function Courses({
 	title,
 	date,
 	description,
+	slug,
 }: ICoursesCardProps) {
 	return (
 		<div className="">
@@ -42,12 +45,12 @@ export default function Courses({
 						</p>
 					</div>
 					<div className="flex justify-end m-2">
-						<button
-							type="button"
+						<Link
+							href={`courses/${slug}`}
 							className="w-15 px-4 py-2 sticky right-0 bottom-0 rounded-md bg-secondary-red text-background-charte cursor-pointer"
 						>
 							Voir
-						</button>
+						</Link>
 					</div>
 				</div>
 			</div>
