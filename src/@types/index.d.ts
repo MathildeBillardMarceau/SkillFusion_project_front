@@ -76,3 +76,36 @@ export interface CategoriesDataProps {
 export interface LevelsDataProps {
 	levels: string[];
 }
+
+export interface ICourseBySlugQuery {
+	courseBySlug: {
+		title: string;
+		slug: string;
+		description: string;
+		image: string | null;
+		level: string;
+		duration: number;
+		cost: number;
+		material: string | null;
+		publishedAt: string | null;
+		createdAt: string;
+		updatedAt: string;
+		categories: {
+			id: string;
+			name: string;
+			color: string;
+			icon: string | null;
+		}[];
+		chapters: {
+			id: string;
+			title: string;
+			description: string | null;
+			text: string | null;
+			medias: {
+				id: string;
+				type: string;
+				url: string;
+			}[];
+		}[];
+	};
+}
