@@ -4,7 +4,7 @@ import clsx from "clsx";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdRemoveRedEye } from "react-icons/md";
 import { v4 as uuid } from "uuid";
 import type {
@@ -48,6 +48,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 	const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 	const [media, setMedia] = useState<MediaProps | null>(null);
 	const [loading, setLoading] = useState(false);
+	let currentSlug = useRef("");
 
 	// if (mode === "edit") console.log("initialData dans CourseForm:", initialData);
 
@@ -61,6 +62,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 		setMaterial(initialData.material ?? "");
 		setLevel(initialData.level ?? null);
 		setPublished(Boolean(initialData.publishedAt));
+		currentSlug.current = initialData.slug ?? "";
 
 		setCategoriesId(
 			initialData.categories?.map((c: { id: string }) => c.id) ?? [],
@@ -279,6 +281,10 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 				router.push(`/courses/${result.createCourse.slug}/edit`);
 			} else if (result?.updateCourse && mode === "edit") {
 				showToast("Le cours a bien été mis à jour");
+				if (currentSlug.current !== slug) {
+					currentSlug.current = slug;
+					router.push(`/courses/${slug}/edit`);
+				}
 			}
 		} finally {
 			setMedia(finalMedia);
@@ -324,7 +330,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 							Enregistrer
 						</button>
 						<Link
-							href={`/courses/${initialData?.slug}`}
+							href={`/courses/${currentSlug.current}`}
 							className="flex gap-2 text-gray-500 transition hover:text-primary-red"
 						>
 							<MdRemoveRedEye className="text-2xl " /> voir le cours
@@ -483,7 +489,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 
 					{loading && <p>Uploading...</p>}
 				</div>
-				<div className="bg-[#a78a7f40]">
+				<div className="bg-secondary-text/20">
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						<Lessons lessons={lessons} setLessons={setLessons} />
 					</div>
