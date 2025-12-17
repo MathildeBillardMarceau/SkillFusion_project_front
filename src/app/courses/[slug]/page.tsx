@@ -23,7 +23,12 @@ interface CourseFromDB {
 		updatedAt: string;
 		user: { firstName: string; lastName: string };
 		categories: { name: string; color: string; icon: string }[];
-		chapters: { title: string; description: string; text: string }[];
+		chapters: {
+			id: string;
+			title: string;
+			description: string;
+			text: string;
+		}[];
 	};
 }
 
@@ -37,6 +42,10 @@ interface MessagesFromDb {
 		course: { title: string };
 	}[];
 }
+
+export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
+// le typage de chapter va nous permettre de raccourci le ??? dans le useState
+// il faut exporter ce typage pour le recevoir dans le composant enfant
 
 export default function SingleCourse() {
 	const params = useParams();
@@ -114,9 +123,14 @@ export default function SingleCourse() {
 		{ slug: params.slug },
 	);
 
-	const [selectedChapter, setSelectedChapter] = useState(
+	const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(
 		course?.chapters[0] || null,
 	);
+	// Déclaration complexe du use State
+	// on a d'abord l'object destructuré avec sa valeur (selectedChapter) et sa méthode (set...)
+	// ensuite on le déclare comme useState
+	// et on le type avec les < >, ici le type sera soit Chapter soit null
+	// finalement on lui attribue une valeur course?.chapters[0] ou null
 
 	useEffect(
 		() => {
@@ -171,6 +185,10 @@ export default function SingleCourse() {
 											<ShowCourseChapters
 												key={eachChapter.id}
 												title={eachChapter.title}
+												isSelected={selectedChapter?.id === eachChapter.id}
+												//ici j'envoie un bool pour savoir si le chapitre dans la liste est le chapitre selectionné
+												onClick={() => setSelectedChapter(eachChapter)}
+												//ici j'envoie la fonction qui permetta lors d'un click dans l'enfant de modifier la valeur de selectedChapter
 											/>
 										))}
 									</ul>

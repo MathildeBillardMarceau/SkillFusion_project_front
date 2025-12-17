@@ -30,7 +30,7 @@ export default function ShowCourseLesson({
 				dangerouslySetInnerHTML={{ __html: chapterText }}
 			/>
 			{/* <h4 className="font-bold capitalize  text-primary-red">
-				Traçage des repères
+				Traçage des repèresS
 			</h4>
 
 			<h4 className="font-bold capitalize  text-primary-red">
