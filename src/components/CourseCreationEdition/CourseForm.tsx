@@ -295,16 +295,16 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 
 	// ---------------- RENDER ----------------
 	return (
-		<div className="bg-white">
+		<div className="bg-white max-w-7xl mx-auto rounded-2xl overflow-hidden mb-20">
 			<div className="max-w-7xl mx-auto p-5">
-				<h1 className="text-2xl">
+				<h1 className="text-3xl font-display-title">
 					{mode === "create" ? "Créer un cours" : "Modifier le cours"}
 				</h1>
 			</div>
 
 			<form action={createCourse}>
 				<div className="flex flex-col justify-end z-0 mx-4 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
-					<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto md:mx-0">
+					<div className="bg-white shadow-md p-4 rounded-2xl border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto md:mx-0">
 						<SwitchButton
 							checked={published}
 							setChecked={setPublished}
@@ -483,7 +483,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 
 					{loading && <p>Uploading...</p>}
 				</div>
-				<div className="bg-gray-100">
+				<div className="bg-[#a78a7f40]">
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						<Lessons lessons={lessons} setLessons={setLessons} />
 					</div>
