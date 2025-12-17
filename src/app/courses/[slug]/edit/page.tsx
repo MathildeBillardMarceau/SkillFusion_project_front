@@ -12,9 +12,9 @@ export default function EditCoursePage() {
 		`#graphql
       query CourseBySlug($slug: String!) {
         courseBySlug(slug: $slug) {
-          title slug description image level duration cost material publishedAt createdAt updatedAt
+          id title slug description image level duration cost material publishedAt createdAt updatedAt
           categories { id name color icon }
-          chapters { id title description text medias { id type url }}
+          chapters { id title description text media { id type url }}
         }
       }
       `,

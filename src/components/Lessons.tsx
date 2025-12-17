@@ -148,6 +148,9 @@ function SortbaleLesson({
 		}
 	}, [id, lastCreatedLessonRef]);
 
+	// console.log("SortbaleLesson id:", lesson.id);
+	// console.log("SortbaleLesson media:", lesson.media);
+
 	return (
 		<article
 			ref={setNodeRef}
