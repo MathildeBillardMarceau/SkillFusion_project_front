@@ -1,20 +1,33 @@
 "use client";
 
 import Image from "next/image";
-import { useState} from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/store/auth";
 import Modal from "./Modal";
 import UpdateModal from './modals/UpdateModal';
+import DeleteModal from './modals/DeleteModal';
 
 
 export default function Dashboard() {
- 
-	const { user, token: accessToken, isAuthenticated } = useAuthStore();
-	const [openUpdate, setOpenUpdate] = useState(false);
+	const router = useRouter();
+	const { user, token: accessToken, isAuthenticated, updateUser, logout } = useAuthStore();
 
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+
+	const [openUpdate, setOpenUpdate] = useState(false);
+	const [openDelete, setOpenDelete] = useState(false);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      setOpenDelete(false);
+      setOpenUpdate(false);
+      router.replace("/");
+    }
+  }, [isAuthenticated, router]);
+
+  if (!user) {
+    return <p>Loading...</p>; 
+  }
 
   
  return (
@@ -32,15 +45,25 @@ export default function Dashboard() {
 				<div className="flex flex-row justify-between">
 					<p className="self-center m-2 font-bold text-xl">{user.email}</p>
 				</div>
+
+				<div className="flex flex-row justify-center">
 					<button type="button"
-					className=" text-sm underline cursor-pointer"
+					className="text-sm underline cursor-pointer m-4"
 					onClick={() => {
-						setOpenUpdate(false);
 						setOpenUpdate(true);
 					}}> Modifier </button> 
-					
+					<button type="button"
+					className=" text-sm underline cursor-pointer m-4"
+					onClick={() => {
+					setOpenDelete(true);
+					}}> Supprimer </button> 
+					</div>
+
 					<Modal open={openUpdate} onClose={() => setOpenUpdate(false)}>
 						<UpdateModal setOpenUpdate={setOpenUpdate} />
+					</Modal>
+					<Modal open={openDelete} onClose={() => setOpenDelete(false)}>
+						<DeleteModal setOpenDelete={setOpenDelete} userId={user.id} />
 					</Modal>
 			</div>
     </div>

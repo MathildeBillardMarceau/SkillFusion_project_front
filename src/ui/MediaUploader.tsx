@@ -1,8 +1,12 @@
-import { uploadMedia } from "@/lib/uploadMedia";
 import Image from "next/image";
 import { useState } from "react";
+import { uploadMedia } from "@/lib/uploadMedia";
 
-export default function MediaUploader({ onUploaded }) {
+export default function MediaUploader({
+	onUploaded,
+}: {
+	onUploaded: (url: string) => void;
+}) {
 	const [loading, setLoading] = useState(false);
 	const [url, setUrl] = useState<string | null>(null);
 

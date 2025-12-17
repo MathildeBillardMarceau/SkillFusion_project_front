@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import dynamic from "next/dynamic";
-import { Switch } from "radix-ui";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type {
@@ -12,57 +12,20 @@ import type {
 	MediaProps,
 } from "@/@types";
 import { useAuthStore } from "@/app/store/auth";
-import MediaPreviewer from "@/components/MediaPreviewer";
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import { slugify } from "@/lib/helpers";
 import { uploadMedia } from "@/lib/uploadMedia";
+import MediaPreviewer from "@/ui/MediaPreviewer";
+import { SwitchButton } from "@/ui/SwitchButton";
+import { Toaster } from "@/ui/Toaster";
 
 // import Lessons from "@/components/Lessons";
 const Lessons = dynamic(() => import("@/components/Lessons"), { ssr: false });
 
-function SwitchButton({
-	checked,
-	setChecked,
-}: {
-	checked: boolean;
-	setChecked: (value: boolean) => void;
-}) {
-	return (
-		<div className="flex items-center gap-3 w-full">
-			<Switch.Root
-				className="relative inline-flex h-6 w-11 items-center rounded-full bg-gray-500 transition-colors data-[state=checked]:bg-primary-red"
-				checked={checked}
-				onCheckedChange={setChecked}
-				id="status"
-			>
-				<Switch.Thumb className="block h-5 w-5 translate-x-1 rounded-full bg-white shadow transition-transform will-change-transform data-[state=checked]:translate-x-5" />
-			</Switch.Root>
-			<label htmlFor="status" className="text-sm font-medium">
-				{checked ? "Doit être publié" : "Reste à l'état de brouillon"}
-			</label>
-		</div>
-	);
-}
-
 export default function CreateCoursePage() {
-	const [lessons, setLessons] = useState<ILessonProps[]>([
-		/* {
-			id: "01",
-			title: "titre d'une leçon 1",
-			description: "description leçon 1", // ?
-			text: "<p><b>Text</b> du contenu du chapitre</p>", // ?
-			media: {
-				// ?
-				id: "541564",
-				url: "./uploads/test.png",
-				type: "image",
-			},
-		},
-		{
-			id: "02",
-			title: "titre d'une leçon 2",
-		}, */
-	]);
+	const router = useRouter();
+
+	const [lessons, setLessons] = useState<ILessonProps[]>([]);
 	const [published, setPublished] = useState(false);
 	const [title, setTitle] = useState("");
 	const [level, setLevel] = useState<string | null>(null);
@@ -73,14 +36,18 @@ export default function CreateCoursePage() {
 
 	const userId = useAuthStore((state) => state.user.id);
 
-	// useEffect(() => {
-	// 	console.log("lessons", lessons);
-	// }, [lessons]);
+	// save the course
+	const {
+		// data: dataCourseBySlug,
+		// loading: loadingCourseBySlug,
+		fetchData: fetchCourseBySlug,
+	} = useLazyGraphQL();
 
 	// save the course
 	const {
-		data: dataCourse,
+		// data: dataCourse,
 		loading: loadingGQL,
+		// error: errorGQL,
 		fetchData: fetchCreateCourse,
 	} = useLazyGraphQL();
 
@@ -91,15 +58,23 @@ export default function CreateCoursePage() {
 		fetchData: fetchCategories,
 	} = useLazyGraphQL<CategoriesDataProps>();
 
+	// levels
 	const {
 		data: dataLevels,
 		loading: loadingLevels,
 		fetchData: fetchLevels,
 	} = useLazyGraphQL<LevelsDataProps>();
 
-	useEffect(() => {
-		console.log("dataCourse", dataCourse);
-	}, [dataCourse]);
+	// toast
+	const [openToast, setOpenToast] = useState(false);
+	const [bgColorToast, setBgColorToast] = useState("#6a7282");
+	const [messageToast, setMessageToast] = useState("");
+
+	const showToast = (msg: string, bgColor: string = "#6a7282") => {
+		setMessageToast(msg);
+		setBgColorToast(bgColor);
+		setOpenToast(true);
+	};
 
 	useEffect(() => {
 		fetchCategories({
@@ -127,13 +102,31 @@ export default function CreateCoursePage() {
 	}, [fetchLevels]);
 
 	async function createCourse(formData: FormData) {
-		console.log("createCourse");
+		// console.log("createCourse");
 
 		// Required
 		const title = formData.get("title")?.toString() || "";
 		const slug = slugify(title);
 
-		// TODO: vérifier d'abord qu'il n'y a pas déjà un cours avec ce slug
+		// Vérifier si le slug existe déjà
+		const slugData = await fetchCourseBySlug({
+			query: `#graphql
+				query CourseBySlug($slug: String!) {
+					courseBySlug(slug: $slug) {
+						id
+					}
+				}
+			`,
+			variables: {
+				slug,
+			},
+		});
+
+		if (slugData?.courseBySlug) {
+			// Le slug existe déjà !
+			showToast("Un cours avec ce titre </br>existe déjà !", "red");
+			return;
+		}
 
 		// Optionnel
 		const description = formData.get("description") as string;
@@ -157,7 +150,11 @@ export default function CreateCoursePage() {
 					};
 				}
 			}
-
+			const getMediaType = (type: string) => {
+				if (type.startsWith("image/")) return "IMAGE";
+				if (type.startsWith("video/")) return "VIDEO";
+				throw new Error(`Type de média non supporté : ${type}`);
+			};
 			// images des leçons à uploader
 			let lessonsToSave = [...lessons];
 			const uploadPromises = lessonsToSave.map(async (l) => {
@@ -166,7 +163,7 @@ export default function CreateCoursePage() {
 					l.media = {
 						id: uuid(),
 						url,
-						type: l.fileToUpload.type, //.split("/")[0],
+						type: l.fileToUpload.type, // getMediaType(l.fileToUpload.type), // l.fileToUpload.type, //.split("/")[0],
 					};
 				}
 			});
@@ -180,11 +177,26 @@ export default function CreateCoursePage() {
 
 			finalLessons = await [...lessonsToSave];
 
-			const lessonsToSaveToBdd = lessonsToSave.map(({ id, ...rest }) => ({
-				...rest,
-			}));
+			// const lessonsToSaveToBdd = lessonsToSave.map(({ id, ...rest }) => ({
+			// 	...rest,
+			// }));
 
-			console.log("variables:", {
+			// on prépare les leçons à envoyer à la bdd en formatant le media et enlevant
+			// les props inutiles (id)
+
+			const lessonsToSaveToBdd = lessonsToSave.map(
+				({ id, media, ...rest }) => ({
+					...rest,
+					...(media && {
+						media: (({ id: _mediaId, type, ...mediaRest }) => ({
+							...mediaRest,
+							type: getMediaType(type || ""),
+						}))(media),
+					}),
+				}),
+			);
+
+			/* console.log("variables:", {
 				input: {
 					title,
 					slug,
@@ -199,11 +211,11 @@ export default function CreateCoursePage() {
 					publishedAt: published ? new Date().toISOString() : null,
 					chapters: lessonsToSaveToBdd,
 				},
-			});
+			}); */
 			// return;
 
 			// mutation graphQL pour la création du cours
-			fetchCreateCourse({
+			const result = await fetchCreateCourse({
 				query: `#graphql
           mutation CreateCourse($input: CreateCourseInput!) {
             createCourse(input: $input) {
@@ -239,6 +251,25 @@ export default function CreateCoursePage() {
 					},
 				},
 			});
+
+			if (result?.createCourse) {
+				// Cours créé avec succès !
+				showToast(`Le cours a bien été créé.`);
+
+				// TODO: rediriger vers la page update du cours
+				/* setEditingCourse({
+					id: result.createCourse.id,
+					slug: result.createCourse.slug,
+				}); */
+				router.push(`/courses/${result.createCourse.id}/edit`);
+				// réinitialiser le formulaire
+				// setTitle("");
+				// setLevel(null);
+				// setCategoriesId([]);
+				// setFileToUpload(null);
+				// setMedia(null);
+				// setLessons([]);
+			}
 		} finally {
 			setMedia(finalMedia);
 			setLessons(finalLessons);
@@ -255,13 +286,18 @@ export default function CreateCoursePage() {
 		<main className="w-full h-lvh bg-white m-auto">
 			<div className="">
 				<div className="m-auto w-full max-w-7xl p-5 bg-white ">
-					<h1 className="text-2xl">Création d'un cours</h1>
+					<h1 className="text-2xl">"Création d'un cours"</h1>
 				</div>
 				<div className="border-b-2 border-gray-200 mt-3 mb-6"></div>
 				<form action={createCourse}>
-					<div className="flex justify-end z-1 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
-						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto mx-4 md:mx-0">
-							<SwitchButton checked={published} setChecked={setPublished} />
+					<div className="flex flex-col justify-end z-0 mx-4 md:mr-2 md:-mt-5 md:fixed md:right-[max(1rem,calc((100vw-80rem)/2))] ">
+						<div className="bg-white shadow-md p-4 rounded border border-gray-300 flex flex-col gap-4 min-w-3xs w-full md:w-auto md:mx-0">
+							<SwitchButton
+								checked={published}
+								setChecked={setPublished}
+								textTrue="Doit être publié"
+								textFalse="Reste à l'état de brouillon"
+							/>
 							<button
 								type="submit"
 								disabled={loading || loadingGQL || !title.length}
@@ -275,6 +311,12 @@ export default function CreateCoursePage() {
 								Enregistrer
 							</button>
 						</div>
+						<Toaster
+							openToast={openToast}
+							setOpenToast={setOpenToast}
+							messageToast={messageToast}
+							bgColorToast={bgColorToast}
+						/>
 					</div>
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						{/* TITLE */}

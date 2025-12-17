@@ -109,7 +109,7 @@ export default function RegisterModal({ setOpenRegister }: ILoginModalProps) {
 	};
 	return (
 		<>
-			<h2 className="text-white text-2xl font-bold mb-4">Register</h2>
+			<h2 className="text-white text-2xl font-bold mb-4">S'inscrire</h2>
 			<form className="flex flex-col gap-3" onSubmit={handleSubmit}>
 				<label
 					htmlFor="firstName"

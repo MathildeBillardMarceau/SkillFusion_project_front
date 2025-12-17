@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 
-export function useLazyGraphQL<T>(defaultQuery?: string) {
+export function useLazyGraphQL<T>() {
 	const [data, setData] = useState<T | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -9,14 +9,12 @@ export function useLazyGraphQL<T>(defaultQuery?: string) {
 		async ({ query, variables }: { query?: string; variables?: any }) => {
 			setLoading(true);
 
-			const finalQuery = query || defaultQuery;
-
 			try {
 				// on fetch le endpoint graphQL
 				const res = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API_URL}`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ query: finalQuery, variables }), // en lui envoyant la query + variables
+					body: JSON.stringify({ query, variables }), // en lui envoyant la query + variables
 					cache: "no-store",
 				});
 
@@ -24,15 +22,22 @@ export function useLazyGraphQL<T>(defaultQuery?: string) {
 
 				if (json.errors) {
 					setError(json.errors[0].message);
-				} else {
-					setData(json.data);
+					setLoading(false);
+					return null;
 				}
+
+				setData(json.data);
+				setLoading(false);
+				return json.data;
 			} catch (e: any) {
 				setError(e.message);
+				setLoading(false);
+				return null;
+			} finally {
+				setLoading(false);
 			}
-			setLoading(false);
 		},
-		[defaultQuery],
+		[],
 	);
 
 	// on renvoir data, loading et error

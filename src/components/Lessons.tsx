@@ -23,7 +23,7 @@ import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { RxDragHandleDots2 } from "react-icons/rx";
 import { v4 as uuid } from "uuid";
 import type { ILessonProps, ILessonsProps, ISortbaleLesson } from "@/@types";
-import MediaPreviewer from "./MediaPreviewer";
+import MediaPreviewer from "../ui/MediaPreviewer";
 import TextEditor from "./TextEditor/TextEditor";
 
 export default function Lessons({ lessons, setLessons }: ILessonsProps) {

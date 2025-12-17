@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-	--background: #f4ece2;
+	--background: #f4ece2; /* #e91d63 */
 	--foreground: #171717;
 	/* Ajout de altground pour souligner message utilisateur */
 	--altground: #a78a7f;
@@ -60,6 +60,7 @@ body {
 		transform: scale(1);
 	}
 }
+
 
 .chapter-content h3 {
 	@apply text-primary-red text-xl;

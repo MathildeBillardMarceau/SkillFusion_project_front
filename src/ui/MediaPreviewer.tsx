@@ -65,7 +65,7 @@ export default function MediaPreviewer({
 					className="h-full w-auto"
 				/>
 			)}
-			{media?.type?.startsWith("image/") && !previewUrl && (
+			{media?.type?.toLowerCase().startsWith("image") && !previewUrl && (
 				<Image
 					src={media.url}
 					alt=""
