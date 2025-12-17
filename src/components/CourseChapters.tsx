@@ -24,18 +24,21 @@ export default function ShowCourseChapters({
 	// cette mécanique devient obsolète avec l'utilisation du useState du parent
 
 	return (
-		<li className="flex flex-row items-center font-bold p-2">
+		<li
+			className={
+				isSelected
+					? "border-primary-red border-t-2 border-b-2  bg-primary-red/30 flex flex-row items-center font-bold p-2"
+					: "flex flex-row items-center font-bold p-2"
+			}
+		>
 			<div className="w-[90%]">
-				<button type="button" onClick={onClick}>
-					<span
-						className={
+				{/* <div className=className={
 							isSelected
 								? "border-primary-red border-t-2 border-b-2  bg-primary-red/30"
 								: ""
-						}
-					>
-						{title}
-					</span>
+						}> */}
+				<button type="button" onClick={onClick}>
+					<span>{title}</span>
 				</button>
 
 				{/* <Link

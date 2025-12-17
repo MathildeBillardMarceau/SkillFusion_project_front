@@ -180,7 +180,7 @@ export default function SingleCourse() {
 										)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
-									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-4 border-4 rounded-md border-primary-red shadow-xl/30">
+									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-3 py-2 border-4 rounded-md border-primary-red shadow-xl/30">
 										{course?.chapters.map((eachChapter) => (
 											<ShowCourseChapters
 												key={eachChapter.id}
