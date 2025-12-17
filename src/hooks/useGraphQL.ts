@@ -5,7 +5,6 @@ export function useGraphQL<T>(query: string, variables?: any) {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 
-	// biome-ignore lint: correctnes/useExhaustiveDependencies <faux positif avec JSON.stringify(variables)>
 	useEffect(() => {
 		const fetchData = async () => {
 			setLoading(true);

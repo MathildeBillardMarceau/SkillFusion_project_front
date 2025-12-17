@@ -6,10 +6,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 import type {
-	CategoriesDataProps,
 	CategoryProps,
+	ICourseBySlugQuery,
 	ILessonProps,
-	LevelsDataProps,
 	MediaProps,
 } from "@/@types";
 import { useAuthStore } from "@/app/store/auth";
@@ -21,12 +20,10 @@ import { SwitchButton } from "@/ui/SwitchButton";
 import { Toaster } from "@/ui/Toaster";
 
 const Lessons = dynamic(() => import("@/components/Lessons"), { ssr: false });
-
 interface ICourseFormProps {
 	mode: "create" | "edit";
-	initialData?: any; // TODO: définir le type correctement
+	initialData?: ICourseBySlugQuery["courseBySlug"]; // TODO: définir le type correctement
 }
-
 interface ICategoriesAndLevelsDataProps {
 	categories: CategoryProps[];
 	levels: string[];
@@ -90,23 +87,11 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 	const { fetchData: fetchCreateCourse, loading: loadingGQL } =
 		useLazyGraphQL();
 
-	/* const {
-		data: dataCategories,
-		loading: loadingCategories,
-		fetchData: fetchCategories,
-	} = useLazyGraphQL<CategoriesDataProps>(); */
-
 	const {
 		data: dataCategoriesAndLevels,
 		loading: loadingCategoriesAndLevels,
 		fetchData: fetchCategoriesAndLevels,
 	} = useLazyGraphQL<ICategoriesAndLevelsDataProps>();
-
-	/* const {
-		data: dataLevels,
-		loading: loadingLevels,
-		fetchData: fetchLevels,
-	} = useLazyGraphQL<LevelsDataProps>(); */
 
 	// ---------------- TOAST ----------------
 	const [openToast, setOpenToast] = useState(false);
@@ -131,26 +116,6 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 		});
 	}, [fetchCategoriesAndLevels]);
 
-	/* useEffect(() => {
-		fetchCategories({
-			query: `#graphql
-				query Categories {
-					categories { id name color description }
-				}
-			`,
-		});
-	}, [fetchCategories]);
-
-	useEffect(() => {
-		fetchLevels({
-			query: `#graphql
-				query Levels {
-					levels
-				}
-			`,
-		});
-	}, [fetchLevels]);
- */
 	// ---------------- CREATE COURSE ----------------
 	async function createCourse(formData: FormData) {
 		// Required
@@ -292,8 +257,8 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 
 	// ---------------- RENDER ----------------
 	return (
-		<>
-			<div className="max-w-7xl m-auto p-5">
+		<div className="bg-white">
+			<div className="max-w-7xl mx-auto p-5">
 				<h1 className="text-2xl">
 					{mode === "create" ? "Créer un cours" : "Modifier le cours"}
 				</h1>
@@ -458,19 +423,12 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 
 					{loading && <p>Uploading...</p>}
 				</div>
-				<div className="bg-amber-200">
+				<div className="bg-gray-100">
 					<div className="m-auto w-full max-w-7xl p-5 md:pr-75">
 						<Lessons lessons={lessons} setLessons={setLessons} />
 					</div>
 				</div>
 			</form>
-
-			<Toaster
-				openToast={openToast}
-				setOpenToast={setOpenToast}
-				messageToast={messageToast}
-				bgColorToast={bgColorToast}
-			/>
-		</>
+		</div>
 	);
 }

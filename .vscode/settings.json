@@ -17,5 +17,8 @@
 	"files.exclude": {
 		"**/node_modules": true,
 		"**/dist": true
+	},
+	"workbench.editorAssociations": {
+		"*.svg": "default"
 	}
 }
