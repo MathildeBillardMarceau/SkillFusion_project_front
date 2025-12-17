@@ -38,7 +38,7 @@ interface MessagesFromDb {
 		content: string;
 		createdAt: string;
 		updatedAt: string;
-		user: { firstName: string; lastName: string; id: string };
+		user: { firstName: string; lastName: string; avatar: string; id: string };
 		course: { title: string };
 	}[];
 }
@@ -114,6 +114,7 @@ export default function SingleCourse() {
         firstName
         lastName
         id
+				avatar
         }
       course {
         title
@@ -167,7 +168,7 @@ export default function SingleCourse() {
 									{course &&
 										selectedChapter && ( // je conditionne l'existence de course pour les erreurs de typage
 											<>
-												{console.log("contenu du cours", selectedChapter.text)}
+												{/* {console.log("contenu du cours", selectedChapter.text)} */}
 												<ShowCourseLesson
 													// TODO: utiliser le use state de l'objet plutot
 													description={course.description}
@@ -209,18 +210,21 @@ export default function SingleCourse() {
 						{messagesFromDBData?.messagesByCourseSlug
 							// filter OLD: utile avec le mockup, plus avec GQL - pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams -
 							//.filter((eachMsg) => eachMsg.courseId === params.slug)
-							.map((eachMsg, index) => (
-								<ShowPost
-									key={eachMsg.id}
-									createdAt={eachMsg.createdAt}
-									content={eachMsg.content}
-									userName={`${eachMsg.user.firstName} ${eachMsg.user.lastName}`}
-									userAvatar={eachMsg.userAvatar}
-									userRole={eachMsg.userRole}
-									isOdd={index % 2 === 1}
-									connectedUser={simConnectedUser}
-								/>
-							))}
+							.map((eachMsg, index) => {
+								console.log("avatar data:", eachMsg.user.avatar);
+								return (
+									<ShowPost
+										key={eachMsg.id}
+										createdAt={eachMsg.createdAt}
+										content={eachMsg.content}
+										userName={`${eachMsg.user.firstName} ${eachMsg.user.lastName}`}
+										userAvatar={eachMsg.user.avatar}
+										userRole={eachMsg.userRole}
+										isOdd={index % 2 === 1}
+										connectedUser={simConnectedUser}
+									/>
+								);
+							})}
 					</div>
 				</main>
 			</div>
