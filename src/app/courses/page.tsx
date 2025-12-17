@@ -1,12 +1,10 @@
 "use client";
-import { useState } from "react";
 import type { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
 import { useGraphQL } from "@/hooks/useGraphQL";
 
 export default function Courses() {
-	const [showProfil, setShowProfil] = useState(false);
-	const [showLogin, setShowLogin] = useState(false);
+
 	const {
 		data: CoursesData,
 		loading,
