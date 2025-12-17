@@ -2,8 +2,10 @@
 
 import clsx from "clsx";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { MdRemoveRedEye } from "react-icons/md";
 import { v4 as uuid } from "uuid";
 import type {
 	CategoryProps,
@@ -321,6 +323,12 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 						>
 							Enregistrer
 						</button>
+						<Link
+							href={`/courses/${initialData?.slug}`}
+							className="flex gap-2 text-gray-500 transition hover:text-primary-red"
+						>
+							<MdRemoveRedEye className="text-2xl " /> voir le cours
+						</Link>
 					</div>
 					<Toaster
 						openToast={openToast}
