@@ -5,7 +5,7 @@ import ProfilOnDashboard from "@/components/ProfilOnDashboard";
 export default function ProfilDashboard() {
 	return (
 		<div>
-			<main className="max-w-7xl m-auto px-4">
+			<main className="max-w-7xl m-auto px-4 pb-20">
 				<div className="rounded-2xl overflow-hidden">
 					<h1 className="text-4xl text-center p-4 font-display-title font-bold text-primary-red">
 						Tableau de bord
