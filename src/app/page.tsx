@@ -17,6 +17,7 @@ export default function Home() {
 							title={course.title}
 							date={course.date}
 							description={course.description}
+							slug={course.slug}
 						/>
 					))}
 				</div>
