@@ -28,6 +28,9 @@ export default function MediaPreviewer({
 		return () => URL.revokeObjectURL(url);
 	}, [selectedFile]);
 
+	// console.log("MediaPreviewer");
+	// console.log("media", media);
+
 	async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0];
 		if (!file) return;

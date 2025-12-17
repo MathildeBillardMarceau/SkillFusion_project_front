@@ -37,21 +37,26 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 	const [lessons, setLessons] = useState<ILessonProps[]>([]);
 	const [published, setPublished] = useState(false);
 	const [title, setTitle] = useState("");
+	const [description, setDescription] = useState("");
+	const [cost, setCost] = useState("");
+	const [material, setMaterial] = useState("");
+	const [duration, setDuration] = useState("");
 	const [level, setLevel] = useState<string | null>(null);
 	const [categoriesId, setCategoriesId] = useState<string[]>([]);
 	const [fileToUpload, setFileToUpload] = useState<File | null>(null);
 	const [media, setMedia] = useState<MediaProps | null>(null);
 	const [loading, setLoading] = useState(false);
 
-	console.log("initialData dans CourseForm:", initialData);
+	// if (mode === "edit") console.log("initialData dans CourseForm:", initialData);
 
-	useEffect(() => {
-		console.log("Catégories sélectionnées :", categoriesId);
-	}, [categoriesId]);
 	useEffect(() => {
 		if (mode !== "edit" || !initialData) return;
 
 		setTitle(initialData.title ?? "");
+		setDescription(initialData.description ?? "");
+		setDuration(initialData.duration ?? "");
+		setCost(initialData.cost ?? "");
+		setMaterial(initialData.material ?? "");
 		setLevel(initialData.level ?? null);
 		setPublished(Boolean(initialData.publishedAt));
 
@@ -68,19 +73,15 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 				: null,
 		);
 
-		console.log("!!!!!!!!!!!!Chapters from initialData:", initialData.chapters);
+		// console.log("Chapters from initialData:", initialData.chapters);
 		setLessons(
 			initialData.chapters?.map((chapter: any) => ({
 				...chapter,
-				media: chapter.medias?.[0],
+				media: chapter.media ?? null, // chapter.medias?.[0],
 				isOpen: false,
 			})) ?? [],
 		);
 	}, [mode, initialData]);
-
-	useEffect(() => {
-		console.log("Lessons updated:", lessons);
-	}, [lessons]);
 
 	// ---------------- GRAPHQL ----------------
 	const { fetchData: fetchCourseBySlug } = useLazyGraphQL();
@@ -124,7 +125,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 
 		setLoading(true);
 
-		if (mode === "create") {
+		if (mode === "create" || (mode === "edit" && slug !== initialData?.slug)) {
 			// Vérifier si le slug existe déjà
 			const slugData = await fetchCourseBySlug({
 				query: `#graphql
@@ -167,8 +168,8 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 			}
 
 			const getMediaType = (type: string) => {
-				if (type.startsWith("image/")) return "IMAGE";
-				if (type.startsWith("video/")) return "VIDEO";
+				if (type.toUpperCase().startsWith("IMAGE")) return "IMAGE";
+				if (type.toUpperCase().startsWith("VIDEO")) return "VIDEO";
 				throw new Error(`Type de média non supporté : ${type}`);
 			};
 
@@ -199,6 +200,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 			const lessonsToSaveToBdd = lessonsToSave.map(
 				({ id, media, ...rest }) => ({
 					...rest,
+					...(mode === "edit" && id && { id }),
 					...(media && {
 						media: (({ id: _mediaId, type, ...mediaRest }) => ({
 							...mediaRest,
@@ -208,39 +210,73 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 				}),
 			);
 
-			// mutation graphQL pour la création du cours
+			// mutation graphQL
+			const mutation =
+				mode === "edit"
+					? `#graphql
+              mutation UpdateCourse($id: UUID!, $input: UpdateCourseInput!) {
+                updateCourse(id: $id, input: $input) {
+                  id
+                  title
+                  slug
+                }
+              }
+            `
+					: `#graphql
+              mutation CreateCourse($input: CreateCourseInput!) {
+                createCourse(input: $input) {
+                  id
+                  title
+                  slug
+                }
+              }
+            `;
+			const coursePayload = {
+				// id,
+				// title,
+				// slug,
+				// userId,
+				image: imageUrl,
+				description,
+				level,
+				duration,
+				cost,
+				material,
+				categoriesId,
+				chapters: lessonsToSaveToBdd,
+				publishedAt: published ? new Date().toISOString() : null,
+			};
+
+			/* console.log("coursePayload avant mutation :", {
+				...(mode === "edit" && { id: initialData?.id }),
+				input: {
+					...coursePayload,
+					...(mode === "edit" && slug !== initialData?.slug && { slug, title }),
+					...(mode === "create" && { userId, slug, title }),
+				},
+			}); */
+			// userId  à ajouter si mode === "create"
+			// id à ajouter si mode === "edit"
 			const result = await fetchCreateCourse({
-				query: `#graphql
-					mutation CreateCourse($input: CreateCourseInput!) {
-						createCourse(input: $input) {
-							id
-              title
-							slug
-						}
-					}
-				`,
+				query: mutation,
 				variables: {
+					...(mode === "edit" && { id: initialData?.id }),
 					input: {
-						title,
-						slug,
-						userId,
-						image: imageUrl,
-						description,
-						level,
-						duration,
-						cost,
-						material,
-						categoriesId,
-						chapters: lessonsToSaveToBdd,
-						publishedAt: published ? new Date().toISOString() : null,
+						...coursePayload,
+						...(mode === "edit" &&
+							slug !== initialData?.slug && { slug, title }),
+						...(mode === "create" && { userId, slug, title }),
 					},
 				},
 			});
 
+			// console.log("Résultat de la mutation create/update :", result);
+
 			if (result?.createCourse) {
-				// Cours créé avec succès !
 				showToast("Le cours a bien été créé");
 				router.push(`/courses/${result.createCourse.slug}/edit`);
+			} else if (result?.updateCourse && mode === "edit") {
+				showToast("Le cours a bien été mis à jour");
 			}
 		} finally {
 			setMedia(finalMedia);
@@ -346,7 +382,11 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 								className="border border-gray-300 p-2 w-full"
 								name="description"
 								placeholder="description"
-								defaultValue={initialData?.description ?? ""}
+								// defaultValue={initialData?.description ?? ""}
+								value={description}
+								onChange={(e) => {
+									setDescription(e.currentTarget.value);
+								}}
 							></textarea>
 							{/* LEVELS */}
 							<div className="py-4">
@@ -402,14 +442,22 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 								type="text"
 								placeholder="durée"
 								name="duration"
-								defaultValue={initialData?.duration ?? ""}
+								// defaultValue={initialData?.duration ?? ""}
+								value={duration}
+								onChange={(e) => {
+									setDuration(e.currentTarget.value);
+								}}
 							/>
 							<input
 								className="border border-gray-300 p-2"
 								type="text"
 								placeholder="coût"
 								name="cost"
-								defaultValue={initialData?.cost ?? ""}
+								// defaultValue={initialData?.cost ?? ""}
+								value={cost}
+								onChange={(e) => {
+									setCost(e.currentTarget.value);
+								}}
 							/>
 						</div>
 						<input
@@ -417,7 +465,11 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 							type="text"
 							placeholder="matériel"
 							name="material"
-							defaultValue={initialData?.material ?? ""}
+							// defaultValue={initialData?.material ?? ""}
+							value={material}
+							onChange={(e) => {
+								setMaterial(e.currentTarget.value);
+							}}
 						/>
 					</div>
 
