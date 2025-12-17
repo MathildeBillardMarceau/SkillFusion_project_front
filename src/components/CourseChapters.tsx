@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { useState } from "react";
 
-//import { Chapter } from "@/app/courses/[slug]/page";
-
 interface CourseChapterList {
 	key: string;
 	title: string;
@@ -19,9 +17,6 @@ export default function ShowCourseChapters({
 }: CourseChapterList) {
 	const [checkedChapter, setCheckedChapter] = useState(false);
 	// permet de définir les chapitres déjà cochés (mockup marche sur 1 uniquement)
-	//const [currentChapter, setCurrentChapter] = useState(false);
-	// permet d'afficher le chapitre en cours (mockup marche sur 3 uniquement)
-	// cette mécanique devient obsolète avec l'utilisation du useState du parent
 
 	return (
 		<li
@@ -32,26 +27,9 @@ export default function ShowCourseChapters({
 			}
 		>
 			<div className="w-[90%]">
-				{/* <div className=className={
-							isSelected
-								? "border-primary-red border-t-2 border-b-2  bg-primary-red/30"
-								: ""
-						}> */}
 				<button type="button" onClick={onClick}>
 					<span>{title}</span>
 				</button>
-
-				{/* <Link
-					href={`http://localhost:3000/courses/erty`}
-					className={`flex flex-row justify-between font-bold p-2 ${
-						currentChapter
-							? "border-primary-red border-t-2 border-b-2  bg-primary-red/30"
-							: ""
-					} `}
-					onClick={() => setCurrentChapter(!currentChapter)}
-				>
-					<span>{title}</span>
-				</Link> */}
 			</div>
 			<div className="w-[10%] flex justify-center">
 				<input

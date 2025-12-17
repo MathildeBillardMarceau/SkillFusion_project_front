@@ -169,6 +169,7 @@ export default function SingleCourse() {
 											<>
 												{console.log("contenu du cours", selectedChapter.text)}
 												<ShowCourseLesson
+													// TODO: utiliser le use state de l'objet plutot
 													description={course.description}
 													createdAt={course.createdAt}
 													userName={`${course.user.firstName} ${course?.user.lastName}`}
