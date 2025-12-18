@@ -11,8 +11,10 @@ interface IDeleteModalProps {
 
 export default function DeleteProfil({setOpenDelete,}: IDeleteModalProps) {
   const router = useRouter();
- 
-  const { user, token: accessToken, isAuthenticated, logout } = useAuthStore();
+
+ 	const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
+
+  const { user, accessToken, logout } = useAuthStore();
 
   const handleDelete = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
