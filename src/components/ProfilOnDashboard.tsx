@@ -9,11 +9,12 @@ import DeleteModal from "./modals/DeleteModal";
 import UpdateModal from "./modals/UpdateModal";
 
 export default function Dashboard() {
+	const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
+
 	const router = useRouter();
 	const {
 		user,
-		token: accessToken,
-		isAuthenticated,
+		accessToken,
 		updateUser,
 		logout,
 	} = useAuthStore();
