@@ -31,7 +31,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 		<>
 			<Link
 				href="/courses"
-				className="px-4 py-2 font-bold rounded-md bg-secondary-red text-background-charte cursor-pointer min-w-50 text-center"
+				className="px-4 py-2 font-bold rounded-md bg-secondary-red text-background-charte cursor-pointer w-auto md:w-50 text-center"
 			>
 				liste des cours
 			</Link>
@@ -42,7 +42,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 							setOpenProfil(on => !on);
 						}}
 						type="button"
-						className={`px-4 py-2 font-bold bg-primary-red text-background-charte cursor-pointer min-w-50 ${openProfil ? "rounded-t-md" : "rounded-md"}`}
+						className={`px-4 py-2 font-bold bg-primary-red text-background-charte cursor-pointer w-auto md:w-50 ${openProfil ? "rounded-t-md" : "rounded-md"}`}
 					>
 						{user.firstName}
 					</button>
@@ -76,7 +76,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 						setOpenLogin(true);
 					}}
 					type="button"
-					className="px-4 py-2 font-bold rounded-md bg-primary-red text-background-charte cursor-pointer min-w-50"
+					className="px-4 py-2 font-bold rounded-md bg-primary-red text-background-charte cursor-pointer w-auto md:w-50"
 				>
 					Se connecter
 				</button>
