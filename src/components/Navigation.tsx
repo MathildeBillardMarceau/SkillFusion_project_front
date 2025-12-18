@@ -43,7 +43,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 							setOpenProfil(on => !on);
 						}}
 						type="button"
-						className={`px-4 py-2 font-bold bg-primary-red text-background-charte cursor-pointer w-auto md:w-50 ${openProfil ? "rounded-t-md" : "rounded-md"}`}
+						className={`px-4 py-2 font-bold bg-primary-red text-background-charte cursor-pointer w-50 ${openProfil ? "rounded-t-md" : "rounded-md"}`}
 					>
 						{user?.firstName}
 					</button>
