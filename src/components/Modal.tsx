@@ -30,7 +30,7 @@ export default function Modal({
 		<Portal>
 			<div className="fixed inset-0 z-99 flex justify-center items-center bg-black/30 backdrop-blur-xs transition-opacity duration-200">
 				<div className="w-full md:w-md m-4 flex flex-col border-4 rounded-md border-primary-red justify-between shadow-xl/30 bg-primary-red p-4 animate-fadeIn">
-					<div className="flex justify-end text-white text-2xl">
+					<div className="flex justify-end text-white text-2xl ">
 						<button type="button" onClick={onClose} className="cursor-pointer">
 							<MdClose />
 						</button>
