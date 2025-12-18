@@ -22,7 +22,7 @@ export default function EditCoursePage() {
 	);
 
 	return (
-		<main className="w-full h-full bg-gray-100DISABLED m-auto">
+		<main className="w-full h-full m-auto">
 			{loading ? (
 				<p>Loading...</p>
 			) : error ? (

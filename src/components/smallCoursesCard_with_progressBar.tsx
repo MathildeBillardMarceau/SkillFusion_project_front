@@ -20,12 +20,9 @@ export default function SmallCoursesCard_with_progressBar({
 	return (
 		<div className="w-full h-full">
 			<main className="py-4">
-				<Link
-					href={`courses/${slug}`}
-					className="bg-black/5 hover:bg-black/10 block rounded-xl p-4 shadow-xl/10 min-h-25"
-				>
+				<div className="bg-black/5 hover:bg-black/10 block rounded-xl p-4 shadow-xl/10 min-h-25">
 					<div className="flex flex-row h-10 w-60 md:w-100 justify-between items-center ">
-						<div className="flex items-center">
+						<Link href={`courses/${slug}`} className="flex items-center">
 							{image && (
 								<Image
 									src={image}
@@ -38,14 +35,15 @@ export default function SmallCoursesCard_with_progressBar({
 							<div className="font-display-title font-bold text-primary-text mx-3 text-left">
 								{title}
 							</div>
-						</div>
+						</Link>
 						<div className="flex gap-2">
-							<div
+							<Link
+								href={`courses/${slug}`}
 								className="px-4 py-2 rounded-md text-secondary-red cursor-pointer flex items-center transition hover:bg-secondary-red hover:text-white"
 								title="voir"
 							>
 								<MdRemoveRedEye className="text-2xl" />
-							</div>
+							</Link>
 							{editMode && (
 								<Link
 									href={`courses/${slug}/edit`}
@@ -65,7 +63,7 @@ export default function SmallCoursesCard_with_progressBar({
 							/>
 						</div>
 					)}
-				</Link>
+				</div>
 			</main>
 		</div>
 	);
