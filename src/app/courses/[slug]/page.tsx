@@ -1,6 +1,7 @@
 "use client";
 import { useParams } from "next/navigation"; // récupération du slug
 import { useEffect, useState } from "react"; // le useState pour le browsing des chapitres
+import { useAuthStore } from "@/app/store/auth"; // composant pour gérer l'authentification
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseLesson from "@/components/CourseLesson";
@@ -49,7 +50,9 @@ export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
 
 export default function SingleCourse() {
 	const params = useParams();
-	const simConnectedUser = "Lina";
+	//const simConnectedUser = "Lina";
+	const currentUser = useAuthStore((state) => state.user?.id);
+	// ici je vérifie s'il y a un connectedUser ou si c'est null
 
 	const {
 		// requête pour aller récupérer les éléments du cours
@@ -211,7 +214,7 @@ export default function SingleCourse() {
 							// filter OLD: utile avec le mockup, plus avec GQL - pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams -
 							//.filter((eachMsg) => eachMsg.courseId === params.slug)
 							.map((eachMsg, index) => {
-								console.log("avatar data:", eachMsg.user.avatar);
+								//console.log("avatar data:", eachMsg.user.avatar);
 								return (
 									<ShowPost
 										key={eachMsg.id}
@@ -219,9 +222,10 @@ export default function SingleCourse() {
 										content={eachMsg.content}
 										userName={`${eachMsg.user.firstName} ${eachMsg.user.lastName}`}
 										userAvatar={eachMsg.user.avatar}
+										userId={eachMsg.user.id}
 										userRole={eachMsg.userRole}
+										connectedUser={currentUser}
 										isOdd={index % 2 === 1}
-										connectedUser={simConnectedUser}
 									/>
 								);
 							})}
