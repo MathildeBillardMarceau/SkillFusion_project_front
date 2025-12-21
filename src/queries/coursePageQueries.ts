@@ -80,3 +80,16 @@ export const querySubscriptionByUserAtCourse = `#graphql
     }
   }
 `;
+
+export const mutationCreateUserSubscription = `#graphql
+mutation CreateUserSubscription($input: CreateUserSubscription!) {
+  createUserSubscription(input: $input) {
+    course {
+      id
+    }
+    user {
+      id
+    }
+  }
+}
+  `;
