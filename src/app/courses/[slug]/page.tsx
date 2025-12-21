@@ -6,43 +6,15 @@ import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
+import SubscriptionStatus from "@/components/courseSubscribe";
 import ShowPost from "@/components/ForumPost";
 import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 
-// ajout du typage du retour GQL pour éviter les erreurs sur courseBySlug
-interface CourseFromDB {
-	courseBySlug: {
-		id: string;
-		title: string;
-		description: string;
-		image: string;
-		level: string;
-		duration: string;
-		cost: string;
-		material: string;
-		createdAt: string;
-		updatedAt: string;
-		user: { firstName: string; lastName: string };
-		categories: { name: string; color: string; icon: string }[];
-		chapters: {
-			id: string;
-			title: string;
-			description: string;
-			text: string;
-		}[];
-	};
-}
-
-interface MessagesFromDb {
-	messagesByCourseSlug: {
-		id: string;
-		content: string;
-		createdAt: string;
-		updatedAt: string;
-		user: { firstName: string; lastName: string; avatar: string; id: string };
-		course: { title: string };
-	}[];
-}
+import {
+	CourseFromDB,
+	MessagesFromDb,
+	SubscriptionByUserAtCourse,
+} from "@/types/coursePageTypes";
 
 export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
 // le typage de chapter va nous permettre de raccourci le ??? dans le useState
@@ -127,6 +99,25 @@ export default function SingleCourse() {
 		{ slug: params.slug },
 	);
 
+	const {
+		// requête pour vérifier l'inscription du user connecté au cours
+		data: subscriptionByUserAtCourseData,
+		loading: subscriptionByUserAtCourseLoading,
+		error: subscriptionByUserAtCourseError,
+	} = useGraphQL<SubscriptionByUserAtCourse>(
+		`#graphql
+			query SubscriptionByCourse($courseId: UUID!) {
+  		subscriptionByCourse(courseId: $courseId) {
+    		user {
+      		id
+      		firstName
+      		lastName
+    }
+  }
+}
+		
+		`,
+	);
 	const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(
 		course?.chapters[0] || null,
 	);
@@ -138,13 +129,27 @@ export default function SingleCourse() {
 
 	useEffect(
 		() => {
-			// fonction qui permet de changer la valeur de course (manuellement pour l'instant)
+			// fonction qui permet de changer la valeur de course
 			if (course?.chapters?.length) {
 				setSelectedChapter(course.chapters[0]);
 			}
 		},
 		[course], // ici on précise que useEffect ne s'applique que pour les éléments de course (et donc chapter)
 	);
+
+	const [subscibedLesson, setSubscribedLesson] = useState<boolean | null>(null);
+	// comme je vais avoir 3 états, je serais soit null (par défaut - user non connecté), soit true/false si l'user est inscrit
+	// useEffect(
+	// 	() =>
+	// 	// pour changer on va appeler ici la fonction à la DB vu que pour ce compo elle est plutôt simple
+	// 	{
+	// 		if(!currentUser || !course?.id) return;
+
+	// 		async function
+
+	// 	}
+
+	// );
 
 	// début de la fonction qui return le contenu de la page
 	return (
@@ -185,6 +190,11 @@ export default function SingleCourse() {
 										)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
+									<SubscriptionStatus
+										userId={currentUser}
+										courseId={course?.id}
+									/>
+
 									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-3 py-2 border-4 rounded-md border-primary-red shadow-xl/30">
 										{course?.chapters.map((eachChapter) => (
 											<ShowCourseChapters
