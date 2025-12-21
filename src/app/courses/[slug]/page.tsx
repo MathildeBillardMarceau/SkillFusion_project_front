@@ -9,7 +9,11 @@ import ShowCourseTools from "@/components/CourseTools";
 import SubscriptionStatus from "@/components/courseSubscribe";
 import ShowPost from "@/components/ForumPost";
 import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
-
+import {
+	queryCourseBySlug,
+	queryMessagesByCourseSlug,
+	querySubscriptionByCourse,
+} from "@/queries/coursePageQueries";
 import {
 	CourseFromDB,
 	MessagesFromDb,
@@ -31,44 +35,7 @@ export default function SingleCourse() {
 		data: courseFromDBData,
 		loading: courseFromDBLoading,
 		error: courseFromDBError,
-	} = useGraphQL<CourseFromDB>(
-		`#graphql
-    query CourseBySlug($slug: String!) {
-      courseBySlug(slug: $slug) {
-        id            #inutile ?
-        title
-        slug          #utilisé pour la requête
-        description
-        image
-        level
-        duration
-        cost
-        material
-        publishedAt   #j'ai utilisé created at dans l'affichage
-        createdAt
-        updatedAt     #j'ai utilisé created at dans l'affichage
-        user {
-          firstName
-          lastName
-        }
-        categories {  #pas disponibles actuellement
-          name
-          color
-          icon
-        }
-				chapters {
-					id
-					title
-					description
-					text
-					createdAt
-					updatedAt
-    		}
-      }
-    }
-    `,
-		{ slug: params.slug },
-	);
+	} = useGraphQL<CourseFromDB>(queryCourseBySlug, { slug: params.slug });
 
 	const course = courseFromDBData?.courseBySlug; // chemin raccourci pour les éléments de la requête
 
@@ -77,47 +44,16 @@ export default function SingleCourse() {
 		data: messagesFromDBData,
 		loading: messagesFromDBLoading,
 		error: messagesFromDBError,
-	} = useGraphQL<MessagesFromDb>(
-		`#graphql
-    query MessagesByCourseSlug($slug: String!) {
-      messagesByCourseSlug(slug: $slug) {
-      id
-      content
-      createdAt
-      updatedAt
-      user {
-        firstName
-        lastName
-        id
-				avatar
-        }
-      course {
-        title
-        }
-    }
-  }`,
-		{ slug: params.slug },
-	);
+	} = useGraphQL<MessagesFromDb>(queryMessagesByCourseSlug, {
+		slug: params.slug,
+	});
 
 	const {
 		// requête pour vérifier l'inscription du user connecté au cours
 		data: subscriptionByUserAtCourseData,
 		loading: subscriptionByUserAtCourseLoading,
 		error: subscriptionByUserAtCourseError,
-	} = useGraphQL<SubscriptionByUserAtCourse>(
-		`#graphql
-			query SubscriptionByCourse($courseId: UUID!) {
-  		subscriptionByCourse(courseId: $courseId) {
-    		user {
-      		id
-      		firstName
-      		lastName
-    }
-  }
-}
-		
-		`,
-	);
+	} = useGraphQL<SubscriptionByUserAtCourse>(querySubscriptionByCourse);
 	const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(
 		course?.chapters[0] || null,
 	);
