@@ -7,7 +7,7 @@ import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
 import SubscriptionStatus from "@/components/courseSubscribe";
-import ShowPost from "@/components/ForumPost";
+import ShowForum from "@/components/forum";
 import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 import {
 	queryCourseBySlug,
@@ -155,35 +155,13 @@ export default function SingleCourse() {
 					)}
 
 					{/* contenu du forum */}
-					<div className="flex flex-col gap-4 basis-full w-full min-h-30">
-						{messagesFromDBData?.messagesByCourseSlug
-							// filter OLD: utile avec le mockup, plus avec GQL - pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams -
-							//.filter((eachMsg) => eachMsg.courseId === params.slug)
-							.map((eachMsg, index) => {
-								//console.log("avatar data:", eachMsg.user.avatar);
-								return (
-									<ShowPost
-										key={eachMsg.id}
-										createdAt={eachMsg.createdAt}
-										content={eachMsg.content}
-										userName={`${eachMsg.user.firstName} ${eachMsg.user.lastName}`}
-										userAvatar={eachMsg.user.avatar}
-										userId={eachMsg.user.id}
-										userRole={eachMsg.userRole}
-										connectedUser={currentUser}
-										isOdd={index % 2 === 1}
-									/>
-								);
-							})}
-					</div>
+					<ShowForum
+						messages={messagesFromDBData?.messagesByCourseSlug ?? []} // ici le ??[] indique que si on a pas de retour, on envoie un tableau vide, car dans le compo le type attend un tableau dans tous les cas
+						connectedUser={currentUser}
+					/>
+					{/* fin du forum */}
 				</main>
 			</div>
 		</div>
 	);
 }
-
-// explication de isOdd={index % 2 === 1}
-// renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
-// on compare ensuite ce reste à 1
-// si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
-// et on le récupère dans le composant

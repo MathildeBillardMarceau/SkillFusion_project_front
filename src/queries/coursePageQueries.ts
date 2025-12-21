@@ -46,6 +46,7 @@ export const queryMessagesByCourseSlug = `#graphql
         lastName
         id
         avatar
+        role
         }
       course {
         title

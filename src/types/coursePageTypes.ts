@@ -27,7 +27,14 @@ export interface MessagesFromDb {
 		content: string;
 		createdAt: string;
 		updatedAt: string;
-		user: { firstName: string; lastName: string; avatar: string; id: string };
+		user: {
+			firstName: string;
+			lastName: string;
+			avatar: string;
+			id: string;
+			type: string;
+			role: string;
+		};
 		course: { title: string };
 	}[];
 }
