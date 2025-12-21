@@ -65,31 +65,3 @@ export const queryMessagesByCourseSlug = `#graphql
 //   }
 // }
 //     `;
-
-export const querySubscriptionByUserAtCourse = `#graphql
-  query SubscriptionByUserAtCourse($courseId: UUID!, $userId: UUID!) {
-    subscriptionByUserAtCourse(courseId: $courseId, userId: $userId) {
-      completion
-      createdAt
-      # course {
-      #   slug
-      # }
-      # user {
-      #   email
-      # }
-    }
-  }
-`;
-
-export const mutationCreateUserSubscription = `#graphql
-mutation CreateUserSubscription($input: CreateUserSubscription!) {
-  createUserSubscription(input: $input) {
-    course {
-      id
-    }
-    user {
-      id
-    }
-  }
-}
-  `;

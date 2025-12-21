@@ -12,9 +12,8 @@ import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 import {
 	queryCourseBySlug,
 	queryMessagesByCourseSlug,
-	// querySubscriptionByCourse,
-	querySubscriptionByUserAtCourse,
 } from "@/queries/coursePageQueries";
+import { querySubscriptionByUserAtCourse } from "@/queries/subscriptionQueries";
 import {
 	CourseFromDB,
 	MessagesFromDb,
@@ -145,6 +144,7 @@ export default function SingleCourse() {
 												subscribed={subscribedLesson}
 												userId={currentUser}
 												courseId={course?.id}
+												setSubscribedLesson={setSubscribedLesson}
 											/>
 										</>
 									)}
