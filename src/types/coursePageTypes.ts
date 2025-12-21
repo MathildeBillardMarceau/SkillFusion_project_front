@@ -41,7 +41,9 @@ export interface MessagesFromDb {
 
 export interface SubscriptionByUserAtCourse {
 	subscriptionByUserAtCourse: {
-		user: { id: string } | null;
-		course: { id: string } | null;
-	};
+		completion: string;
+		createdAt: string;
+		// user: { id: string } | null;
+		// course: { id: string } | null;
+	}[];
 }

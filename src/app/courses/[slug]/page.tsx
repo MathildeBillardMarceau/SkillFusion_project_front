@@ -12,13 +12,14 @@ import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 import {
 	queryCourseBySlug,
 	queryMessagesByCourseSlug,
-	querySubscriptionByCourse,
+	// querySubscriptionByCourse,
+	querySubscriptionByUserAtCourse,
 } from "@/queries/coursePageQueries";
 import {
 	CourseFromDB,
 	MessagesFromDb,
 	SubscriptionByUserAtCourse,
-} from "@/types/coursePageTypes";
+} from "@/types/coursePageTypes"; //ic on a des alertes de biome car on importe des types et pas des variables à utiliser
 
 export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
 // le typage de chapter va nous permettre de raccourci le ??? dans le useState
@@ -34,7 +35,7 @@ export default function SingleCourse() {
 		// requête pour aller récupérer les éléments du cours
 		data: courseFromDBData,
 		loading: courseFromDBLoading,
-		error: courseFromDBError,
+		// error: courseFromDBError,
 	} = useGraphQL<CourseFromDB>(queryCourseBySlug, { slug: params.slug });
 
 	const course = courseFromDBData?.courseBySlug; // chemin raccourci pour les éléments de la requête
@@ -42,18 +43,12 @@ export default function SingleCourse() {
 	const {
 		// requête pour aller récupérer les messages du forum
 		data: messagesFromDBData,
-		loading: messagesFromDBLoading,
-		error: messagesFromDBError,
+		// loading: messagesFromDBLoading,
+		// error: messagesFromDBError,
 	} = useGraphQL<MessagesFromDb>(queryMessagesByCourseSlug, {
 		slug: params.slug,
 	});
 
-	const {
-		// requête pour vérifier l'inscription du user connecté au cours
-		data: subscriptionByUserAtCourseData,
-		loading: subscriptionByUserAtCourseLoading,
-		error: subscriptionByUserAtCourseError,
-	} = useGraphQL<SubscriptionByUserAtCourse>(querySubscriptionByCourse);
 	const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(
 		course?.chapters[0] || null,
 	);
@@ -73,19 +68,35 @@ export default function SingleCourse() {
 		[course], // ici on précise que useEffect ne s'applique que pour les éléments de course (et donc chapter)
 	);
 
-	const [subscibedLesson, setSubscribedLesson] = useState<boolean | null>(null);
-	// comme je vais avoir 3 états, je serais soit null (par défaut - user non connecté), soit true/false si l'user est inscrit
-	// useEffect(
-	// 	() =>
-	// 	// pour changer on va appeler ici la fonction à la DB vu que pour ce compo elle est plutôt simple
-	// 	{
-	// 		if(!currentUser || !course?.id) return;
+	const {
+		// requête pour vérifier l'inscription du user connecté au cours
+		data: subscriptionByUserAtCourseData,
+		//loading: subscriptionByUserAtCourseLoading,
+		//error: subscriptionByUserAtCourseError,
+	} = useGraphQL<SubscriptionByUserAtCourse>(querySubscriptionByUserAtCourse, {
+		courseId: course?.id,
+		userId: currentUser,
+	});
 
-	// 		async function
+	const [subscribedLesson, setSubscribedLesson] = useState<boolean | null>(
+		null,
+	);
 
-	// 	}
-
-	// );
+	useEffect(() => {
+		console.log(
+			"datas:",
+			subscriptionByUserAtCourseData?.subscriptionByUserAtCourse,
+		);
+		if (
+			(subscriptionByUserAtCourseData?.subscriptionByUserAtCourse?.length ??
+				0) > 0
+			//je vérifie que mon tableau a une longueur > à 0 sinon je lui donne la valeur 0 pour qu'il ne soit pas null et que le typage soit content
+		) {
+			setSubscribedLesson(true);
+		} else {
+			setSubscribedLesson(false);
+		}
+	}, [subscriptionByUserAtCourseData]);
 
 	// début de la fonction qui return le contenu de la page
 	return (
@@ -126,11 +137,17 @@ export default function SingleCourse() {
 										)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
-									<SubscriptionStatus
-										userId={currentUser}
-										courseId={course?.id}
-									/>
+									{currentUser && (
+										<>
+											{console.log("SubscribedLesson", subscribedLesson)}
 
+											<SubscriptionStatus
+												subscribed={subscribedLesson}
+												userId={currentUser}
+												courseId={course?.id}
+											/>
+										</>
+									)}
 									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-3 py-2 border-4 rounded-md border-primary-red shadow-xl/30">
 										{course?.chapters.map((eachChapter) => (
 											<ShowCourseChapters

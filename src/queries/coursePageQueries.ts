@@ -54,14 +54,29 @@ export const queryMessagesByCourseSlug = `#graphql
     }
   }`;
 
-export const querySubscriptionByCourse = `#graphql
-      query SubscriptionByCourse($courseId: UUID!) {
-      subscriptionByCourse(courseId: $courseId) {
-        user {
-          id
-          firstName
-          lastName
+// export const querySubscriptionByCourse = `#graphql
+//       query SubscriptionByCourse($courseId: UUID!) {
+//       subscriptionByCourse(courseId: $courseId) {
+//         user {
+//           id
+//           firstName
+//           lastName
+//     }
+//   }
+// }
+//     `;
+
+export const querySubscriptionByUserAtCourse = `#graphql
+  query SubscriptionByUserAtCourse($courseId: UUID!, $userId: UUID!) {
+    subscriptionByUserAtCourse(courseId: $courseId, userId: $userId) {
+      completion
+      createdAt
+      # course {
+      #   slug
+      # }
+      # user {
+      #   email
+      # }
     }
   }
-}
-    `;
+`;
