@@ -10,7 +10,7 @@ export default function MediaPreviewer({
 	selectedFile,
 	onFileSelected,
 	allowedTypes = "image/*,video/*",
-	maxSize = 500 * 1024 * 1024, // 500Mo
+	maxSize = 50 * 1024 * 1024, // 50Mo
 }: MediaPreviewerProps) {
 	const [fileToUpload, setFileToUpload] = useState<File | null | undefined>(
 		selectedFile,
