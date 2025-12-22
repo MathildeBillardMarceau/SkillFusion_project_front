@@ -13,10 +13,16 @@ export default function Dashboard() {
 		error: errorSubscribedCourses,
 		// createdCourses?.userById?.courses
 		// subscribedCourses?.subscriptionByUser
-	} = useGraphQL<{ subscriptionByUser: CourseType[] }>(
+	} = useGraphQL<{
+		subscriptionByUser: {
+			completion: string;
+			course: CourseType;
+		}[];
+	}>(
 		`#graphql
       query SubscriptionByUser($userId: UUID!) {
 				subscriptionByUser(userId: $userId) {
+					completion
 					course {
 						id
 						title
@@ -103,14 +109,20 @@ export default function Dashboard() {
 							<p>Aucun cours abonné</p>
 						)}
 						{subscribedCourses?.subscriptionByUser?.map((subscription) => {
-							const course = subscription.course;
+							const { course, completion } = subscription;
+							// console.log("course", course);
+							// const completion = "1,2,3";
 							if (!course) return null;
 							const { chapters } = course;
-							console.log(`Il y a ${chapters?.length} chapitres`);
-							// TODO:
-							// - récupérer la progression
-							// - calculer le pourcentage par rapport au nombre de chapitres
-							const progress = Math.floor(Math.random() * 100); // TODO
+
+							const completedChapters = Math.min(
+								chapters?.length || 0,
+								completion?.length && completion.split(",").length,
+							);
+							// console.log(`Il y a ${completedChapters} chapitres complétés sur ${chapters?.length}`);
+
+							const progress =
+								(completedChapters * 100) / (chapters?.length || 0); // Math.floor(Math.random() * 100);
 
 							return (
 								<SmallCoursesCard_with_progressBar
