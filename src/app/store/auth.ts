@@ -1,51 +1,40 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface User {
   id: string;
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
 }
 
 interface AuthState {
-  token: string | null;
-  isAuthenticated: boolean;
-  user: User;
+  accessToken: string | null;
+  user: User | null;
   login: (user: User, accessToken: string) => void;
   logout: () => void;
   updateUser: (updatedUser: Partial<User>) => void;
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      token: null,
-      isAuthenticated: false,
-      user: { id: "", email: "", password: "", firstName: "", lastName: "", },
+export const useAuthStore = create<AuthState>((set) => ({
+  accessToken: null,
+  user: null,
 
-      login: (user, accessToken) =>
-        set({
-          token: accessToken,
-          isAuthenticated: true,
-          user,
-        }),
-
-      logout: () =>
-        set({
-          token: undefined,
-          isAuthenticated: false,
-          user: undefined,
-        }),
-
-      updateUser: (updatedUser: Partial<User>) =>
-        set((state) => ({
-          user: state.user ? { ...state.user, ...updatedUser}: state.user
-        })),
+  login: (user, accessToken) =>
+    set({
+      accessToken,
+      user,
     }),
-    {
-      name: "auth-store",
-    }
-  )
-);
+
+  logout: () =>
+    set({
+      accessToken: null,
+      user: null,
+    }),
+
+  updateUser: (updatedUser) =>
+    set((state) =>
+      state.user
+        ? { user: { ...state.user, ...updatedUser } }
+        : {}
+    ),
+}));

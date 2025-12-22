@@ -8,7 +8,8 @@ interface INavigationProps {
 }
 
 export default function Navigation({ setOpenLogin }: INavigationProps) {
-	const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+	
+	const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
 	const user = useAuthStore((state) => state.user);
 	const logout = useAuthStore((state) => state.logout);
 
@@ -31,7 +32,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 		<>
 			<Link
 				href="/courses"
-				className="px-4 py-2 font-bold rounded-md bg-secondary-red text-background-charte cursor-pointer min-w-50 text-center"
+				className="px-4 py-2 font-bold rounded-md bg-secondary-red text-background-charte cursor-pointer w-auto md:w-50 text-center"
 			>
 				liste des cours
 			</Link>
@@ -42,9 +43,9 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 							setOpenProfil(on => !on);
 						}}
 						type="button"
-						className={`px-4 py-2 font-bold bg-primary-red text-background-charte cursor-pointer min-w-50 ${openProfil ? "rounded-t-md" : "rounded-md"}`}
+						className={`px-4 py-2 font-bold bg-primary-red text-background-charte cursor-pointer w-50 ${openProfil ? "rounded-t-md" : "rounded-md"}`}
 					>
-						{user.firstName}
+						{user?.firstName}
 					</button>
 					{openProfil && (
 						<div className="absolute w-full right-0 flex font-bold rounded-b-md bg-primary-red text-background-charte">
@@ -76,7 +77,7 @@ export default function Navigation({ setOpenLogin }: INavigationProps) {
 						setOpenLogin(true);
 					}}
 					type="button"
-					className="px-4 py-2 font-bold rounded-md bg-primary-red text-background-charte cursor-pointer min-w-50"
+					className="px-4 py-2 font-bold rounded-md bg-primary-red text-background-charte cursor-pointer w-auto md:w-50"
 				>
 					Se connecter
 				</button>

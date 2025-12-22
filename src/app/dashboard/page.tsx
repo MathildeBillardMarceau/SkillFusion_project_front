@@ -3,18 +3,23 @@ import Dashboard from "@/components/Dashboard";
 import ProfilOnDashboard from "@/components/ProfilOnDashboard";
 
 export default function ProfilDashboard() {
-
-  
-  return (
-    <div>
-      <main className="flex w-auto bg-[#F4ECE2] m-5">
-        <div className="w-1/3 px-5">
-          <ProfilOnDashboard/>
-        </div>
-        <div className="w-2/3 mx-5">
-          <Dashboard />
-        </div>
-      </main>
-    </div>
-  );
+	return (
+		<div>
+			<main className="w-auto m-auto px-4 pb-20">
+				<div className="rounded-2xl overflow-hidden">
+					<h1 className="text-4xl text-center p-4 font-display-title font-bold text-primary-red">
+						Tableau de bord
+					</h1>
+					<div className="flex flex-col justify-center md:flex-row gap-2">
+						<div className="w-auto md:w-1/4 rounded-l-2xl">
+							<ProfilOnDashboard />
+						</div>
+						<div className="w-auto md:w-3/4 rounded-br-2xl rounded-r-2xl">
+							<Dashboard />
+						</div>
+					</div>
+				</div>
+			</main>
+		</div>
+	);
 }

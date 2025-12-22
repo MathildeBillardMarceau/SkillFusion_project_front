@@ -6,9 +6,10 @@ interface ShowOneMessage {
 	content: string;
 	userName: string;
 	userAvatar: string;
+	userId: string;
 	userRole: string;
+	connectedUser: string | undefined;
 	isOdd: boolean;
-	connectedUser: string;
 }
 
 export default function ShowPost({
@@ -16,9 +17,10 @@ export default function ShowPost({
 	content,
 	userName,
 	userAvatar,
+	userId,
 	userRole,
-	isOdd,
 	connectedUser,
+	isOdd,
 }: ShowOneMessage) {
 	const bgOpacity = isOdd ? "30" : "50";
 	// on récupère le isOdd calculé sur l'index du map et on définit selon qu'il soit true ou false la valeur de bgOpacity, qu'on pourra ensuite utiliser pour afficher en alternance les deux fonds
@@ -30,7 +32,7 @@ export default function ShowPost({
 			{/* partie avatar et message */}
 			<div className="flex flex-row p2 w-full p-1">
 				{/* je vérifie que connecterUser et userName sont équivalents: si non j'affiche l'avatar à gauche - la suite dans l'autre div */}
-				{connectedUser === userName ? (
+				{connectedUser === userId ? (
 					<div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>
 				) : (
 					avatarBlock(userAvatar, userName)
@@ -40,7 +42,7 @@ export default function ShowPost({
 					<p>{content}</p>
 				</div>
 				{/* si oui j'affiche l'avatar à droite */}
-				{connectedUser === userName ? (
+				{connectedUser === userId ? (
 					avatarBlock(userAvatar, userName)
 				) : (
 					<div className="  flex flex-col items-center justify-start w-[15%] p-2"></div>

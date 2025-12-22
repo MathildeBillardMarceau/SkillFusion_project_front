@@ -1,47 +1,24 @@
 "use client";
 import { useParams } from "next/navigation"; // récupération du slug
 import { useEffect, useState } from "react"; // le useState pour le browsing des chapitres
+import { useAuthStore } from "@/app/store/auth"; // composant pour gérer l'authentification
 import ShowCourseChapters from "@/components/CourseChapters";
 import ShowCourseImage from "@/components/CourseImage";
 import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
-import ShowPost from "@/components/ForumPost";
+import SubscriptionStatus from "@/components/courseSubscribe";
+import ShowForum from "@/components/forum";
 import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
-
-// ajout du typage du retour GQL pour éviter les erreurs sur courseBySlug
-interface CourseFromDB {
-	courseBySlug: {
-		id: string;
-		title: string;
-		description: string;
-		image: string;
-		level: string;
-		duration: string;
-		cost: string;
-		material: string;
-		createdAt: string;
-		updatedAt: string;
-		user: { firstName: string; lastName: string };
-		categories: { name: string; color: string; icon: string }[];
-		chapters: {
-			id: string;
-			title: string;
-			description: string;
-			text: string;
-		}[];
-	};
-}
-
-interface MessagesFromDb {
-	messagesByCourseSlug: {
-		id: string;
-		content: string;
-		createdAt: string;
-		updatedAt: string;
-		user: { firstName: string; lastName: string; id: string };
-		course: { title: string };
-	}[];
-}
+import {
+	queryCourseBySlug,
+	queryMessagesByCourseSlug,
+} from "@/queries/coursePageQueries";
+import { querySubscriptionByUserAtCourse } from "@/queries/subscriptionQueries";
+import {
+	CourseFromDB,
+	MessagesFromDb,
+	SubscriptionByUserAtCourse,
+} from "@/types/coursePageTypes"; //ic on a des alertes de biome car on importe des types et pas des variables à utiliser
 
 export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
 // le typage de chapter va nous permettre de raccourci le ??? dans le useState
@@ -49,79 +26,27 @@ export type Chapter = CourseFromDB["courseBySlug"]["chapters"][number];
 
 export default function SingleCourse() {
 	const params = useParams();
-	const simConnectedUser = "Lina";
+	//const simConnectedUser = "Lina";
+	const currentUser = useAuthStore((state) => state.user?.id);
+	// ici je vérifie s'il y a un connectedUser ou si c'est null
 
 	const {
 		// requête pour aller récupérer les éléments du cours
 		data: courseFromDBData,
 		loading: courseFromDBLoading,
-		error: courseFromDBError,
-	} = useGraphQL<CourseFromDB>(
-		`#graphql
-    query CourseBySlug($slug: String!) {
-      courseBySlug(slug: $slug) {
-        id            #inutile ?
-        title
-        slug          #utilisé pour la requête
-        description
-        image
-        level
-        duration
-        cost
-        material
-        publishedAt   #j'ai utilisé created at dans l'affichage
-        createdAt
-        updatedAt     #j'ai utilisé created at dans l'affichage
-        user {
-          firstName
-          lastName
-        }
-        categories {  #pas disponibles actuellement
-          name
-          color
-          icon
-        }
-				chapters {
-					id
-					title
-					description
-					text
-					createdAt
-					updatedAt
-    		}
-      }
-    }
-    `,
-		{ slug: params.slug },
-	);
+		// error: courseFromDBError,
+	} = useGraphQL<CourseFromDB>(queryCourseBySlug, { slug: params.slug });
 
 	const course = courseFromDBData?.courseBySlug; // chemin raccourci pour les éléments de la requête
 
 	const {
 		// requête pour aller récupérer les messages du forum
 		data: messagesFromDBData,
-		loading: messagesFromDBLoading,
-		error: messagesFromDBError,
-	} = useGraphQL<MessagesFromDb>(
-		`#graphql
-    query MessagesByCourseSlug($slug: String!) {
-      messagesByCourseSlug(slug: $slug) {
-      id
-      content
-      createdAt
-      updatedAt
-      user {
-        firstName
-        lastName
-        id
-        }
-      course {
-        title
-        }
-    }
-  }`,
-		{ slug: params.slug },
-	);
+		// loading: messagesFromDBLoading,
+		// error: messagesFromDBError,
+	} = useGraphQL<MessagesFromDb>(queryMessagesByCourseSlug, {
+		slug: params.slug,
+	});
 
 	const [selectedChapter, setSelectedChapter] = useState<Chapter | null>(
 		course?.chapters[0] || null,
@@ -134,13 +59,43 @@ export default function SingleCourse() {
 
 	useEffect(
 		() => {
-			// fonction qui permet de changer la valeur de course (manuellement pour l'instant)
+			// fonction qui permet de changer la valeur de course
 			if (course?.chapters?.length) {
 				setSelectedChapter(course.chapters[0]);
 			}
 		},
 		[course], // ici on précise que useEffect ne s'applique que pour les éléments de course (et donc chapter)
 	);
+
+	const {
+		// requête pour vérifier l'inscription du user connecté au cours
+		data: subscriptionByUserAtCourseData,
+		//loading: subscriptionByUserAtCourseLoading,
+		//error: subscriptionByUserAtCourseError,
+	} = useGraphQL<SubscriptionByUserAtCourse>(querySubscriptionByUserAtCourse, {
+		courseId: course?.id,
+		userId: currentUser,
+	});
+
+	const [subscribedLesson, setSubscribedLesson] = useState<boolean | null>(
+		null,
+	);
+
+	useEffect(() => {
+		console.log(
+			"datas:",
+			subscriptionByUserAtCourseData?.subscriptionByUserAtCourse,
+		);
+		if (
+			(subscriptionByUserAtCourseData?.subscriptionByUserAtCourse?.length ??
+				0) > 0
+			//je vérifie que mon tableau a une longueur > à 0 sinon je lui donne la valeur 0 pour qu'il ne soit pas null et que le typage soit content
+		) {
+			setSubscribedLesson(true);
+		} else {
+			setSubscribedLesson(false);
+		}
+	}, [subscriptionByUserAtCourseData]);
 
 	// début de la fonction qui return le contenu de la page
 	return (
@@ -167,7 +122,7 @@ export default function SingleCourse() {
 									{course &&
 										selectedChapter && ( // je conditionne l'existence de course pour les erreurs de typage
 											<>
-												{console.log("contenu du cours", selectedChapter.text)}
+												{/* {console.log("contenu du cours", selectedChapter.text)} */}
 												<ShowCourseLesson
 													// TODO: utiliser le use state de l'objet plutot
 													description={course.description}
@@ -181,6 +136,18 @@ export default function SingleCourse() {
 										)}
 								</div>
 								<div className="flex flex-col w-[28%] gap-12 ">
+									{currentUser && (
+										<>
+											{console.log("SubscribedLesson", subscribedLesson)}
+
+											<SubscriptionStatus
+												subscribed={subscribedLesson}
+												userId={currentUser}
+												courseId={course?.id}
+												setSubscribedLesson={setSubscribedLesson}
+											/>
+										</>
+									)}
 									<ul className="min-h-20 w-60 md:w-full flex flex-col gap-3 py-2 border-4 rounded-md border-primary-red shadow-xl/30">
 										{course?.chapters.map((eachChapter) => (
 											<ShowCourseChapters
@@ -205,31 +172,13 @@ export default function SingleCourse() {
 					)}
 
 					{/* contenu du forum */}
-					<div className="flex flex-col gap-4 basis-full w-full min-h-30">
-						{messagesFromDBData?.messagesByCourseSlug
-							// filter OLD: utile avec le mockup, plus avec GQL - pour choisir seulement les messages correspondant au slug avec params.slug récupéré via useParams -
-							//.filter((eachMsg) => eachMsg.courseId === params.slug)
-							.map((eachMsg, index) => (
-								<ShowPost
-									key={eachMsg.id}
-									createdAt={eachMsg.createdAt}
-									content={eachMsg.content}
-									userName={`${eachMsg.user.firstName} ${eachMsg.user.lastName}`}
-									userAvatar={eachMsg.userAvatar}
-									userRole={eachMsg.userRole}
-									isOdd={index % 2 === 1}
-									connectedUser={simConnectedUser}
-								/>
-							))}
-					</div>
+					<ShowForum
+						messages={messagesFromDBData?.messagesByCourseSlug ?? []} // ici le ??[] indique que si on a pas de retour, on envoie un tableau vide, car dans le compo le type attend un tableau dans tous les cas
+						connectedUser={currentUser}
+					/>
+					{/* fin du forum */}
 				</main>
 			</div>
 		</div>
 	);
 }
-
-// explication de isOdd={index % 2 === 1}
-// renvoie un booleen: on va diviser l'index par 2 et récupérer le reste (qui sera soit 0 pour pair soit 1 pour impair)
-// on compare ensuite ce reste à 1
-// si c'est 1 === 1 on renvoie true pour impair, sinon on renvoie false pour pair
-// et on le récupère dans le composant

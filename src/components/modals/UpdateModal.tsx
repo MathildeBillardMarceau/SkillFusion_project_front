@@ -12,8 +12,9 @@ export default function ProfilOnDashboard({
 	setOpenUpdate,
 }: IUpdateModalProps) {
  
-  const { user, token: accessToken, isAuthenticated, updateUser } = useAuthStore();
+  const { user, accessToken, updateUser } = useAuthStore();
 
+	const isAuthenticated = useAuthStore((state) => Boolean(state.accessToken));
 
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -57,7 +58,7 @@ export default function ProfilOnDashboard({
               }
             `,
             variables: {
-              id: user.id,
+              id: user?.id,
               input: { email, firstName, lastName },
             },
           }),
