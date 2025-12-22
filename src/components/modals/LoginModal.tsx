@@ -34,6 +34,7 @@ export default function LoginModal({
                   email
                   firstName
                   lastName
+									role
                 }
                 accessToken
               }
