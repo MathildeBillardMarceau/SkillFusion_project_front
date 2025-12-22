@@ -14,7 +14,7 @@ export default function ProfilDashboard() {
 						<div className="w-auto md:w-1/4 rounded-l-2xl bg-secondary-text/20 rounded-r-2xl">
 							<ProfilOnDashboard />
 						</div>
-						<div className="w-auto md:w-3/4 rounded-br-2xl rounded-r-2xl">
+						<div className="w-auto md:w-3/4  rounded-br-2xl rounded-r-2xl">
 							<Dashboard />
 						</div>
 					</div>
