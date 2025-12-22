@@ -56,7 +56,7 @@ export default function Dashboard() {
 		},
 	);
 
-	if (errorSubscribedCourses) return <p>Error: {errorSubscribedCourses}</p>;
+	// if (errorSubscribedCourses) return <p>Error: {errorSubscribedCourses}</p>;
 
 	return (
 		<div className="flex justify-center font-sans ">
