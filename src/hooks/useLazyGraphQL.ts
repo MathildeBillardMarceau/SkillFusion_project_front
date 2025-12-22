@@ -1,9 +1,12 @@
 import { useCallback, useState } from "react";
+import { useAuthStore } from "@/app/store/auth";
 
 export function useLazyGraphQL<T>() {
 	const [data, setData] = useState<T | null>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
+
+	const accessToken = useAuthStore((state) => state.accessToken);
 
 	const fetchData = useCallback(
 		async ({ query, variables }: { query?: string; variables?: any }) => {
@@ -13,7 +16,10 @@ export function useLazyGraphQL<T>() {
 				// on fetch le endpoint graphQL
 				const res = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API_URL}`, {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${accessToken}`,
+					},
 					body: JSON.stringify({ query, variables }), // en lui envoyant la query + variables
 					cache: "no-store",
 				});

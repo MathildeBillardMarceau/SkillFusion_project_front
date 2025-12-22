@@ -1,30 +1,62 @@
 import Link from "next/link";
 import type { CourseType } from "@/@types";
+import { useAuthStore } from "@/app/store/auth";
 import { useGraphQL } from "@/hooks/useGraphQL";
-// import SmallCoursesCard from "./smallCoursesCard";
 import SmallCoursesCard_with_progressBar from "./smallCoursesCard_with_progressBar";
 
 export default function Dashboard() {
+	const user = useAuthStore((state) => state.user);
+
 	const {
-		data: CoursesData,
-		loading,
-		error,
-	} = useGraphQL<{ courses: CourseType[] }>(
+		data: subscribedCourses,
+		loading: loadingSubscribedCourses,
+		error: errorSubscribedCourses,
+		// createdCourses?.userById?.courses
+		// subscribedCourses?.subscriptionByUser
+	} = useGraphQL<{ subscriptionByUser: CourseType[] }>(
 		`#graphql
-      query {
-        courses {
-            id
-            title
-            image
-            slug
-        }
-      }
+      query SubscriptionByUser($userId: UUID!) {
+				subscriptionByUser(userId: $userId) {
+					course {
+						id
+						title
+						image
+						slug
+					}
+				}
+			}
     `,
-		{},
+		{
+			userId: user?.id,
+		},
+	);
+	const {
+		data: createdCourses,
+		// loading: loadingCreatedCourses,
+		// erro: errorCreatedCourses,
+	} = useGraphQL<{
+		userById: {
+			courses: CourseType[];
+		};
+	}>(
+		`#graphql
+      query UserById($userId: UUID!) {
+				userById(id: $userId) {
+					courses {
+						id
+						title
+						image
+						slug
+					}
+				}
+			}
+    `,
+		{
+			userId: user?.id,
+		},
 	);
 
-	if (error) return <p>Error: {error}</p>;
-	if (!CoursesData?.courses) return <p>No courses</p>;
+	// if (errorSubscribedCourses) return <p>Error: {errorSubscribedCourses}</p>;
 
 	return (
 		<div className="flex justify-center font-sans ">
@@ -43,22 +75,20 @@ export default function Dashboard() {
 							</Link>
 						</div>
 
-						{CoursesData.courses.map((course: CourseType) => (
-							<SmallCoursesCard_with_progressBar
-								key={course.id}
-								image={course.image}
-								title={course.title}
-								slug={course.slug}
-								// progress={0}
-								editMode={true}
-							/>
-						))}
-						{/* <SmallCoursesCard
-							key={course.id}
-							image={course.image}
-							title={course.title}
-							slug={course.slug}
-						/> */}
+						{!createdCourses?.userById?.courses && <p>Aucun cours créé</p>}
+						{createdCourses?.userById?.courses?.map((course: CourseType) => {
+							// const { course } = subscription;
+							return (
+								<SmallCoursesCard_with_progressBar
+									key={course.id}
+									image={course.image}
+									title={course.title}
+									slug={course.slug}
+									// progress={0}
+									editMode={true}
+								/>
+							);
+						})}
 					</div>
 					<div className="h-full md:h-1/2 flex flex-col mx-2 ">
 						<div className="flex items-center justify-between">
@@ -66,16 +96,21 @@ export default function Dashboard() {
 								Mes cours suivis
 							</h2>
 						</div>
-
-						{CoursesData.courses.map((course: CourseType) => (
-							<SmallCoursesCard_with_progressBar
-								key={course.id}
-								image={course.image}
-								title={course.title}
-								slug={course.slug}
-								progress={Math.floor(Math.random() * 100)}
-							/>
-						))}
+						{!subscribedCourses?.subscriptionByUser && (
+							<p>Aucun cours abonné</p>
+						)}
+						{subscribedCourses?.subscriptionByUser?.map((subscription) => {
+							const course: CourseType = subscription.course;
+							return (
+								<SmallCoursesCard_with_progressBar
+									key={course.id}
+									image={course.image}
+									title={course.title}
+									slug={course.slug}
+									progress={Math.floor(Math.random() * 100)}
+								/>
+							);
+						})}
 					</div>
 				</div>
 			</main>

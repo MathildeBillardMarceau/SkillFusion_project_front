@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
+import { useAuthStore } from "@/app/store/auth";
 
 export function useGraphQL<T>(query: string, variables?: any) {
 	const [data, setData] = useState<T | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
+
+	const accessToken = useAuthStore((state) => state.accessToken);
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -13,7 +16,10 @@ export function useGraphQL<T>(query: string, variables?: any) {
 				// on fetch le endpoint graphQL
 				const res = await fetch(`${process.env.NEXT_PUBLIC_GRAPHQL_API_URL}`, {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
+					headers: {
+						"Content-Type": "application/json",
+						Authorization: `Bearer ${accessToken}`,
+					},
 					body: JSON.stringify({ query, variables }), // en lui envoyant la query + variables
 					cache: "no-store",
 				});
@@ -21,6 +27,7 @@ export function useGraphQL<T>(query: string, variables?: any) {
 				const json = await res.json();
 
 				if (json.errors) {
+					// console.log("json.errors", json.errors);
 					setError(json.errors[0].message);
 				} else {
 					setData(json.data);
