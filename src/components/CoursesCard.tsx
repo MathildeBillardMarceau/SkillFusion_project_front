@@ -7,6 +7,7 @@ interface ICoursesCardProps {
 	title: string;
 	date: string;
 	description: string;
+	categories: string;
 	slug: string;
 }
 
@@ -15,6 +16,7 @@ export default function Courses({
 	title,
 	date,
 	description,
+	categories,
 	slug,
 }: ICoursesCardProps) {
 	return (
