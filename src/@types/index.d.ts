@@ -1,13 +1,16 @@
 export type CourseType = {
+	course?: CourseType;
 	id: string;
 	title: string;
 	slug: string;
-	description: string;
-	image: string;
-	level: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
-	duration: string;
-	cost: string;
-	material: string;
+	description?: string;
+	image?: string;
+	level?: "BEGINNER" | "INTERMEDIATE" | "ADVANCED";
+	duration?: string;
+	cost?: string;
+	material?: string;
+	chapters?: string;
+	categories?: CategoryProps[];
 	publishedAt: string;
 	createdAt: string;
 	updatedAt: string;

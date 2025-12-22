@@ -22,6 +22,7 @@ export default function Dashboard() {
 						title
 						image
 						slug
+						chapters { id }
 					}
 				}
 			}
@@ -81,7 +82,7 @@ export default function Dashboard() {
 							return (
 								<SmallCoursesCard_with_progressBar
 									key={course.id}
-									image={course.image}
+									image={course.image ?? ""}
 									title={course.title}
 									slug={course.slug}
 									// progress={0}
@@ -100,14 +101,22 @@ export default function Dashboard() {
 							<p>Aucun cours abonné</p>
 						)}
 						{subscribedCourses?.subscriptionByUser?.map((subscription) => {
-							const course: CourseType = subscription.course;
+							const course = subscription.course;
+							if (!course) return null;
+							const { chapters } = course;
+							console.log(`Il y a ${chapters?.length} chapitres`);
+							// TODO:
+							// - récupérer la progression
+							// - calculer le pourcentage par rapport au nombre de chapitres
+							const progress = Math.floor(Math.random() * 100); // TODO
+
 							return (
 								<SmallCoursesCard_with_progressBar
 									key={course.id}
-									image={course.image}
+									image={course.image ?? ""}
 									title={course.title}
 									slug={course.slug}
-									progress={Math.floor(Math.random() * 100)}
+									progress={progress}
 								/>
 							);
 						})}
