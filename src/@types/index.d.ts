@@ -14,6 +14,7 @@ export type CourseType = {
 	publishedAt: string;
 	createdAt: string;
 	updatedAt: string;
+	publishedAt: string;
 
 	userId: string;
 };

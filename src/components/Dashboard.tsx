@@ -48,6 +48,7 @@ export default function Dashboard() {
 						title
 						image
 						slug
+						publishedAt
 					}
 				}
 			}
@@ -87,6 +88,7 @@ export default function Dashboard() {
 									slug={course.slug}
 									// progress={0}
 									editMode={true}
+									published={course.publishedAt}
 								/>
 							);
 						})}
