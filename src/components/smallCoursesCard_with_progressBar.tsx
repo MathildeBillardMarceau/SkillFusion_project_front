@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import Image from "next/image";
 import Link from "next/link";
 import { MdModeEdit, MdRemoveRedEye } from "react-icons/md";
@@ -9,6 +10,7 @@ interface ISmallCoursesCard_with_progressBarProps {
 	slug: string;
 	progress?: number;
 	editMode?: boolean;
+	published?: string | null;
 }
 
 export default function SmallCoursesCard_with_progressBar({
@@ -17,12 +19,32 @@ export default function SmallCoursesCard_with_progressBar({
 	slug,
 	progress,
 	editMode,
+	published,
 }: ISmallCoursesCard_with_progressBarProps) {
 	// console.log("course.chapters", course?.chapters);
 	return (
 		<div className="w-full h-full">
 			<main className="py-4">
-				<div className="bg-black/5 hover:bg-black/10 block rounded-xl p-4 shadow-xl/10 min-h-25">
+				<div
+					className={clsx(
+						"bg-black/5 hover:bg-black/10 block rounded-xl p-4 shadow-xl/10 min-h-25",
+						editMode && !published
+							? "bg-[repeating-linear-gradient(125deg,transparent,transparent_10px,rgba(0,0,0,0.125)_10px,rgba(0,0,0,0.125)_20px)]"
+							: "bg-black/5",
+					)}
+					/* style={{
+						background:
+							editMode && !published
+								? `repeating-linear-gradient(
+											125deg,
+											transparent,
+											transparent 10px,
+											#00000020 10px,
+											#00000020 20px
+										)`
+								: "#00000020",
+					}} */
+				>
 					<div className="flex flex-row h-10 w-60 md:w-100 justify-between items-center ">
 						<Link href={`courses/${slug}`} className="flex items-center">
 							{image && (
@@ -37,6 +59,12 @@ export default function SmallCoursesCard_with_progressBar({
 							<div className="font-display-title font-bold text-primary-text mx-3 text-left">
 								{title}
 							</div>
+							{/* {editMode && published && "published"} */}
+							{editMode && !published && (
+								<div className="bg-amber-300 py-2 px-4 rounded-xl">
+									brouillon
+								</div>
+							)}
 						</Link>
 						<div className="flex gap-2">
 							<Link
