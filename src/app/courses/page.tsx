@@ -1,16 +1,21 @@
 "use client";
-import { useState, useMemo } from "react";
+
+import { useMemo, useState } from "react";
 import type { CourseType } from "@/@types";
 import CoursesCard from "@/components/CoursesCard";
-import { useGraphQL } from "@/hooks/useGraphQL";
 import FilterCategories from "@/components/FilterCategories";
+import { useGraphQL } from "@/hooks/useGraphQL";
 
 export default function Courses() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+	const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  const { data: CoursesData, loading, error } = useGraphQL<{
-    courses: CourseType[];
-  }>(`
+	const {
+		data: CoursesData,
+		loading,
+		error,
+	} = useGraphQL<{
+		courses: CourseType[];
+	}>(`#graphql
     query {
       courses {
         id
@@ -18,6 +23,7 @@ export default function Courses() {
         slug
         image
         createdAt
+        publishedAt
         description
         categories {
           name
@@ -26,50 +32,55 @@ export default function Courses() {
     }
   `);
 
-  const categories = useMemo(() => {
-    if (!CoursesData?.courses) return [];
+	const publishedCourses = useMemo(() => {
+		if (!CoursesData?.courses) return [];
+		return CoursesData.courses.filter((course) => course.publishedAt !== null);
+	}, [CoursesData]);
 
-    const allCategories = CoursesData.courses.flatMap(
-      (course) => course.categories
-    );
+	const categories = useMemo(() => {
+		if (!publishedCourses.length) return [];
 
-    return Array.from(
-      new Map(allCategories.map(cat => [cat.name, cat])).values()
-    );
-  }, [CoursesData]);
+		const allCategories = publishedCourses.flatMap(
+			(course) => course.categories,
+		);
 
-  const filteredCourses = selectedCategory
-    ? CoursesData?.courses.filter(course =>
-        course.categories.some(cat => cat.name === selectedCategory)
-      )
-    : CoursesData?.courses;
+		return Array.from(
+			new Map(allCategories.map((cat) => [cat?.name, cat])).values(),
+		);
+	}, [publishedCourses]);
 
-  if (error) return <p>Error: {error}</p>;
-  if (!CoursesData?.courses) return <p>No courses</p>;
+	const filteredCourses = selectedCategory
+		? publishedCourses.filter((course) =>
+				course?.categories?.some((cat) => cat.name === selectedCategory),
+			)
+		: publishedCourses;
 
-  return (
-    <main>
-      <FilterCategories
-        categories={categories}
-        selectedCategory={selectedCategory}
-        onSelect={setSelectedCategory}
-      />
+	if (error) return <p>Error: {error}</p>;
+	if (!CoursesData?.courses) return <p>No courses</p>;
 
-      <div className="flex flex-col max-w-7xl m-auto p-4">
-        <div className="flex flex-wrap justify-center gap-10">
-          {filteredCourses?.map(course => (
-            <CoursesCard
-              key={course.id}
-              image={course.image}
-              title={course.title}
-              date={course.createdAt}
-              description={course.description}
-              categories={course.categories}
-              slug={course.slug}
-            />
-          ))}
-        </div>
-      </div>
-    </main>
-  );
+	return (
+		<main>
+			<FilterCategories
+				categories={categories}
+				selectedCategory={selectedCategory}
+				onSelect={setSelectedCategory}
+			/>
+
+			<div className="flex flex-col max-w-7xl m-auto p-4">
+				<div className="flex flex-wrap justify-center gap-10">
+					{filteredCourses?.map((course) => (
+						<CoursesCard
+							key={course.id}
+							image={course.image ?? ""}
+							title={course.title}
+							date={course.createdAt}
+							description={course.description}
+							// categories={course.categories}
+							slug={course.slug}
+						/>
+					))}
+				</div>
+			</div>
+		</main>
+	);
 }
