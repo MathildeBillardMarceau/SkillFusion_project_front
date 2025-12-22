@@ -14,7 +14,7 @@ export default function LoginModal({
 }: ILoginModalProps) {
 	const login = useAuthStore((state) => state.login);
 
-	const [email, setEmail] = useState("2john@carpenter.io"); // 2john@carpenter.io
+	const [email, setEmail] = useState("2john@carpenter.io"); // 2john@carpenter.io APPRENTICE | coucou@lol.mdr INSTRUCTOR
 	const [password, setPassword] = useState("Azerty123!"); // Azerty123!
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -34,6 +34,7 @@ export default function LoginModal({
                   email
                   firstName
                   lastName
+									role
                 }
                 accessToken
               }

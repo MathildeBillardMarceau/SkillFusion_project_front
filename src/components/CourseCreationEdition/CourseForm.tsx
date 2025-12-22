@@ -33,7 +33,8 @@ interface ICategoriesAndLevelsDataProps {
 
 export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 	const router = useRouter();
-	const userId = useAuthStore((state) => state.user.id);
+	const { user } = useAuthStore();
+	const userId = user?.id;
 
 	// ---------------- STATE ----------------
 	const [lessons, setLessons] = useState<ILessonProps[]>([]);
