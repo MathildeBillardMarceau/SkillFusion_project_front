@@ -6,8 +6,8 @@ interface ICoursesCardProps {
 	image: string;
 	title: string;
 	date: string;
-	description: string;
-	categories: string;
+	description?: string;
+	categories?: string;
 	slug: string;
 }
 
