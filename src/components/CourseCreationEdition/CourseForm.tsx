@@ -246,7 +246,7 @@ export default function CourseForm({ mode, initialData }: ICourseFormProps) {
 				duration,
 				cost,
 				material,
-				categoriesId,
+				categoriesId: categoriesId ?? null,
 				chapters: lessonsToSaveToBdd,
 				publishedAt: published ? new Date().toISOString() : null,
 			};

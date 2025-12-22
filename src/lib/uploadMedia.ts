@@ -1,15 +1,25 @@
 export async function uploadMedia(file: File) {
-	// TODO: conditionner selon le mode dev: local / prod: cloud
+	if (process.env.NEXT_PUBLIC_MEDIA_PROVIDER === "supabase") {
+		return uploadCloud(file);
+	}
+
 	return uploadLocal(file);
 }
 
 async function uploadCloud(file: File) {
-	const filePath = `media/${Date.now()}_${file.name}`;
+	const body = new FormData();
+	body.append("file", file);
 
-	// TODO: upload sur supabase
-	const publicUrl = `/storage/public/media/${filePath}`;
+	const res = await fetch("/api/upload/supabase", {
+		method: "POST",
+		body,
+	});
 
-	return publicUrl;
+	console.log("res", res);
+	if (!res.ok) throw new Error("upload supabase failed");
+
+	const data = await res.json();
+	return data.url as string;
 }
 
 async function uploadLocal(file: File) {

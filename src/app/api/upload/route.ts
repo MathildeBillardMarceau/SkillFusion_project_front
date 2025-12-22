@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
 import * as fs from "node:fs";
 import path from "node:path";
+import { NextResponse } from "next/server";
 
-const MAX_SIZE = 500 * 1024 * 1024; // 500Mo
+const MAX_SIZE = 50 * 1024 * 1024; // 50Mo
 const MAX_SIZE_FOR_IMAGES = 5 * 1024 * 1024; // 5Mo
-const MAX_SIZE_FOR_VIDEO = 500 * 1024 * 1024; // 500Mo
+const MAX_SIZE_FOR_VIDEO = 50 * 1024 * 1024; // 50Mo
 
 const ALLOWED_TYPES = [
 	// images types
