@@ -8,6 +8,7 @@ export type CourseType = {
 	duration: string;
 	cost: string;
 	material: string;
+	categories: string;
 	publishedAt: string;
 	createdAt: string;
 	updatedAt: string;
