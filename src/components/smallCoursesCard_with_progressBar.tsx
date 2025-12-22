@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MdModeEdit, MdRemoveRedEye } from "react-icons/md";
+import { CourseType } from "@/@types";
 
 interface ISmallCoursesCard_with_progressBarProps {
 	image: string;
@@ -17,6 +18,7 @@ export default function SmallCoursesCard_with_progressBar({
 	progress,
 	editMode,
 }: ISmallCoursesCard_with_progressBarProps) {
+	// console.log("course.chapters", course?.chapters);
 	return (
 		<div className="w-full h-full">
 			<main className="py-4">
