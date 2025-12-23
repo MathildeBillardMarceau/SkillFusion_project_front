@@ -38,6 +38,14 @@ export default function SingleCourse() {
 	// const course = courseFromDBData?.courseBySlug; // chemin raccourci pour les éléments de la requête
 	const [course, setCourse] = useState<any>(null);
 
+	// !!! Récupérer le cours
+	const {
+		// requête pour aller récupérer les éléments du cours
+		data: courseFromDBData,
+		// loading: courseFromDBLoading,
+		// error: courseFromDBError,
+	} = useGraphQL<CourseFromDB>(queryCourseBySlug, { slug: params.slug });
+
 	// !!! récupérer les messages
 	const {
 		// requête pour aller récupérer les messages du forum
@@ -60,37 +68,37 @@ export default function SingleCourse() {
 				query SubscriptionByUserAtCourseBySlug($userId: UUID!, $slug: String!) {
 					subscriptionByUserAtCourseBySlug(userId: $userId, slug: $slug) {
 						completion
-						course {
-							id
-							title
-							slug
-							description
-							image
-							level
-							duration
-							cost
-							material
-							publishedAt
-							createdAt
-							updatedAt
-							user {
-								firstName
-								lastName
-							}
-							categories {
-								name
-								color
-								icon
-							}
-							chapters {
-								id
-								title
-								description
-								text
-								createdAt
-								updatedAt
-							}
-						}
+						# course {
+						# 	id
+						# 	title
+						# 	slug
+						# 	description
+						# 	image
+						# 	level
+						# 	duration
+						# 	cost
+						# 	material
+						# 	publishedAt
+						# 	createdAt
+						# 	updatedAt
+						# 	user {
+						# 		firstName
+						# 		lastName
+						# 	}
+						# 	categories {
+						# 		name
+						# 		color
+						# 		icon
+						# 	}
+						# 	chapters {
+						# 		id
+						# 		title
+						# 		description
+						# 		text
+						# 		createdAt
+						# 		updatedAt
+						# 	}
+						# }
 					}
 				}
 			`,
@@ -114,10 +122,10 @@ export default function SingleCourse() {
 
 	useEffect(() => {
 		// console.log("-> courseDataProgression", courseDataProgression);
-		const courseD =
-			courseDataProgression?.subscriptionByUserAtCourseBySlug[0].course;
+		console.log("-> courseFromDBData", courseFromDBData);
+		const courseD = courseFromDBData?.courseBySlug;
 		const completionD =
-			courseDataProgression?.subscriptionByUserAtCourseBySlug[0].completion;
+			courseDataProgression?.subscriptionByUserAtCourseBySlug[0]?.completion;
 		// console.log("-> course", courseD);
 		// console.log("-> completion", completionD);
 		if (courseD) {
@@ -129,7 +137,7 @@ export default function SingleCourse() {
 			// 	"019b4a5a-9c3e-71f0-944f-b4bcd89160bc,019b4a5a-9c41-749b-8179-7e76980047b8";
 			// setSelectedChapters(completionTest.split(",") || []);
 		}
-	}, [courseDataProgression]);
+	}, [courseDataProgression, courseFromDBData]);
 
 	useEffect(
 		() => {
@@ -169,7 +177,7 @@ export default function SingleCourse() {
 
 	const handleCheckChapter = async (chapterId: string, checked: boolean) => {
 		// console.log("handleCheckChapter", chapterId, checked);
-		let updatedSelectedChapters = selectedChapters;
+		let updatedSelectedChapters = selectedChapters ?? [];
 		if (checked) {
 			// ajouter l'ID
 			// setSelectedChapters((prev) => [...prev, chapterId]);
@@ -200,12 +208,14 @@ export default function SingleCourse() {
 		// console.log("RESULT", result?.updateUserSubscription?.completion);
 		setSelectedChapters(result?.updateUserSubscription?.completion);
 	};
-	const [messages, setMessages] = useState(messagesFromDBData?.messagesByCourseSlug ?? []);
-	
+	const [messages, setMessages] = useState(
+		messagesFromDBData?.messagesByCourseSlug ?? [],
+	);
+
 	useEffect(() => {
-  	if (messagesFromDBData?.messagesByCourseSlug) {
-    	setMessages(messagesFromDBData.messagesByCourseSlug);
-  	}
+		if (messagesFromDBData?.messagesByCourseSlug) {
+			setMessages(messagesFromDBData.messagesByCourseSlug);
+		}
 	}, [messagesFromDBData]);
 
 	// début de la fonction qui return le contenu de la page
@@ -270,7 +280,7 @@ export default function SingleCourse() {
 													id={eachChapter.id}
 													title={eachChapter.title}
 													// selectedChapters={selectedChapters}
-													isValidated={selectedChapters.includes(
+													isValidated={selectedChapters?.includes(
 														eachChapter.id,
 													)}
 													handleCheckChapter={handleCheckChapter}
@@ -294,17 +304,16 @@ export default function SingleCourse() {
 					)}
 
 					{/* contenu du forum */}
-					<ShowForum
-  					messages={messages}
-  					connectedUser={currentUser}
-					/>
+					<ShowForum messages={messages} connectedUser={currentUser} />
 					{/* fin du forum */}
 
-				<PostMessage
-  					courseId={course?.id!}
-  					userId={currentUser}
-  					onMessagePosted={(newMessage) => setMessages((prev) => [...prev, newMessage])}
-				/>
+					<PostMessage
+						courseId={course?.id!}
+						userId={currentUser}
+						onMessagePosted={(newMessage) =>
+							setMessages((prev) => [...prev, newMessage])
+						}
+					/>
 				</main>
 			</div>
 		</div>

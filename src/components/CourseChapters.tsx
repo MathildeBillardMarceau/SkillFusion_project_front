@@ -21,7 +21,7 @@ export default function ShowCourseChapters({
 	handleCheckChapter,
 	onClick,
 }: CourseChapterList) {
-	const [checkedChapter, setCheckedChapter] = useState(isValidated);
+	const [checkedChapter, setCheckedChapter] = useState(isValidated ?? null);
 	// permet de définir les chapitres déjà cochés (mockup marche sur 1 uniquement)
 
 	return (
