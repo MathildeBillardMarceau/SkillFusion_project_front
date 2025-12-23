@@ -10,6 +10,7 @@ import ShowCourseLesson from "@/components/CourseLesson";
 import ShowCourseTools from "@/components/CourseTools";
 import SubscriptionStatus from "@/components/courseSubscribe";
 import ShowForum from "@/components/forum";
+import PostMessage from "@/components/PostMessage";
 import { useGraphQL } from "@/hooks/useGraphQL"; // hook GQL
 import { useLazyGraphQL } from "@/hooks/useLazyGraphQL";
 import {
@@ -199,6 +200,13 @@ export default function SingleCourse() {
 		// console.log("RESULT", result?.updateUserSubscription?.completion);
 		setSelectedChapters(result?.updateUserSubscription?.completion);
 	};
+	const [messages, setMessages] = useState(messagesFromDBData?.messagesByCourseSlug ?? []);
+	
+	useEffect(() => {
+  	if (messagesFromDBData?.messagesByCourseSlug) {
+    	setMessages(messagesFromDBData.messagesByCourseSlug);
+  	}
+	}, [messagesFromDBData]);
 
 	// début de la fonction qui return le contenu de la page
 	return (
@@ -287,10 +295,16 @@ export default function SingleCourse() {
 
 					{/* contenu du forum */}
 					<ShowForum
-						messages={messagesFromDBData?.messagesByCourseSlug ?? []} // ici le ??[] indique que si on a pas de retour, on envoie un tableau vide, car dans le compo le type attend un tableau dans tous les cas
-						connectedUser={currentUser}
+  					messages={messages}
+  					connectedUser={currentUser}
 					/>
 					{/* fin du forum */}
+
+				<PostMessage
+  					courseId={course?.id!}
+  					userId={currentUser}
+  					onMessagePosted={(newMessage) => setMessages((prev) => [...prev, newMessage])}
+				/>
 				</main>
 			</div>
 		</div>
