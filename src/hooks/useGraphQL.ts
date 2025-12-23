@@ -27,7 +27,7 @@ export function useGraphQL<T>(query: string, variables?: any) {
 				const json = await res.json();
 
 				if (json.errors) {
-					// console.log("json.errors", json.errors);
+					console.log("json.errors", json.errors);
 					setError(json.errors[0].message);
 				} else {
 					setData(json.data);
