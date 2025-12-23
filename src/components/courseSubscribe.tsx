@@ -17,9 +17,9 @@ export default function SubscriptionStatus({
 	courseId,
 	setSubscribedLesson,
 }: SubStatus) {
-	console.log("subscribed", subscribed);
-	console.log("courseId:", courseId);
-	console.log("userId:", userId);
+	// console.log("subscribed", subscribed);
+	// console.log("courseId:", courseId);
+	// console.log("userId:", userId);
 
 	const handleClick = async () => {
 		if (!userId || !courseId) return;

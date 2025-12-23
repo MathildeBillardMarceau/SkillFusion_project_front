@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { useState } from "react";
 
 interface CourseChapterList {
@@ -6,6 +5,7 @@ interface CourseChapterList {
 	id: string;
 	title: string;
 	isSelected: boolean;
+	subscribedLesson: boolean | null;
 	isValidated: boolean;
 	handleCheckChapter: any;
 	// ici je récupère mon bool pour savoir si ce chapitre est celui selectionné
@@ -19,6 +19,7 @@ export default function ShowCourseChapters({
 	isSelected,
 	isValidated,
 	handleCheckChapter,
+	subscribedLesson,
 	onClick,
 }: CourseChapterList) {
 	const [checkedChapter, setCheckedChapter] = useState(isValidated ?? null);
@@ -37,18 +38,21 @@ export default function ShowCourseChapters({
 					<span>{title}</span>
 				</button>
 			</div>
-			<div className="w-[10%] flex justify-center">
-				<input
-					type="checkbox"
-					className={`p-2 appearance-none border-primary-red w-6 h-6 border-3 rounded 
-                      ${checkedChapter ? "bg-primary-red" : "border-primary-red"}`}
-					checked={checkedChapter}
-					onChange={() => {
-						setCheckedChapter(!checkedChapter);
-						handleCheckChapter(id, !checkedChapter);
-					}}
-				/>
-			</div>
+
+			{subscribedLesson && (
+				<div className="w-[10%] flex justify-center">
+					<input
+						type="checkbox"
+						className={`p-2 appearance-none border-primary-red w-6 h-6 border-3 rounded 
+						${checkedChapter ? "bg-primary-red" : "border-primary-red"}`}
+						checked={checkedChapter}
+						onChange={() => {
+							setCheckedChapter(!checkedChapter);
+							handleCheckChapter(id, !checkedChapter);
+						}}
+					/>
+				</div>
+			)}
 		</li>
 	);
 }

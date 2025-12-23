@@ -122,7 +122,7 @@ export default function SingleCourse() {
 
 	useEffect(() => {
 		// console.log("-> courseDataProgression", courseDataProgression);
-		console.log("-> courseFromDBData", courseFromDBData);
+		// console.log("-> courseFromDBData", courseFromDBData);
 		const courseD = courseFromDBData?.courseBySlug;
 		const completionD =
 			courseDataProgression?.subscriptionByUserAtCourseBySlug[0]?.completion;
@@ -164,9 +164,13 @@ export default function SingleCourse() {
 	);
 
 	useEffect(() => {
+		/* console.log(
+			"subscriptionByUserAtCourseData",
+			subscriptionByUserAtCourseData,
+		); */
 		if (
-			(subscriptionByUserAtCourseData?.subscriptionByUserAtCourse?.length ??
-				0) > 0
+			subscriptionByUserAtCourseData &&
+			subscriptionByUserAtCourseData?.subscriptionByUserAtCourse?.length > 0
 			//je vérifie que mon tableau a une longueur > à 0 sinon je lui donne la valeur 0 pour qu'il ne soit pas null et que le typage soit content
 		) {
 			setSubscribedLesson(true);
@@ -276,6 +280,7 @@ export default function SingleCourse() {
 											// }
 											return (
 												<ShowCourseChapters
+													subscribedLesson={subscribedLesson}
 													key={eachChapter.id}
 													id={eachChapter.id}
 													title={eachChapter.title}
