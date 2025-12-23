@@ -1,4 +1,3 @@
-import clsx from "clsx";
 import Link from "next/link";
 import type { CourseType } from "@/@types";
 import { useAuthStore } from "@/app/store/auth";
